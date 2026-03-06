@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD SOLAR TERMINAL | PRO MONITORING</title>
+    <title>HSD SOLAR TERMINAL | GLOBAL TRADE MONITOR</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
     <style>
@@ -18,7 +18,6 @@
         .neon-text { text-shadow: 0 0 10px var(--neon-blue); }
         .table-mini { font-size: 10px; width: 100%; border-collapse: collapse; }
         .table-mini td { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .table-mini tr:last-child td { border: none; }
         .up-trend { color: var(--neon-green); }
         .down-trend { color: #ef4444; }
         input[type="checkbox"] { transform: scale(1.1); cursor: pointer; accent-color: #00f2ff; }
@@ -35,9 +34,14 @@
                 <span id="current-date" class="ml-4 font-bold">06 MARCH 2026</span>
             </div>
         </div>
+        
         <div class="flex gap-4">
-            <div class="bg-slate-900 border border-slate-700 px-6 py-2 rounded-lg text-center">
-                <p class="text-[9px] text-slate-500 uppercase">Kurs USD/IDR</p>
+            <div class="bg-slate-900 border border-slate-700 px-5 py-2 rounded-lg text-center">
+                <p class="text-[9px] text-slate-500 uppercase tracking-tighter">US Dollar Index (DXY)</p>
+                <p id="dxy-top" class="font-bold text-amber-500">103.85</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 px-5 py-2 rounded-lg text-center">
+                <p class="text-[9px] text-slate-500 uppercase tracking-tighter">Kurs USD/IDR</p>
                 <p id="kurs-top" class="font-bold text-cyan-300">Fetching...</p>
             </div>
         </div>
@@ -49,10 +53,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-cyan-500">
-                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold">MOPS Gasoil SGBC1</h3>
-                    <div class="mb-5">
-                        <span class="text-3xl font-bold text-white header-font" id="mops-live">139.02</span>
-                        <span class="text-[10px] text-slate-500 ml-1 italic">USD</span>
+                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold italic tracking-widest text-cyan-500">Gasoil SGBC1</h3>
+                    <div class="mb-5 flex justify-between items-end">
+                        <div>
+                            <span class="text-3xl font-bold text-white header-font" id="mops-live">139.02</span>
+                            <span class="text-[10px] text-slate-500 ml-1 italic font-bold">USD</span>
+                        </div>
+                        <div class="text-[9px] text-green-400 mb-1">+1.45%</div>
                     </div>
                     <table class="table-mini">
                         <thead class="text-slate-500 uppercase">
@@ -67,10 +74,13 @@
                 </div>
 
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-amber-500">
-                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold">ICE Brent Crude</h3>
-                    <div class="mb-5">
-                        <span class="text-3xl font-bold text-amber-400 header-font" id="brent-live">90.82</span>
-                        <span class="text-[10px] text-slate-500 ml-1 italic">USD</span>
+                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold italic tracking-widest text-amber-500">ICE Brent Crude</h3>
+                    <div class="mb-5 flex justify-between items-end">
+                        <div>
+                            <span class="text-3xl font-bold text-amber-400 header-font" id="brent-live">90.82</span>
+                            <span class="text-[10px] text-slate-500 ml-1 italic font-bold">USD</span>
+                        </div>
+                        <div class="text-[9px] text-red-500 mb-1">-0.12%</div>
                     </div>
                     <table class="table-mini">
                         <thead class="text-slate-500 uppercase">
@@ -85,10 +95,13 @@
                 </div>
 
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500">
-                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold">NYMEX WTI Crude</h3>
-                    <div class="mb-5">
-                        <span class="text-3xl font-bold text-blue-400 header-font" id="wti-live">88.96</span>
-                        <span class="text-[10px] text-slate-500 ml-1 italic">USD</span>
+                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold italic tracking-widest text-blue-500">NYMEX WTI Crude</h3>
+                    <div class="mb-5 flex justify-between items-end">
+                        <div>
+                            <span class="text-3xl font-bold text-blue-400 header-font" id="wti-live">88.96</span>
+                            <span class="text-[10px] text-slate-500 ml-1 italic font-bold">USD</span>
+                        </div>
+                        <div class="text-[9px] text-green-400 mb-1">+0.08%</div>
                     </div>
                     <table class="table-mini">
                         <thead class="text-slate-500 uppercase">
@@ -106,7 +119,7 @@
 
             <div class="glass-panel p-3 rounded-lg border border-slate-800 text-center">
                 <marquee class="text-[11px] text-cyan-400/80 uppercase tracking-widest">
-                    Market Correction Applied: Brent $90.82 • WTI $88.96 • MOPS SGBC1 $139.02 • PBBKB Fixed 7.5% • PPh 22 Fixed 0.3% • Standard Unit 158.98 L/BBL
+                    Live Trading Monitor: Brent $90.82 • WTI $88.96 • MOPS SGBC1 $139.02 • PBBKB Fixed 7.5% • PPh 22 Fixed 0.3% • Unit 158.98 L/BBL • DXY Status: Bullish Trend
                 </marquee>
             </div>
         </div>
@@ -131,15 +144,15 @@
                     <div class="bg-slate-900/30 p-4 rounded-lg space-y-3">
                         <p class="text-[10px] text-slate-500 uppercase font-bold border-b border-slate-800 pb-2">Tax Settings</p>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-300">PPN (11.0%)</span>
+                            <span class="text-slate-300 italic font-bold">PPN (11.0%)</span>
                             <input type="checkbox" id="check-ppn" checked onchange="calculateSolar()">
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-300">PBBKB (7.5%)</span>
+                            <span class="text-slate-300 italic font-bold">PBBKB (7.5%)</span>
                             <input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()">
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-300">PPh 22 (0.3%)</span>
+                            <span class="text-slate-300 italic font-bold">PPh 22 (0.3%)</span>
                             <input type="checkbox" id="check-pph" checked onchange="calculateSolar()">
                         </div>
                     </div>
@@ -152,8 +165,8 @@
                         <p class="text-[10px] text-slate-500 uppercase mb-2">Final Franco Price / Liter</p>
                         <div id="final-price" class="text-3xl font-bold text-white neon-text header-font">Rp 0</div>
                         <div class="mt-4 pt-4 border-t border-slate-800 space-y-1">
-                            <div class="flex justify-between text-[10px] font-mono"><span class="text-slate-500">Ex-Work:</span> <span id="basic-price" class="text-slate-300">0</span></div>
-                            <div class="flex justify-between text-[10px] font-mono text-cyan-700"><span>Tax Total:</span> <span id="tax-only">0</span></div>
+                            <div class="flex justify-between text-[10px] font-mono"><span class="text-slate-500">Basic Price:</span> <span id="basic-price" class="text-slate-300">0</span></div>
+                            <div class="flex justify-between text-[10px] font-mono text-cyan-700"><span>Tax Total:</span> <span id="tax-only" class="font-bold">0</span></div>
                         </div>
                     </div>
                 </div>
@@ -166,7 +179,8 @@
         const MARKET_DATA = {
             mops: 139.02,
             brent: 90.82,
-            wti: 88.96
+            wti: 88.96,
+            dxy: 103.85
         };
 
         async function getLiveKurs() {
@@ -187,6 +201,7 @@
                 document.getElementById('mops-live').innerText = (MARKET_DATA.mops + f).toFixed(2);
                 document.getElementById('brent-live').innerText = (MARKET_DATA.brent + f).toFixed(2);
                 document.getElementById('wti-live').innerText = (MARKET_DATA.wti + f).toFixed(2);
+                document.getElementById('dxy-top').innerText = (MARKET_DATA.dxy + (f/10)).toFixed(2);
             }, 4000);
         }
 
@@ -212,10 +227,8 @@
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalPrice).toLocaleString('id-ID');
         }
 
-        // Tampilkan Tanggal
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}).toUpperCase();
 
-        // Run
         getLiveKurs();
         updateMarketDisplay();
         setTimeout(calculateSolar, 1000);
