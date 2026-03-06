@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Energy Market Dashboard</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+margin:0;
+}
+
+header{
+background:#020617;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:6px 0;
+border:none;
+border-radius:6px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#22c55e;
+border:none;
+border-radius:6px;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.price{
+font-size:18px;
+margin:6px 0;
+}
+
+.result{
+font-size:24px;
+text-align:center;
+margin-top:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+ENERGY MARKET LIVE DASHBOARD
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Live Market</h3>
+
+<div class="price">Brent : <span id="brent">loading...</span></div>
+<div class="price">WTI / NYMEX : <span id="wti">loading...</span></div>
+<div class="price">USD → IDR : <span id="kurs">loading...</span></div>
+
+</div>
+
+<div class="card">
+
+<h3>Hitung Harga Solar</h3>
+
+<label>MOPS Singapore (USD/Barel)</label>
+<input type="number" id="mops" placeholder="contoh 96">
+
+<label>Premium Trader (USD/Barel)</label>
+<input type="number" id="premium" placeholder="contoh 4">
+
+<button onclick="hitung()">Hitung Harga</button>
+
+<div class="result" id="hasil">-</div>
+
+</div>
+
+</div>
+
+<script>
+
+// ambil kurs live
+async function getKurs(){
+let res = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=IDR");
+let data = await res.json();
+let kurs = data.rates.IDR;
+document.getElementById("kurs").innerHTML = kurs.toFixed(0);
+window.kurs = kurs;
+}
+
+// ambil harga oil live
+async function getOil(){
+
+let res = await fetch("https://api.oilpriceapi.com/v1/prices/latest?by_code=BRENT_CRUDE_USD");
+let data = await res.json();
+
+let brent = data.data.price;
+
+document.getElementById("brent").innerHTML = "$"+brent;
+
+}
+
+// contoh WTI dummy (bisa diganti API lain)
+async function getWTI(){
+
+let res = await fetch("https://api.exchangerate.host/convert?from=USD&to=USD");
+let data = await res.json();
+
+let wti = 87; 
+
+document.getElementById("wti").innerHTML = "$"+wti;
+
+}
+
+// hitung harga solar
+function hitung(){
+
+let mops = parseFloat(document.getElementById("mops").value);
+let premium = parseFloat(document.getElementById("premium").value);
+
+let total = mops + premium;
+
+let usd_liter = total / 159;
+
+let rupiah_liter = usd_liter * window.kurs;
+
+document.getElementById("hasil").innerHTML =
+"Rp "+rupiah_liter.toFixed(0)+" / liter";
+
+}
+
+getKurs();
+getOil();
+getWTI();
+
+</script>
+
+</body>
+</html>
