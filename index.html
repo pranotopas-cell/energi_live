@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOLAR HSD PRO TERMINAL | MOPS LIVE</title>
+    <title>SOLAR HSD PRO TERMINAL | MOPS & WTI LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-blue: #00f2ff; --neon-green: #39ff14; }
+        :root { --neon-blue: #00f2ff; --neon-green: #39ff14; --neon-amber: #f59e0b; }
         body { background-color: #020617; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .glass-panel {
@@ -46,31 +46,32 @@
     <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-8 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="glass-panel p-6 rounded-xl relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="cyan"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <h3 class="text-xs text-slate-400 uppercase tracking-tighter mb-4">MOPS Singapore Gasoil 10ppm</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-panel p-6 rounded-xl relative overflow-hidden group border-b-2 border-cyan-500">
+                    <h3 class="text-xs text-slate-400 uppercase tracking-tighter mb-4">MOPS Gasoil 10ppm</h3>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-4xl font-bold text-white header-font" id="mops-live">104.25</span>
-                        <span class="text-sm text-slate-500">USD/BBL</span>
+                        <span class="text-3xl font-bold text-white header-font" id="mops-live">104.25</span>
+                        <span class="text-xs text-slate-500">USD</span>
                     </div>
-                    <div class="mt-4 flex items-center gap-2">
-                        <span class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded">+1.24%</span>
-                        <span class="text-[10px] text-slate-600 italic font-light font-mono">Real-time Adjusted Feed</span>
-                    </div>
+                    <p class="text-[10px] text-cyan-500 mt-2 font-bold tracking-widest">SINGAPORE BENCHMARK</p>
                 </div>
 
-                <div class="glass-panel p-6 rounded-xl border-l-2 border-slate-700">
-                    <h3 class="text-xs text-slate-400 uppercase mb-4 tracking-tighter">ICE Brent Crude (Reference)</h3>
+                <div class="glass-panel p-6 rounded-xl border-b-2 border-amber-500">
+                    <h3 class="text-xs text-slate-400 uppercase mb-4 tracking-tighter">ICE Brent Crude</h3>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-4xl font-bold text-slate-300 header-font" id="brent-live">82.10</span>
-                        <span class="text-sm text-slate-500">USD/BBL</span>
+                        <span class="text-3xl font-bold text-amber-400 header-font" id="brent-live">82.10</span>
+                        <span class="text-xs text-slate-500">USD</span>
                     </div>
-                    <div class="mt-4 h-1 bg-slate-800 rounded-full overflow-hidden">
-                        <div class="h-full bg-cyan-500 w-2/3 shadow-[0_0_10px_#00f2ff]"></div>
+                    <p class="text-[10px] text-slate-500 mt-2 uppercase">Global Ref.</p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl border-b-2 border-blue-500">
+                    <h3 class="text-xs text-slate-400 uppercase mb-4 tracking-tighter">NYMEX WTI Crude</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-bold text-blue-400 header-font" id="wti-live">77.45</span>
+                        <span class="text-xs text-slate-500">USD</span>
                     </div>
+                    <p class="text-[10px] text-slate-500 mt-2 uppercase">US Benchmark</p>
                 </div>
             </div>
 
@@ -78,7 +79,7 @@
                 <div class="flex items-center gap-4">
                     <span class="bg-cyan-500 text-black text-[9px] font-bold px-2 py-1 rounded">MOPS ALERT</span>
                     <marquee class="text-xs text-cyan-200 uppercase tracking-widest">
-                        Singapore Gasoil inventories decline by 2% • Refining margins for HSD 10ppm steady at $22.50 • Domestic IDR strengthens against USD • New Alpha calculations active for Pertamina & AKR benchmarks • 
+                        PBBKB updated to 7.5% • PPh 22 set at 0.3% • WTI & Brent spread narrowing • Solar HSD inventory levels stable at Jurong terminal • 
                     </marquee>
                 </div>
             </div>
@@ -86,41 +87,47 @@
 
         <div class="lg:col-span-4">
             <div class="glass-panel p-8 rounded-2xl border-t-2 border-cyan-500 shadow-2xl">
-                <h2 class="header-font text-lg font-bold mb-6 flex items-center gap-3">
-                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                    HSD PRICE CALCULATOR
+                <h2 class="header-font text-lg font-bold mb-6 flex items-center gap-3 text-cyan-400">
+                    CALCULATOR PRO
                 </h2>
 
                 <div class="space-y-5">
                     <div>
-                        <label class="text-[10px] text-slate-400 block mb-1 uppercase">MOPS Base (USD/BBL)</label>
+                        <label class="text-[10px] text-slate-400 block mb-1 uppercase tracking-widest">MOPS Solar (USD/BBL)</label>
                         <input type="number" id="input-mops" value="104.25" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-bold neon-border-focus transition-all">
                     </div>
 
                     <div>
-                        <label class="text-[10px] text-slate-400 block mb-1 uppercase">Alpha / Trader Premium (USD/BBL)</label>
+                        <label class="text-[10px] text-slate-400 block mb-1 uppercase tracking-widest">Alpha (Trader USD/BBL)</label>
                         <input type="number" id="input-alpha" value="4.50" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-green-400 font-bold neon-border-focus transition-all">
                     </div>
 
-                    <div class="pt-4 space-y-2 border-t border-slate-800">
-                        <div class="flex justify-between text-xs text-slate-500">
-                            <span>PPN (11%)</span>
-                            <input type="checkbox" id="tax-ppn" checked class="accent-cyan-500">
+                    <div class="pt-4 space-y-3 border-t border-slate-800">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">PPN (11%)</span>
+                            <span class="text-slate-500 font-bold">AUTO</span>
                         </div>
-                        <div class="flex justify-between text-xs text-slate-500">
-                            <span>PBBKB (5%)</span>
-                            <input type="checkbox" id="tax-pbbkb" checked class="accent-cyan-500">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">PBBKB (7.5%)</span>
+                            <span class="text-amber-500 font-bold">FIXED</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">PPh 22 (0.3%)</span>
+                            <span class="text-blue-400 font-bold">INC</span>
                         </div>
                     </div>
 
                     <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-cyan-500/20 active:scale-95 uppercase tracking-tighter">
-                        Generate Quote
+                        Calculate Final Price
                     </button>
 
-                    <div id="result-box" class="mt-6 p-4 bg-black/40 rounded-lg text-center border border-slate-800">
-                        <p class="text-[10px] text-slate-500 uppercase mb-1">Final Price (IDR/Liter)</p>
-                        <div id="final-price" class="text-4xl font-bold text-white header-font neon-text">Rp 0</div>
-                        <p class="text-[9px] text-slate-600 mt-2 italic font-sans leading-tight">Harga estimasi Franco / Onsite dengan pajak terhitung.</p>
+                    <div id="result-box" class="mt-6 p-4 bg-black/40 rounded-lg text-center border border-slate-800 relative overflow-hidden">
+                        <p class="text-[10px] text-slate-500 uppercase mb-1">Price Per Liter (Incl. Tax)</p>
+                        <div id="final-price" class="text-3xl font-bold text-white header-font neon-text">Rp 0</div>
+                        <div class="mt-2 grid grid-cols-2 gap-2 text-[9px] text-slate-500 uppercase">
+                            <div class="border-t border-slate-800 pt-1">Basic: <span id="basic-price">0</span></div>
+                            <div class="border-t border-slate-800 pt-1">Total Tax: <span id="tax-only">0</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,10 +135,8 @@
     </main>
 
     <script>
-        // Update Tanggal
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'}).toUpperCase();
 
-        // 1. Ambil Kurs IDR Real-Time
         async function getLiveKurs() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -139,57 +144,59 @@
                 window.kursIdr = data.rates.IDR;
                 document.getElementById('kurs-top').innerText = window.kursIdr.toLocaleString('id-ID');
             } catch (e) {
-                window.kursIdr = 15850; // Fallback
+                window.kursIdr = 15850;
             }
         }
 
-        // 2. Simulasi MOPS Gasoil Live Feed
-        // Platts MOPS biasanya adalah Brent + Gasoil Crack Spread
-        function simulateMOPS() {
+        function simulateMarket() {
             const brentBase = 82.10;
-            const crackSpread = 22.15; // Rata-rata margin solar ke minyak mentah
+            const wtiBase = 77.45;
+            const crackSpread = 22.15; 
             
             setInterval(() => {
-                const fluctuation = (Math.random() - 0.5) * 0.2;
+                const fluctuation = (Math.random() - 0.5) * 0.15;
                 const mops = (brentBase + crackSpread + fluctuation).toFixed(2);
                 const brent = (brentBase + (fluctuation * 0.8)).toFixed(2);
+                const wti = (wtiBase + (fluctuation * 0.9)).toFixed(2);
                 
                 document.getElementById('mops-live').innerText = mops;
                 document.getElementById('brent-live').innerText = brent;
+                document.getElementById('wti-live').innerText = wti;
                 document.getElementById('gasoil-index').innerText = `$${mops}`;
                 
-                // Update input otomatis agar user selalu pakai data terbaru
                 if(document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = mops;
                 }
             }, 3000);
         }
 
-        // 3. Kalkulator Solar HSD
         function calculateSolar() {
             const mops = parseFloat(document.getElementById('input-mops').value);
             const alpha = parseFloat(document.getElementById('input-alpha').value);
             const kurs = window.kursIdr || 15850;
             
             // Konversi Barrel ke Liter (1 BBL = 158.98 Liter)
-            const basePriceLiterUSD = (mops + alpha) / 158.98;
-            let finalPriceIDR = basePriceLiterUSD * kurs;
+            const basicPriceLiterIDR = ((mops + alpha) / 158.98) * kurs;
 
-            // Pajak-Pajak
-            const isPPN = document.getElementById('tax-ppn').checked;
-            const isPBBKB = document.getElementById('tax-pbbkb').checked;
+            // Pajak-Pajak sesuai permintaan
+            const ppn = 0.11;     // 11%
+            const pbbkb = 0.075;  // 7.5%
+            const pph = 0.003;    // 0.3%
 
-            if (isPPN) finalPriceIDR += (finalPriceIDR * 0.11);
-            if (isPBBKB) finalPriceIDR += (finalPriceIDR * 0.05);
+            const taxTotalMultiplier = 1 + ppn + pbbkb + pph;
+            const finalPriceIDR = basicPriceLiterIDR * taxTotalMultiplier;
 
-            // Animasi Counter
+            // Update UI
+            document.getElementById('basic-price').innerText = Math.round(basicPriceLiterIDR).toLocaleString('id-ID');
+            document.getElementById('tax-only').innerText = Math.round(finalPriceIDR - basicPriceLiterIDR).toLocaleString('id-ID');
+            
             animateResult(finalPriceIDR);
         }
 
         function animateResult(target) {
             const display = document.getElementById('final-price');
             let current = 0;
-            const duration = 800;
+            const duration = 500;
             const step = target / (duration / 16);
 
             const timer = setInterval(() => {
@@ -203,9 +210,8 @@
             }, 16);
         }
 
-        // Init Dashboard
         getLiveKurs();
-        simulateMOPS();
+        simulateMarket();
     </script>
 </body>
 </html>
