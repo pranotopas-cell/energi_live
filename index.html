@@ -31,7 +31,7 @@
                 </h1>
                 <div class="flex items-center gap-4 text-[10px] mt-2">
                     <span id="current-time" class="text-cyan-500 font-bold tracking-widest">00:00:00</span>
-                    <span class="text-slate-500 font-bold">DATE: 06 MARCH 2026</span>
+                    <span class="text-slate-500 font-bold uppercase">DATE: <span id="current-date">06 MARCH 2026</span></span>
                 </div>
             </div>
             
@@ -195,6 +195,13 @@
         const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45, gas: 2.450 };
         window.marketData = { ...BASELINE };
 
+        // Fungsi Update Tanggal Otomatis
+        function updateDate() {
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const today = new Date().toLocaleDateString('en-GB', options);
+            document.getElementById('current-date').innerText = today;
+        }
+
         async function fetchIDR() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -275,10 +282,8 @@
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
         }
 
-        fetchIDR(); renderNews(); runLive();
+        // Inisialisasi Terminal
+        updateDate(); fetchIDR(); renderNews(); runLive();
     </script>
 </body>
 </html>
-
-
-
