@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL | FULL MARKET DATA</title>
+    <title>HSD TERMINAL PRO | MARKET SYNC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -17,7 +17,8 @@
         .down-trend { color: #ff4444; font-weight: bold; }
         .news-link { border-left: 2px solid #1e293b; transition: all 0.2s; cursor: pointer; display: block; }
         .news-link:hover { border-left-color: var(--neon-blue); background: rgba(0, 242, 255, 0.05); transform: translateX(5px); }
-        input[type="checkbox"] { accent-color: var(--neon-blue); cursor: pointer; }
+        input[type="checkbox"], select { accent-color: var(--neon-blue); cursor: pointer; }
+        select { background: #0f172a; border: 1px solid #1e293b; color: #00f2ff; font-size: 10px; padding: 2px 5px; border-radius: 4px; outline: none; }
     </style>
 </head>
 <body class="p-4 lg:p-8">
@@ -25,7 +26,7 @@
     <header class="max-w-7xl mx-auto flex flex-wrap justify-between items-center mb-8 gap-6 border-b border-slate-800 pb-6">
         <div>
             <h1 class="header-font text-3xl font-black text-white uppercase tracking-tighter">
-                SOLAR<span class="text-cyan-400">HSD</span><span class="text-[10px] ml-2 font-light text-slate-500 tracking-widest uppercase">Terminal v7.0</span>
+                SOLAR<span class="text-cyan-400">HSD</span><span class="text-[10px] ml-2 font-light text-slate-500 tracking-widest uppercase">Terminal v8.0</span>
             </h1>
             <div class="flex items-center gap-4 text-[10px] mt-2">
                 <span id="current-time" class="text-cyan-500 font-bold tracking-widest">00:00:00</span>
@@ -36,11 +37,11 @@
         <div class="flex gap-4">
             <div class="glass-panel px-5 py-2 rounded border-b-2 border-amber-500 text-center">
                 <p class="text-[8px] text-slate-500 uppercase font-black">DXY Index</p>
-                <p id="dxy-top" class="font-bold text-amber-500">103.85</p>
+                <p id="dxy-top" class="font-bold text-amber-500 text-sm">103.85</p>
             </div>
             <div class="glass-panel px-5 py-2 rounded border-b-2 border-cyan-500 text-center">
                 <p class="text-[8px] text-slate-500 uppercase font-black">USD / IDR</p>
-                <p id="kurs-top" class="font-bold text-cyan-400">Fetching...</p>
+                <p id="kurs-top" class="font-bold text-cyan-400 text-sm italic">Fetching...</p>
             </div>
         </div>
     </header>
@@ -107,7 +108,7 @@
 
             <div class="glass-panel p-2 rounded border border-slate-800">
                 <marquee class="text-[10px] text-slate-400 font-bold tracking-widest uppercase">
-                    PLATTS SG: GASOIL CRACK SPREADS UPDATE • INVESTING: OIL VOLATILITY TIED TO FED POLICY • INDONESIA HSD B35 STOCK: SECURE •
+                    PLATTS SG: GASOIL CRACK SPREADS UPDATE • INVESTING: OIL VOLATILITY TIED TO FED POLICY • INDONESIA HSD B35 STOCK: SECURE • 
                 </marquee>
             </div>
 
@@ -129,7 +130,15 @@
 
                 <div class="space-y-5">
                     <div class="bg-black/40 p-3 rounded-lg border border-slate-800">
-                        <label class="text-[8px] text-slate-500 uppercase font-bold block mb-1">MOPS Gasoil Base (USD/BBL)</label>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-[8px] text-slate-500 uppercase font-bold block">Base Price (USD/BBL)</label>
+                            <select id="market-sync" onchange="calculateSolar()">
+                                <option value="mops">LINK MOPS</option>
+                                <option value="brent">LINK BRENT</option>
+                                <option value="wti">LINK WTI</option>
+                                <option value="manual">MANUAL</option>
+                            </select>
+                        </div>
                         <input type="number" id="input-mops" value="139.02" step="0.01" class="w-full bg-transparent text-white font-bold text-xl outline-none">
                     </div>
 
@@ -154,11 +163,11 @@
                     </div>
 
                     <div class="p-6 bg-gradient-to-b from-slate-900 to-black rounded-xl border border-cyan-500/20 text-center">
-                        <p class="text-[9px] text-slate-500 uppercase mb-2 font-bold tracking-tighter italic">Live Franco Quote</p>
+                        <p class="text-[9px] text-slate-500 uppercase mb-2 font-bold tracking-tighter italic text-cyan-500">Live Franco Quote</p>
                         <div id="final-price" class="text-3xl font-black text-white header-font tracking-tighter">Rp 0</div>
                         <div class="mt-4 pt-4 border-t border-slate-800 space-y-1 text-left">
                             <div class="flex justify-between text-[10px]"><span class="text-slate-500 uppercase">Base Price:</span> <span id="basic-price" class="text-slate-300">0</span></div>
-                            <div class="flex justify-between text-[10px] font-bold"><span class="text-slate-500 uppercase text-cyan-700">Tax Total:</span> <span id="tax-only" class="text-cyan-500">0</span></div>
+                            <div class="flex justify-between text-[10px] font-bold text-cyan-700"><span class="uppercase">Tax Total:</span> <span id="tax-only" class="text-cyan-500">0</span></div>
                         </div>
                     </div>
 
@@ -172,6 +181,7 @@
 
     <script>
         const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85 };
+        window.marketData = { ...BASELINE };
 
         async function fetchIDR() {
             try {
@@ -207,20 +217,24 @@
         }
 
         function runLive() {
-            let lastM = BASELINE.mops;
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
                 const f = (Math.random() - 0.5) * 0.15;
-                const newM = (lastM + f).toFixed(2);
-                document.getElementById('mops-live').innerText = newM;
-                document.getElementById('brent-live').innerText = (BASELINE.brent + f).toFixed(2);
-                document.getElementById('wti-live').innerText = (BASELINE.wti + f).toFixed(2);
+                
+                window.marketData.mops = parseFloat((window.marketData.mops + f).toFixed(2));
+                window.marketData.brent = parseFloat((window.marketData.brent + f).toFixed(2));
+                window.marketData.wti = parseFloat((window.marketData.wti + f).toFixed(2));
+
+                document.getElementById('mops-live').innerText = window.marketData.mops;
+                document.getElementById('brent-live').innerText = window.marketData.brent;
+                document.getElementById('wti-live').innerText = window.marketData.wti;
                 document.getElementById('dxy-top').innerText = (BASELINE.dxy + (f/10)).toFixed(2);
-                if(document.activeElement.id !== "input-mops") {
-                    document.getElementById('input-mops').value = newM;
+
+                const syncType = document.getElementById('market-sync').value;
+                if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
+                    document.getElementById('input-mops').value = window.marketData[syncType];
                     calculateSolar();
                 }
-                lastM = parseFloat(newM);
             }, 3000);
         }
 
