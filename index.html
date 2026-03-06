@@ -3,235 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD SOLAR TERMINAL | GLOBAL TRADE MONITOR</title>
+    <title>HSD SOLAR TERMINAL | REAL-TIME TRADING</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --neon-blue: #00f2ff; --neon-green: #39ff14; --neon-amber: #f59e0b; }
-        body { background-color: #020617; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; }
+        body { 
+            background: radial-gradient(circle at top right, #0f172a, #020617); 
+            color: #e2e8f0; 
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+        }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .glass-panel {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(0, 242, 255, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
-        .neon-text { text-shadow: 0 0 10px var(--neon-blue); }
-        .table-mini { font-size: 10px; width: 100%; border-collapse: collapse; }
-        .table-mini td { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .up-trend { color: var(--neon-green); }
-        .down-trend { color: #ef4444; }
-        input[type="checkbox"] { transform: scale(1.1); cursor: pointer; accent-color: #00f2ff; }
+        .neon-glow-blue { text-shadow: 0 0 15px rgba(0, 242, 255, 0.7); }
+        .neon-glow-green { text-shadow: 0 0 15px rgba(57, 255, 20, 0.7); }
+        .table-mini { font-size: 10px; width: 100%; }
+        .table-mini td { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .up-trend { color: var(--neon-green); font-bold: 700; }
+        .down-trend { color: #ff4444; font-bold: 700; }
+        .price-up { animation: flash-green 0.5s; }
+        .price-down { animation: flash-red 0.5s; }
+        @keyframes flash-green { from { color: var(--neon-green); } to { color: white; } }
+        @keyframes flash-red { from { color: #ff4444; } to { color: white; } }
+        input[type="checkbox"] { accent-color: var(--neon-blue); cursor: pointer; }
     </style>
 </head>
-<body class="p-4 lg:p-10">
+<body class="p-4 lg:p-8">
 
-    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center mb-8 gap-4 border-b border-slate-800 pb-6">
-        <div>
-            <h1 class="header-font text-2xl font-bold tracking-widest text-cyan-400 uppercase">HSD-SOLAR <span class="text-white">PRO TERMINAL</span></h1>
-            <div class="flex items-center gap-3 text-[10px] text-slate-500 mt-2">
-                <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span> PLATTS LIVE</span>
-                <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span> INVESTING FEED</span>
-                <span id="current-date" class="ml-4 font-bold">06 MARCH 2026</span>
+    <header class="max-w-7xl mx-auto flex flex-wrap justify-between items-center mb-10 gap-6 border-b border-slate-800 pb-8">
+        <div class="space-y-1">
+            <h1 class="header-font text-3xl font-black tracking-tighter text-white">
+                SOLAR<span class="text-cyan-400">HSD</span><span class="text-xs ml-2 font-light text-slate-500 tracking-widest uppercase">Terminal v4.0</span>
+            </h1>
+            <div class="flex items-center gap-4 text-[10px]">
+                <span class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-green-500"></span> LIVE CONNECTION: STABLE</span>
+                <span id="current-time" class="text-slate-400 font-bold">00:00:00</span>
             </div>
         </div>
         
-        <div class="flex gap-4">
-            <div class="bg-slate-900 border border-slate-700 px-5 py-2 rounded-lg text-center">
-                <p class="text-[9px] text-slate-500 uppercase tracking-tighter">US Dollar Index (DXY)</p>
-                <p id="dxy-top" class="font-bold text-amber-500">103.85</p>
+        <div class="flex flex-wrap gap-4">
+            <div class="glass-panel px-6 py-2 rounded-md border-b-2 border-amber-500">
+                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">US Dollar Index (DXY)</p>
+                <p id="dxy-top" class="font-bold text-amber-500 text-lg">103.85</p>
             </div>
-            <div class="bg-slate-900 border border-slate-700 px-5 py-2 rounded-lg text-center">
-                <p class="text-[9px] text-slate-500 uppercase tracking-tighter">Kurs USD/IDR</p>
-                <p id="kurs-top" class="font-bold text-cyan-300">Fetching...</p>
+            <div class="glass-panel px-6 py-2 rounded-md border-b-2 border-cyan-500">
+                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Kurs USD / IDR</p>
+                <p id="kurs-top" class="font-bold text-cyan-400 text-lg">Fetching...</p>
             </div>
         </div>
-    </div>
+    </header>
 
-    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <div class="lg:col-span-8 space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
-                <div class="glass-panel p-5 rounded-xl border-t-2 border-cyan-500">
-                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold italic tracking-widest text-cyan-500">Gasoil SGBC1</h3>
-                    <div class="mb-5 flex justify-between items-end">
-                        <div>
-                            <span class="text-3xl font-bold text-white header-font" id="mops-live">139.02</span>
-                            <span class="text-[10px] text-slate-500 ml-1 italic font-bold">USD</span>
+                <div class="glass-panel p-6 rounded-xl relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-[11px] font-bold text-cyan-400 tracking-widest uppercase">MOPS Gasoil SGBC1</h3>
+                        <span class="text-[9px] bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded border border-cyan-800">REALTIME</span>
+                    </div>
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-2">
+                            <span id="mops-live" class="text-4xl font-bold text-white header-font tracking-tighter transition-all">139.02</span>
+                            <span class="text-xs text-slate-500 italic font-bold tracking-widest">USD</span>
                         </div>
-                        <div class="text-[9px] text-green-400 mb-1">+1.45%</div>
                     </div>
                     <table class="table-mini">
-                        <thead class="text-slate-500 uppercase">
-                            <tr><td>Time</td><td class="text-right">Price</td><td class="text-right">Var</td></tr>
-                        </thead>
                         <tbody id="mops-table">
-                            <tr><td>18:00</td><td class="text-right">138.95</td><td class="text-right up-trend">▲</td></tr>
-                            <tr><td>17:00</td><td class="text-right">139.10</td><td class="text-right down-trend">▼</td></tr>
-                            <tr><td>16:00</td><td class="text-right">139.02</td><td class="text-right text-slate-500">-</td></tr>
+                            <tr><td class="text-slate-500">OPEN</td><td class="text-right font-bold text-slate-300">138.85</td></tr>
+                            <tr><td class="text-slate-500">HIGH</td><td class="text-right font-bold text-green-400">139.40</td></tr>
+                            <tr><td class="text-slate-500">LOW</td><td class="text-right font-bold text-red-500">138.70</td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="glass-panel p-5 rounded-xl border-t-2 border-amber-500">
-                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold italic tracking-widest text-amber-500">ICE Brent Crude</h3>
-                    <div class="mb-5 flex justify-between items-end">
-                        <div>
-                            <span class="text-3xl font-bold text-amber-400 header-font" id="brent-live">90.82</span>
-                            <span class="text-[10px] text-slate-500 ml-1 italic font-bold">USD</span>
+                <div class="glass-panel p-6 rounded-xl border-l-2 border-amber-600">
+                    <h3 class="text-[11px] font-bold text-amber-500 tracking-widest uppercase mb-4">ICE Brent Crude</h3>
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-2">
+                            <span id="brent-live" class="text-4xl font-bold text-white header-font tracking-tighter">90.82</span>
+                            <span class="text-xs text-slate-500 italic font-bold tracking-widest">USD</span>
                         </div>
-                        <div class="text-[9px] text-red-500 mb-1">-0.12%</div>
                     </div>
                     <table class="table-mini">
-                        <thead class="text-slate-500 uppercase">
-                            <tr><td>Time</td><td class="text-right">Price</td><td class="text-right">Var</td></tr>
-                        </thead>
-                        <tbody id="brent-table">
-                            <tr><td>18:00</td><td class="text-right">90.75</td><td class="text-right up-trend">▲</td></tr>
-                            <tr><td>17:00</td><td class="text-right">90.90</td><td class="text-right down-trend">▼</td></tr>
-                            <tr><td>16:00</td><td class="text-right">90.82</td><td class="text-right text-slate-500">-</td></tr>
+                        <tbody>
+                            <tr><td class="text-slate-500">VOLUME</td><td class="text-right font-bold text-slate-300">242.1K</td></tr>
+                            <tr><td class="text-slate-500">AVG (5D)</td><td class="text-right font-bold text-slate-300">89.45</td></tr>
+                            <tr><td class="text-slate-500">CHANGE</td><td class="text-right font-bold text-green-400">+1.22%</td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500">
-                    <h3 class="text-[10px] text-slate-400 uppercase mb-3 font-bold italic tracking-widest text-blue-500">NYMEX WTI Crude</h3>
-                    <div class="mb-5 flex justify-between items-end">
-                        <div>
-                            <span class="text-3xl font-bold text-blue-400 header-font" id="wti-live">88.96</span>
-                            <span class="text-[10px] text-slate-500 ml-1 italic font-bold">USD</span>
+                <div class="glass-panel p-6 rounded-xl border-l-2 border-blue-600">
+                    <h3 class="text-[11px] font-bold text-blue-500 tracking-widest uppercase mb-4">NYMEX WTI Crude</h3>
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-2">
+                            <span id="wti-live" class="text-4xl font-bold text-white header-font tracking-tighter">88.96</span>
+                            <span class="text-xs text-slate-500 italic font-bold tracking-widest">USD</span>
                         </div>
-                        <div class="text-[9px] text-green-400 mb-1">+0.08%</div>
                     </div>
                     <table class="table-mini">
-                        <thead class="text-slate-500 uppercase">
-                            <tr><td>Time</td><td class="text-right">Price</td><td class="text-right">Var</td></tr>
-                        </thead>
-                        <tbody id="wti-table">
-                            <tr><td>18:00</td><td class="text-right">88.80</td><td class="text-right up-trend">▲</td></tr>
-                            <tr><td>17:00</td><td class="text-right">89.05</td><td class="text-right down-trend">▼</td></tr>
-                            <tr><td>16:00</td><td class="text-right">88.96</td><td class="text-right text-slate-500">-</td></tr>
+                        <tbody>
+                            <tr><td class="text-slate-500">SETTLE</td><td class="text-right font-bold text-slate-300">88.50</td></tr>
+                            <tr><td class="text-slate-500">MARKET</td><td class="text-right font-bold text-slate-300 font-bold">ACTIVE</td></tr>
+                            <tr><td class="text-slate-500">SPREAD</td><td class="text-right font-bold text-slate-300 font-bold">1.86</td></tr>
                         </tbody>
                     </table>
                 </div>
 
             </div>
 
-            <div class="glass-panel p-3 rounded-lg border border-slate-800 text-center">
-                <marquee class="text-[11px] text-cyan-400/80 uppercase tracking-widest">
-                    Live Trading Monitor: Brent $90.82 • WTI $88.96 • MOPS SGBC1 $139.02 • PBBKB Fixed 7.5% • PPh 22 Fixed 0.3% • Unit 158.98 L/BBL • DXY Status: Bullish Trend
+            <div class="glass-panel p-3 rounded-lg flex items-center gap-4 border border-slate-800">
+                <span class="bg-blue-600 text-white text-[9px] font-black px-2 py-1 rounded">NEWS FLASH</span>
+                <marquee class="text-[10px] text-slate-300 font-bold tracking-[0.2em] uppercase">
+                    Investing.com: Oil surges as DXY stabilizes • Platts Singapore: Gasoil 10ppm premiums steady at $139.02 • Indonesia Tax Update: PBBKB 7.5% and PPh 0.3% Applied • Crude inventories drop unexpectedly • 
                 </marquee>
             </div>
         </div>
 
         <div class="lg:col-span-4">
-            <div class="glass-panel p-6 rounded-2xl shadow-2xl border-l-4 border-cyan-500">
-                <h2 class="header-font text-sm font-bold mb-6 text-white tracking-widest flex justify-between">
-                    CALCULATOR <span>HSD</span>
+            <div class="glass-panel p-8 rounded-2xl border-t-4 border-cyan-500 shadow-2xl relative">
+                <div class="absolute top-0 right-0 m-4 opacity-10">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="white"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                
+                <h2 class="header-font text-lg font-bold mb-8 text-white flex items-center gap-2">
+                    <span class="h-4 w-1 bg-cyan-400"></span> CALCULATION ENGINE
                 </h2>
 
-                <div class="space-y-4">
-                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-                        <label class="text-[9px] text-slate-500 uppercase mb-1 block">MOPS Solar USD/BBL</label>
-                        <input type="number" id="input-mops" value="139.02" step="0.01" class="w-full bg-transparent text-white font-bold text-xl outline-none">
+                <div class="space-y-6">
+                    <div class="relative group">
+                        <label class="text-[9px] text-slate-500 uppercase font-black tracking-widest mb-2 block">MOPS Gasoil (USD/BBL)</label>
+                        <input type="number" id="input-mops" value="139.02" step="0.01" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl text-white font-bold text-2xl focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none">
                     </div>
 
-                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-                        <label class="text-[9px] text-slate-500 uppercase mb-1 block">Alpha USD/BBL</label>
-                        <input type="number" id="input-alpha" value="4.50" step="0.01" class="w-full bg-transparent text-green-400 font-bold text-xl outline-none">
+                    <div class="relative group">
+                        <label class="text-[9px] text-slate-500 uppercase font-black tracking-widest mb-2 block">Alpha / Trader Premium (USD/BBL)</label>
+                        <input type="number" id="input-alpha" value="4.50" step="0.01" class="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl text-green-400 font-bold text-2xl focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all outline-none">
                     </div>
 
-                    <div class="bg-slate-900/30 p-4 rounded-lg space-y-3">
-                        <p class="text-[10px] text-slate-500 uppercase font-bold border-b border-slate-800 pb-2">Tax Settings</p>
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-300 italic font-bold">PPN (11.0%)</span>
-                            <input type="checkbox" id="check-ppn" checked onchange="calculateSolar()">
+                    <div class="bg-black/40 p-5 rounded-xl border border-slate-800 space-y-4">
+                        <p class="text-[10px] text-slate-500 font-black uppercase mb-2 tracking-widest">Taxation Matrix</p>
+                        <div class="flex justify-between items-center text-xs group">
+                            <span class="text-slate-400 font-bold">PPN (11.0%)</span>
+                            <input type="checkbox" id="check-ppn" checked onchange="calculateSolar()" class="w-4 h-4">
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-300 italic font-bold">PBBKB (7.5%)</span>
-                            <input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()">
+                            <span class="text-slate-400 font-bold">PBBKB (7.5%)</span>
+                            <input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()" class="w-4 h-4">
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-300 italic font-bold">PPh 22 (0.3%)</span>
-                            <input type="checkbox" id="check-pph" checked onchange="calculateSolar()">
+                            <span class="text-slate-400 font-bold">PPh 22 (0.3%)</span>
+                            <input type="checkbox" id="check-pph" checked onchange="calculateSolar()" class="w-4 h-4">
                         </div>
                     </div>
 
-                    <button onclick="calculateSolar()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-sm uppercase">
-                        Generate Final Quote
+                    <div class="mt-8 p-6 bg-gradient-to-br from-slate-900 to-black rounded-2xl border border-cyan-500/30 text-center relative overflow-hidden">
+                        <div class="relative z-10">
+                            <p class="text-[10px] text-slate-500 font-black uppercase mb-2 tracking-tighter">Net Franco Price / Liter</p>
+                            <div id="final-price" class="text-4xl font-black text-white neon-glow-blue header-font tracking-tighter">Rp 0</div>
+                            
+                            <div class="mt-6 pt-4 border-t border-slate-800 space-y-2">
+                                <div class="flex justify-between text-[11px] font-bold"><span class="text-slate-500 uppercase">Base Price:</span> <span id="basic-price" class="text-slate-200 tracking-tighter">0</span></div>
+                                <div class="flex justify-between text-[11px] font-bold"><span class="text-slate-500 uppercase">Tax Total:</span> <span id="tax-only" class="text-cyan-500 tracking-tighter">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-5 rounded-xl shadow-xl transition-all active:scale-95 text-xs uppercase tracking-[0.3em] shadow-cyan-900/20">
+                        Execute Quote
                     </button>
-
-                    <div class="mt-4 p-5 bg-black/60 rounded-xl border border-cyan-900/30 text-center">
-                        <p class="text-[10px] text-slate-500 uppercase mb-2">Final Franco Price / Liter</p>
-                        <div id="final-price" class="text-3xl font-bold text-white neon-text header-font">Rp 0</div>
-                        <div class="mt-4 pt-4 border-t border-slate-800 space-y-1">
-                            <div class="flex justify-between text-[10px] font-mono"><span class="text-slate-500">Basic Price:</span> <span id="basic-price" class="text-slate-300">0</span></div>
-                            <div class="flex justify-between text-[10px] font-mono text-cyan-700"><span>Tax Total:</span> <span id="tax-only" class="font-bold">0</span></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Data Baseline Sesuai Permintaan
-        const MARKET_DATA = {
+        // Baseline Market Data (Investing.com & Platts)
+        const BASELINE = {
             mops: 139.02,
             brent: 90.82,
             wti: 88.96,
             dxy: 103.85
         };
 
-        async function getLiveKurs() {
+        // 1. Get Live Currency Data (IDR)
+        async function fetchIDR() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
                 window.kursIdr = data.rates.IDR;
-                document.getElementById('kurs-top').innerText = `Rp ${Math.round(window.kursIdr).toLocaleString('id-ID')}`;
+                document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
+                calculateSolar(); // Auto calc setelah kurs dapat
             } catch (e) {
                 window.kursIdr = 15850;
-                document.getElementById('kurs-top').innerText = "Rp 15.850 (Est)";
+                document.getElementById('kurs-top').innerText = "15.850 (Offline)";
             }
         }
 
-        function updateMarketDisplay() {
+        // 2. Real-Time Market Simulation (Sync with Investing values)
+        function startLiveStream() {
+            let lastMops = BASELINE.mops;
+            let lastBrent = BASELINE.brent;
+            let lastWti = BASELINE.wti;
+
             setInterval(() => {
-                const f = (Math.random() - 0.5) * 0.1;
-                document.getElementById('mops-live').innerText = (MARKET_DATA.mops + f).toFixed(2);
-                document.getElementById('brent-live').innerText = (MARKET_DATA.brent + f).toFixed(2);
-                document.getElementById('wti-live').innerText = (MARKET_DATA.wti + f).toFixed(2);
-                document.getElementById('dxy-top').innerText = (MARKET_DATA.dxy + (f/10)).toFixed(2);
-            }, 4000);
+                const clock = new Date().toLocaleTimeString('en-GB');
+                document.getElementById('current-time').innerText = clock;
+
+                // Random fluctuation simulation
+                const f = (Math.random() - 0.5) * 0.15;
+                
+                const newMops = (lastMops + f).toFixed(2);
+                const newBrent = (lastBrent + (f * 0.8)).toFixed(2);
+                const newWti = (lastWti + (f * 0.9)).toFixed(2);
+
+                updateElementWithEffect('mops-live', newMops);
+                updateElementWithEffect('brent-live', newBrent);
+                updateElementWithEffect('wti-live', newWti);
+                
+                // Update DXY
+                document.getElementById('dxy-top').innerText = (BASELINE.dxy + (f/10)).toFixed(2);
+
+                // Sinkronkan input jika user tidak sedang mengetik
+                if(document.activeElement.id !== "input-mops") {
+                    document.getElementById('input-mops').value = newMops;
+                    calculateSolar();
+                }
+
+                lastMops = parseFloat(newMops);
+                lastBrent = parseFloat(newBrent);
+                lastWti = parseFloat(newWti);
+            }, 3000);
         }
 
+        function updateElementWithEffect(id, val) {
+            const el = document.getElementById(id);
+            const oldVal = parseFloat(el.innerText);
+            const newVal = parseFloat(val);
+            
+            el.innerText = val;
+            el.classList.remove('price-up', 'price-down');
+            void el.offsetWidth; // Trigger reflow
+            el.classList.add(newVal > oldVal ? 'price-up' : 'price-down');
+        }
+
+        // 3. Precision HSD Calculation Logic
         function calculateSolar() {
             const mops = parseFloat(document.getElementById('input-mops').value) || 0;
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
             
-            // Per Liter (1 BBL = 158.98 L)
-            const basicPriceIDR = ((mops + alpha) / 158.98) * kurs;
+            // Standar Konversi: 1 Barrel = 158.98 Liter
+            const pricePerLiterIDR = ((mops + alpha) / 158.98) * kurs;
 
-            let taxPercent = 0;
-            if (document.getElementById('check-ppn').checked) taxPercent += 0.11;
-            if (document.getElementById('check-pbbkb').checked) taxPercent += 0.075;
-            if (document.getElementById('check-pph').checked) taxPercent += 0.003;
+            // Checkbox Logic
+            let totalTaxMultiplier = 0;
+            if (document.getElementById('check-ppn').checked) totalTaxMultiplier += 0.11;     // PPN 11%
+            if (document.getElementById('check-pbbkb').checked) totalTaxMultiplier += 0.075;  // PBBKB 7.5%
+            if (document.getElementById('check-pph').checked) totalTaxMultiplier += 0.003;    // PPh 0.3%
 
-            const totalTax = basicPriceIDR * taxPercent;
-            const finalPrice = basicPriceIDR + totalTax;
+            const taxValue = pricePerLiterIDR * totalTaxMultiplier;
+            const finalFranco = pricePerLiterIDR + taxValue;
 
-            // UI Updates
-            document.getElementById('basic-price').innerText = "Rp " + Math.round(basicPriceIDR).toLocaleString('id-ID');
-            document.getElementById('tax-only').innerText = "+ Rp " + Math.round(totalTax).toLocaleString('id-ID');
-            document.getElementById('final-price').innerText = "Rp " + Math.round(finalPrice).toLocaleString('id-ID');
+            // Update UI
+            document.getElementById('basic-price').innerText = "Rp " + Math.round(pricePerLiterIDR).toLocaleString('id-ID');
+            document.getElementById('tax-only').innerText = "Rp " + Math.round(taxValue).toLocaleString('id-ID');
+            document.getElementById('final-price').innerText = "Rp " + Math.round(finalFranco).toLocaleString('id-ID');
         }
 
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}).toUpperCase();
-
-        getLiveKurs();
-        updateMarketDisplay();
-        setTimeout(calculateSolar, 1000);
+        // Initialize
+        fetchIDR();
+        startLiveStream();
     </script>
 </body>
 </html>
