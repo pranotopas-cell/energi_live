@@ -21,21 +21,16 @@
             letter-spacing: -0.01em;
         }
         .header-font { font-family: 'Orbitron', sans-serif; }
-        
-        /* Font Mono dengan fitur Tabular Nums agar angka tidak goyang saat update */
         .mono { 
             font-family: 'JetBrains Mono', monospace; 
             font-variant-numeric: tabular-nums;
             font-feature-settings: "tnum";
         }
-
         .glass-panel { 
             background: var(--panel-bg); 
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
-
-        /* Animasi Flash untuk Update Harga */
         @keyframes flash-green {
             0% { background-color: rgba(34, 197, 94, 0.3); }
             100% { background-color: transparent; }
@@ -46,10 +41,8 @@
         }
         .price-up-flash { animation: flash-green 0.8s ease-out; }
         .price-down-flash { animation: flash-red 0.8s ease-out; }
-
         .table-mini { font-size: 11px; width: 100%; }
         .table-mini td { padding: 6px 4px; border-bottom: 1px solid #1e293b; }
-        
         .input-dark {
             background: #020617;
             border: 1px solid #334155;
@@ -63,13 +56,9 @@
         .input-dark:focus { border-color: var(--accent-blue); }
         .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
         .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
-        
         .news-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 8px; transition: all 0.2s; }
         .news-item:hover { border-left-color: var(--accent-blue); background: #1e293b; }
-        
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
-        /* Scrollbar Style */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--terminal-bg); }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
@@ -92,25 +81,25 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full lg:w-auto">
-            <div class="glass-panel p-2 rounded min-w-[135px]">
+            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">WTI CRUDE OIL</p>
-                <div class="flex justify-between items-center"><span id="live-wti" class="mono text-blue-400 font-bold text-xl">88.96</span><span id="trend-wti" class="trend-up">▲ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="live-wti" class="mono text-blue-400 font-bold text-xl">88.96</span><span id="trend-wti" class="trend-up">▲ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[135px]">
+            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">BRENT CRUDE OIL</p>
-                <div class="flex justify-between items-center"><span id="live-brent" class="mono text-orange-400 font-bold text-xl">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-xl">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[135px]">
+            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MURBAN CRUDE OIL</p>
-                <div class="flex justify-between items-center"><span id="live-murban" class="mono text-emerald-400 font-bold text-xl">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-xl">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[135px]">
+            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY INDEX</p>
-                <div class="flex justify-between items-center"><span id="dxy-top" class="mono text-amber-500 font-bold text-xl">103.85</span><span id="trend-dxy" class="trend-up">▲ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="dxy-top" class="mono text-amber-500 font-bold text-xl">103.85</span><span id="trend-dxy" class="trend-up">▲ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[135px]">
+            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[135px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">USD / IDR</p>
-                <div class="flex justify-between items-baseline"><span id="kurs-top" class="mono text-white font-bold text-xl">15.850</span><span class="text-[7px] text-slate-600">SPOT</span></div>
+                <div class="flex justify-between items-baseline px-1"><span id="kurs-top" class="mono text-white font-bold text-xl">15.850</span><span class="text-[7px] text-slate-600">SPOT</span></div>
             </div>
         </div>
     </header>
@@ -189,15 +178,10 @@
                     </div>
                 </div>
                 
-                <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex flex-col">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Harga Publish Pertamina</h3>
-                    <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold mb-4">
-                        <span class="text-slate-500">Live Database KSE</span>
-                        <span class="text-amber-500">Periode Sekarang</span>
-                    </div>
-                    
-                    <div class="mt-auto pt-2 border-t border-slate-800">
-                        <div class="grid grid-cols-4 gap-1" id="pertamina-prices">
+                <div class="flex flex-col gap-4">
+                    <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Harga Publish Pertamina</h3>
+                        <div class="grid grid-cols-4 gap-1 mt-4" id="pertamina-prices">
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
                                 <span class="block text-[7px] text-slate-500 font-bold uppercase">W-I</span>
                                 <span id="price-wil1" class="mono text-[9px] text-white">---</span>
@@ -213,6 +197,18 @@
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
                                 <span class="block text-[7px] text-slate-500 font-bold uppercase">W-IV</span>
                                 <span id="price-wil4" class="mono text-[9px] text-white">---</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 rounded border-l-2 border-indigo-500 flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Correlation Matrix</h3>
+                        <div class="space-y-2 mt-2">
+                            <div class="flex justify-between text-[9px] mono uppercase">
+                                <span class="text-slate-500">Crude vs IDR</span>
+                                <span class="text-indigo-400 font-bold">84.2%</span>
+                            </div>
+                            <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-indigo-500" style="width: 84%"></div>
                             </div>
                         </div>
                     </div>
@@ -235,7 +231,18 @@
             <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">System Status</h4>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center text-[11px]"><span>Firebase Stream</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></span></div>
+                    <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
+                        <span class="text-slate-400">Firebase Stream</span>
+                        <div class="flex items-center gap-2"><span class="text-green-500 font-bold">ONLINE</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span></div>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
+                        <span class="text-slate-400">Exchange API</span>
+                        <div class="flex items-center gap-2"><span class="text-cyan-500 font-bold">STABLE</span><span class="w-2 h-2 bg-cyan-500 rounded-full"></span></div>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
+                        <span class="text-slate-400">Market Feed</span>
+                        <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">ACTIVE</span><span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span></div>
+                    </div>
                     <div class="flex justify-between items-center text-[11px]"><span>Latency</span><span class="mono text-blue-400 text-[10px]">12ms</span></div>
                 </div>
             </div>
@@ -272,7 +279,6 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 const harga = data.sekarang || {};
-                
                 document.getElementById('price-wil1').innerText = harga.wilayah1 ? harga.wilayah1.toLocaleString('id-ID') : "---";
                 document.getElementById('price-wil2').innerText = harga.wilayah2 ? harga.wilayah2.toLocaleString('id-ID') : "---";
                 document.getElementById('price-wil3').innerText = harga.wilayah3 ? harga.wilayah3.toLocaleString('id-ID') : "---";
@@ -300,41 +306,31 @@
         window.calculateSolar = function() {
             const mopsInput = document.getElementById('input-mops');
             if (!mopsInput) return;
-
             const mops = parseFloat(mopsInput.value) || 0;
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
-            
             const baseL = ((mops + alpha) / 158.98) * kurs;
-            
             let taxM = 0;
             if (document.getElementById('check-ppn').checked) taxM += 0.11;
             if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
             if (document.getElementById('check-pph').checked) taxM += 0.003;
-            
             const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
             const containerEl = document.getElementById('final-price-container');
-            
             if (priceEl) {
-                // Efek Visual Trading Pro (Flash & Color)
                 containerEl.classList.remove('price-up-flash', 'price-down-flash');
-                
                 if (finalP > lastPrice && lastPrice !== 0) {
-                    priceEl.style.color = '#4ade80'; // Hijau Cerah
+                    priceEl.style.color = '#4ade80';
                     containerEl.classList.add('price-up-flash');
                 } else if (finalP < lastPrice && lastPrice !== 0) {
-                    priceEl.style.color = '#f87171'; // Merah Cerah
+                    priceEl.style.color = '#f87171';
                     containerEl.classList.add('price-down-flash');
                 }
-                
                 priceEl.innerText = "Rp " + finalP.toLocaleString('id-ID');
                 lastPrice = finalP;
             }
-
             document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
             document.getElementById('tax-only').innerText = "Rp " + Math.round(baseL * taxM).toLocaleString('id-ID');
-
             const currentData = smallChart.w.config.series[0].data;
             const newData = [...currentData, finalP].slice(-25);
             smallChart.updateSeries([{ data: newData }], false);
@@ -376,13 +372,11 @@
                     if(el) el.innerText = window.marketData[key];
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
-
                 const bull = Math.floor(Math.random() * 30) + 50; 
                 document.getElementById('sentiment-bull').style.width = bull + '%';
                 document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
                 document.getElementById('txt-bull').innerText = `Bullish ${bull}%`;
                 document.getElementById('txt-bear').innerText = `Bearish ${100 - bull}%`;
-
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = window.marketData[syncType];
@@ -411,5 +405,3 @@
     </script>
 </body>
 </html>
-
-
