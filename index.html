@@ -80,27 +80,31 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full lg:w-auto">
-            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 w-full lg:w-auto">
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MOPS S’PORE 10PPM</p>
+                <div class="flex justify-between items-center px-1"><span id="live-mops" class="mono text-yellow-400 font-bold text-lg">104.50</span><span id="trend-mops" class="trend-up">▲ 0.00</span></div>
+            </div>
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">WTI CRUDE OIL</p>
-                <div class="flex justify-between items-center px-1"><span id="live-wti" class="mono text-blue-400 font-bold text-xl">88.96</span><span id="trend-wti" class="trend-up">▲ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="live-wti" class="mono text-blue-400 font-bold text-lg">88.96</span><span id="trend-wti" class="trend-up">▲ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">BRENT CRUDE OIL</p>
-                <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-xl">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-lg">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MURBAN CRUDE OIL</p>
-                <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-xl">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-lg">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[135px] text-center">
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY INDEX</p>
-                <div class="flex justify-between items-center px-1"><span id="dxy-top" class="mono text-amber-500 font-bold text-xl">103.85</span><span id="trend-dxy" class="trend-up">▲ 0.00</span></div>
+                <div class="flex justify-between items-center px-1"><span id="dxy-top" class="mono text-amber-500 font-bold text-lg">103.85</span><span id="trend-dxy" class="trend-up">▲ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[135px] text-center">
+            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">USD / IDR</p>
                 <div class="flex justify-between items-center px-1">
-                    <span id="kurs-top" class="mono text-white font-bold text-xl">15.850</span>
+                    <span id="kurs-top" class="mono text-white font-bold text-lg">15.850</span>
                     <span id="trend-idr" class="trend-up">▲ 0</span>
                 </div>
             </div>
@@ -118,16 +122,18 @@
         <div class="lg:col-span-9 space-y-6">
             <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500" id="main-quote-panel">
                 <div class="flex flex-wrap items-end gap-6">
-                    <div class="flex-1 min-w-[180px]">
+                    <div class="flex-1 min-w-[220px]">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
                         <div class="flex gap-2">
-                            <select id="market-sync" onchange="window.calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">Mops Singapore</option>
-                                <option value="brent">Brent crude Oil</option>
+                            <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
+                                <option value="mops">Mops S'pore 10ppm</option>
+                                <option value="means">Means Plate (10D Avg)</option>
+                                <option value="brent">Brent Crude Oil</option>
                                 <option value="wti">WTI Crude Oil</option>
+                                <option value="murban">Murban Crude Oil</option>
                                 <option value="manual">Manual</option>
                             </select>
-                            <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
+                            <input type="number" id="input-mops" value="104.50" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
                         </div>
                     </div>
                     <div class="w-28">
@@ -149,12 +155,19 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>MOPS Gasoil Singapore (SGBc1)</span>
-                        <span class="text-cyan-500 animate-pulse">● Live</span>
+                        <span>Means Plate Gasoil (10D Avg)</span>
+                        <span class="text-yellow-500 animate-pulse">● Live Avg</span>
                     </h3>
-                    <div class="text-2xl font-bold mono mb-4" id="mops-live">139.02</div>
+                    <div class="text-2xl font-bold mono mb-4 text-yellow-400" id="means-plate-val">0.00</div>
                     <div class="max-h-[120px] overflow-y-auto">
                         <table class="table-mini text-slate-400 mono">
+                            <thead>
+                                <tr class="text-[8px] text-slate-500 uppercase">
+                                    <td class="pb-2">Date/Time</td>
+                                    <td class="text-right pb-2">MOPS 10ppm</td>
+                                    <td class="text-right pb-2">Chg</td>
+                                </tr>
+                            </thead>
                             <tbody id="mops-history"></tbody>
                         </table>
                     </div>
@@ -289,12 +302,12 @@
             }
         });
 
-        const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
+        const BASELINE = { mops: 104.50, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.marketData = { ...BASELINE };
         window.kursIdr = 15850;
         let lastPrice = 0;
-        let mopsLast = 139.02;
         let lastKurs = 15850;
+        let mopsHistoryData = [104.50, 103.80, 105.10, 104.90, 104.20, 103.95, 104.30, 105.00, 104.75, 104.50];
 
         var smallChartOptions = {
             series: [{ name: 'Price', data: [] }],
@@ -306,6 +319,17 @@
         };
         var smallChart = new ApexCharts(document.querySelector("#small-chart"), smallChartOptions);
         smallChart.render();
+
+        window.updateBaseInput = function() {
+            const syncType = document.getElementById('market-sync').value;
+            if(syncType === "means") {
+                const avg = mopsHistoryData.reduce((a,b) => a+b, 0) / mopsHistoryData.length;
+                document.getElementById('input-mops').value = avg.toFixed(2);
+            } else if (syncType !== "manual") {
+                document.getElementById('input-mops').value = window.marketData[syncType];
+            }
+            window.calculateSolar();
+        };
 
         window.calculateSolar = function() {
             const mopsInput = document.getElementById('input-mops');
@@ -321,6 +345,7 @@
             const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
             const containerEl = document.getElementById('final-price-container');
+            
             if (priceEl) {
                 containerEl.classList.remove('price-up-flash', 'price-down-flash');
                 if (finalP > lastPrice && lastPrice !== 0) {
@@ -350,66 +375,66 @@
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
                 const newKurs = data.rates.IDR;
-                
-                // Update Indikator Tren Kurs
                 const trendEl = document.getElementById('trend-idr');
                 const diff = newKurs - lastKurs;
-                
                 if (diff > 0) {
                     trendEl.className = "trend-up";
                     trendEl.innerText = `▲ ${Math.abs(Math.round(diff))}`;
                 } else if (diff < 0) {
                     trendEl.className = "trend-down";
                     trendEl.innerText = `▼ ${Math.abs(Math.round(diff))}`;
-                } else {
-                    trendEl.innerText = `― 0`;
                 }
-
                 window.kursIdr = newKurs;
                 lastKurs = newKurs;
                 document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
                 window.calculateSolar();
-            } catch (e) { 
-                console.error("Kurs Fetch Failed", e);
-            }
+            } catch (e) { console.error("Kurs Fetch Failed", e); }
         }
 
-        function updateMopsHistory(price) {
+        function updateMopsHistoryUI() {
             const historyTable = document.getElementById('mops-history');
-            const now = new Date();
-            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
-            const diff = (price - mopsLast).toFixed(2);
-            const row = `<tr><td>${timeStr}</td><td class="text-right">${price.toFixed(2)}</td><td class="text-right ${diff >= 0 ? 'text-green-500' : 'text-red-500'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}</td></tr>`;
-            historyTable.insertAdjacentHTML('afterbegin', row);
-            if(historyTable.rows.length > 20) historyTable.deleteRow(-1);
-            mopsLast = price;
+            const avgEl = document.getElementById('means-plate-val');
+            historyTable.innerHTML = '';
+            
+            let total = 0;
+            mopsHistoryData.forEach((price, i) => {
+                total += price;
+                const prev = mopsHistoryData[i+1] || price;
+                const diff = (price - prev).toFixed(2);
+                const timeStr = i === 0 ? "LIVE" : `${i}D AGO`;
+                const row = `<tr><td>${timeStr}</td><td class="text-right font-bold">${price.toFixed(2)}</td><td class="text-right ${diff >= 0 ? 'text-green-500' : 'text-red-500'} text-[9px]">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}</td></tr>`;
+                historyTable.insertAdjacentHTML('beforeend', row);
+            });
+            
+            const avg = total / mopsHistoryData.length;
+            avgEl.innerText = avg.toFixed(2);
         }
 
         function runLive() {
-            // Fetch Kurs berkala setiap 1 menit (karena data API biasanya update per jam)
             setInterval(fetchIDR, 60000);
-
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
                 ['mops', 'brent', 'wti', 'murban', 'dxy'].forEach(key => {
                     const change = (Math.random() - 0.5) * 0.15;
                     window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
-                    const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`) || document.getElementById(`${key}-live`);
+                    const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`);
                     if(el) el.innerText = window.marketData[key];
-                    if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
                 
+                // Simulate MOPS 10D data shift occasionally
+                if(Math.random() > 0.8) {
+                    mopsHistoryData.unshift(window.marketData.mops);
+                    mopsHistoryData.pop();
+                    updateMopsHistoryUI();
+                }
+
                 const bull = Math.floor(Math.random() * 30) + 50; 
                 document.getElementById('sentiment-bull').style.width = bull + '%';
                 document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
                 document.getElementById('txt-bull').innerText = `Bullish ${bull}%`;
                 document.getElementById('txt-bear').innerText = `Bearish ${100 - bull}%`;
                 
-                const syncType = document.getElementById('market-sync').value;
-                if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
-                    document.getElementById('input-mops').value = window.marketData[syncType];
-                    window.calculateSolar();
-                }
+                window.updateBaseInput();
             }, 3000);
         }
 
@@ -429,8 +454,7 @@
             document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
         }
 
-        updateDate(); fetchIDR(); renderNews(); runLive(); window.calculateSolar();
+        updateDate(); fetchIDR(); renderNews(); updateMopsHistoryUI(); runLive(); window.calculateSolar();
     </script>
-</body>
+</body> 
 </html>
-
