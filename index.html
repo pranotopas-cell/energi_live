@@ -42,7 +42,7 @@
         .input-dark:focus { border-color: var(--accent-blue); }
         .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
         .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
-        .news-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 12px; transition: all 0.2s; }
+        .news-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 8px; transition: all 0.2s; }
         .news-item:hover { border-left-color: var(--accent-blue); background: #1e293b; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
@@ -89,7 +89,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • LIVE MARKET SYNC: ACTIVE • MOPS SINGAPORE GASOIL 10PPM TRENDING NEUTRAL • B40 DOMESTIC INVENTORY STATUS: OPTIMAL • 
+            • UPDATE HARGA MOPS GASOIL 10PPM: STABIL • IMPLEMENTASI B40 NASIONAL TERUS DIPANTAU • STOK TANKI TERMINAL DOMESTIK: AMAN • MONITORING VOLATILITAS HARGA MINYAK DUNIA •
         </marquee>
     </div>
 
@@ -99,7 +99,7 @@
             <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500">
                 <div class="flex flex-wrap items-end gap-6">
                     <div class="flex-1 min-w-[180px]">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
                                 <option value="mops">Mops Singapore</option>
@@ -107,7 +107,7 @@
                                 <option value="wti">WTI Crude Oil</option>
                                 <option value="manual">Manual</option>
                             </select>
-                            <input type="number" id="input-mops" value="139.02" step="0.01" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
+                            <input type="number" id="input-mops" value="139.02" step="0.01" oninput="calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
                         </div>
                     </div>
                     <div class="w-28">
@@ -129,13 +129,16 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>MOPS Singapore</span>
+                        <span>MOPS Gasoil History</span>
                         <span class="text-cyan-500 animate-pulse">● Live</span>
                     </h3>
                     <div class="text-2xl font-bold mono mb-4" id="mops-live">139.02</div>
-                    <table class="table-mini text-slate-400 mono">
-                        <tbody id="mops-history"></tbody>
-                    </table>
+                    <div class="max-h-[120px] overflow-y-auto">
+                        <table class="table-mini text-slate-400 mono">
+                            <tbody id="mops-history">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Price Breakdown</h3>
@@ -147,8 +150,8 @@
                 <div class="glass-panel p-4 rounded border-l-2 border-amber-500">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
                     <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
-                        <div class="h-full bg-green-500" style="width: 65%"></div>
-                        <div class="h-full bg-red-500" style="width: 35%"></div>
+                        <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
+                        <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
                     </div>
                     <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold">
                         <span class="text-green-500">Bullish 65%</span>
@@ -163,7 +166,7 @@
                     <div id="global-news" class="space-y-1"></div>
                 </div>
                 <div>
-                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Domestic HSD Monitor</h4>
+                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Monitor HSD Domestik</h4>
                     <div id="domestic-news" class="space-y-1"></div>
                 </div>
             </div>
@@ -174,7 +177,7 @@
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">Terminal Status</h4>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center text-[11px]"><span>Feed Connection</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></span></div>
-                    <div class="flex justify-between items-center text-[11px]"><span>API Latency</span><span class="mono text-blue-400 text-[10px]">14ms</span></div>
+                    <div class="flex justify-between items-center text-[11px]"><span>API Latency</span><span class="mono text-blue-400 text-[10px]">12ms</span></div>
                 </div>
             </div>
 
@@ -186,10 +189,6 @@
                 <p class="text-[9px] text-slate-500 font-bold uppercase mb-2 px-1">Trend Index (IDR)</p>
                 <div id="small-chart"></div>
             </div>
-
-            <div class="glass-panel p-3 rounded text-[9px] text-slate-500 mono leading-relaxed italic">
-                ESTIMATION ONLY. UNIT: IDR/LTR.
-            </div>
         </div>
     </div>
 
@@ -198,15 +197,11 @@
         window.marketData = { ...BASELINE };
         window.kursIdr = 15850;
         let lastPrice = 0;
+        let mopsLast = 139.02;
 
-        // Optimized Small Chart
         var smallChartOptions = {
             series: [{ name: 'Price', data: [] }],
-            chart: { 
-                type: 'area', height: 120, 
-                sparkline: { enabled: true },
-                animations: { enabled: true, easing: 'linear', dynamicAnimation: { speed: 800 } }
-            },
+            chart: { type: 'area', height: 120, sparkline: { enabled: true }, animations: { enabled: true, easing: 'linear', dynamicAnimation: { speed: 800 } } },
             stroke: { curve: 'smooth', width: 2 },
             fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0 } },
             colors: ['#06b6d4'],
@@ -231,8 +226,20 @@
         }
 
         const news = {
-            global: [{ t: "Gasoil crack spreads widen in Asian markets.", u: "#" }, { t: "OPEC output cut extended.", u: "#" }],
-            domestic: [{ t: "Pertamina HSD B35 supply remains stable.", u: "#" }, { t: "New distribution hub in Kalimantan.", u: "#" }]
+            global: [
+                { t: "Gasoil crack spreads widen in Asian markets.", u: "#" },
+                { t: "OPEC output cut extended until end of year.", u: "#" },
+                { t: "US SPR sees slight draw as refinery runs increase.", u: "#" },
+                { t: "China demand recovery hits monthly high.", u: "#" }
+            ],
+            domestic: [
+                { t: "Pertamina jamin stok HSD B35 aman selama periode Lebaran.", u: "#" },
+                { t: "Kementerian ESDM tinjau aturan impor solar industri.", u: "#" },
+                { t: "Hub distribusi baru dibuka di Kalimantan Timur guna dukung IKN.", u: "#" },
+                { t: "Update harga BBM Non-Subsidi per April 2026.", u: "#" },
+                { t: "Sektor pertambangan tingkatkan konsumsi solar industri 15%.", u: "#" },
+                { t: "Proyeksi implementasi B40 akan dipercepat semester ini.", u: "#" }
+            ]
         };
 
         function renderNews() {
@@ -240,20 +247,40 @@
             document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300">${n.t}</a></div>`).join('');
         }
 
+        function updateMopsHistory(price) {
+            const historyTable = document.getElementById('mops-history');
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
+            
+            const diff = (price - mopsLast).toFixed(2);
+            const icon = diff >= 0 ? '▲' : '▼';
+            const colorClass = diff >= 0 ? 'text-green-500' : 'text-red-500';
+            
+            const row = `<tr><td>${timeStr}</td><td class="text-right">${price.toFixed(2)}</td><td class="text-right ${colorClass}">${icon} ${Math.abs(diff)}</td></tr>`;
+            historyTable.insertAdjacentHTML('afterbegin', row);
+            
+            if(historyTable.rows.length > 20) historyTable.deleteRow(-1);
+            mopsLast = price;
+        }
+
         function runLive() {
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
+                
                 const keys = ['mops', 'brent', 'wti', 'murban', 'dxy'];
                 keys.forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.12;
+                    const change = (Math.random() - 0.5) * 0.15;
                     window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`) || document.getElementById(`${key}-live`);
                     if(el) el.innerText = window.marketData[key];
+                    
                     const trendEl = document.getElementById(`trend-${key}`);
                     if(trendEl) {
                         trendEl.innerText = `${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(2)}`;
                         trendEl.className = change >= 0 ? 'trend-up' : 'trend-down';
                     }
+
+                    if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
 
                 const syncType = document.getElementById('market-sync').value;
@@ -286,8 +313,7 @@
             document.getElementById('tax-only').innerText = "Rp " + Math.round(taxT).toLocaleString('id-ID');
             priceEl.innerText = "Rp " + finalP.toLocaleString('id-ID');
 
-            // Update Sidebar Chart
-            const newData = [...smallChart.w.config.series[0].data, finalP].slice(-20);
+            const newData = [...smallChart.w.config.series[0].data, finalP].slice(-25);
             smallChart.updateSeries([{ data: newData }]);
         }
 
