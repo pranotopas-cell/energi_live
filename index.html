@@ -64,36 +64,36 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full lg:w-auto">
-            <div class="glass-panel p-2 rounded min-w-[110px]">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">WTI Crude</p>
+            <div class="glass-panel p-2 rounded min-w-[115px]">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE OIL</p>
                 <div class="flex justify-between items-center">
                     <span id="live-wti" class="mono text-blue-400 font-bold text-xs">88.96</span>
                     <span id="trend-wti" class="trend-up">▲ 0.00</span>
                 </div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[110px]">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">Brent Oil</p>
+            <div class="glass-panel p-2 rounded min-w-[115px]">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE OILl</p>
                 <div class="flex justify-between items-center">
                     <span id="live-brent" class="mono text-orange-400 font-bold text-xs">90.82</span>
                     <span id="trend-brent" class="trend-down">▼ 0.00</span>
                 </div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[110px]">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">Murban</p>
+            <div class="glass-panel p-2 rounded min-w-[115px]">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">URBAN CRUDE OIL</p>
                 <div class="flex justify-between items-center">
                     <span id="live-murban" class="mono text-emerald-400 font-bold text-xs">91.45</span>
                     <span id="trend-murban" class="trend-up">▲ 0.00</span>
                 </div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[110px]">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">DXY Index</p>
+            <div class="glass-panel p-2 rounded min-w-[115px]">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">DXY INDEX</p>
                 <div class="flex justify-between items-center">
                     <span id="dxy-top" class="mono text-amber-500 font-bold text-xs">103.85</span>
                     <span id="trend-dxy" class="trend-up">▲ 0.00</span>
                 </div>
             </div>
-            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[110px]">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">USD / IDR</p>
+            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[115px]">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">USD / IDR</p>
                 <div class="flex justify-between items-baseline">
                     <span id="kurs-top" class="mono text-white font-bold text-xs">15.850</span>
                     <span class="text-[7px] text-slate-600">SPOT</span>
@@ -104,7 +104,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • LIVE MARKET SYNC: ACTIVE • MOPS SINGAPORE GASOIL 10PPM TRENDING NEUTRAL • B35 DOMESTIC INVENTORY STATUS: OPTIMAL • MONITORING GLOBAL CRUDE VOLATILITY • ANALYST: WATCH RESISTANCE AT $91.50 FOR BRENT • 
+            • LIVE MARKET SYNC: ACTIVE • MOPS SINGAPORE GASOIL 10PPM TRENDING NEUTRAL • B40 DOMESTIC INVENTORY STATUS: OPTIMAL • MONITORING GLOBAL CRUDE VOLATILITY • ANALYST: WATCH RESISTANCE AT $91.50 FOR BRENT • 
         </marquee>
     </div>
 
@@ -118,10 +118,10 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">LINK MOPS SG</option>
-                                <option value="brent">LINK BRENT</option>
-                                <option value="wti">LINK WTI</option>
-                                <option value="manual">MANUAL</option>
+                                <option value="mops">Mops Singapore</option>
+                                <option value="brent">Brent crude Oil</option>
+                                <option value="wti">WTI Crude Oil</option>
+                                <option value="manual">Manual</option>
                             </select>
                             <input type="number" id="input-mops" value="139.02" step="0.01" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
                         </div>
@@ -305,6 +305,7 @@
     </script>
 </body>
 </html>
+
 
 
 
