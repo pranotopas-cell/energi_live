@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL MONITORING</title>
+    <title>HSD TERMINAL MONITORING - SGBC1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@
             <div>
                 <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
                     CRUDE OIL<span class="text-cyan-500">MONITORING</span>
-                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">KHATULISTIWA SINAR ENERGI LIVE CRUDE OIL MONITOR </span>
+                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">KSE LIVE CRUDE OIL MONITORING SYSTEM </span>
                 </h1>
             </div>
             <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
@@ -81,8 +81,8 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 w-full lg:w-auto">
-            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MOPS S’PORE 10PPM</p>
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-yellow-500">
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">SGBC1 (Platt 10ppm)</p>
                 <div class="flex justify-between items-center px-1"><span id="live-mops" class="mono text-yellow-400 font-bold text-lg">104.50</span><span id="trend-mops" class="trend-up">▲ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center">
@@ -93,9 +93,9 @@
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">BRENT CRUDE OIL</p>
                 <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-lg">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[120px] text-center">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MURBAN CRUDE OIL</p>
-                <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-lg">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
+            <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-emerald-500">
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MEANS PLATE (10D)</p>
+                <div class="flex justify-between items-center px-1"><span id="top-means" class="mono text-emerald-400 font-bold text-lg">104.25</span><span class="text-[8px] text-slate-500">AVG</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY INDEX</p>
@@ -113,7 +113,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="4" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • SINERGI MENGALIRKAN ENERGI • PT. KHATULISTIWA SINAR ENERGI • MONITORING WTI CRUDE OIL • MONITORING BRENT CRUDE OIL • MONITORING HARGA PUBLISH PERTAMINA PATRA NIAGA • ANALISIS MOPS GASOIL 10PPM •
+            • SINERGI MENGALIRKAN ENERGI • MONITORING SGBC1 NYMEX SINGAPORE PLATT 10PPM • RATA-RATA HARGA 10 HARI TERAKHIR (MEANS PLATE) • HARGA PUBLISH PERTAMINA PATRA NIAGA LIVE UPDATE •
         </marquee>
     </div>
 
@@ -126,19 +126,22 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">Mops S'pore 10ppm</option>
+                                <option value="mops">SGBC1 (Platt 10ppm)</option>
                                 <option value="means">Means Plate (10D Avg)</option>
                                 <option value="brent">Brent Crude Oil</option>
                                 <option value="wti">WTI Crude Oil</option>
-                                <option value="murban">Murban Crude Oil</option>
-                                <option value="manual">Manual</option>
+                                <option value="manual">Manual Input</option>
                             </select>
                             <input type="number" id="input-mops" value="104.50" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
                         </div>
                     </div>
-                    <div class="w-28">
+                    <div class="w-44">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium US/BBL</label>
-                        <input type="number" id="input-alpha" value="2.50" step="0.01" oninput="window.calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
+                        <select id="input-alpha" onchange="window.calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500 bg-slate-800 border-none">
+                            <option value="2.0">LOW (2.0)</option>
+                            <option value="3.5" selected>NORMAL (3.5)</option>
+                            <option value="5.0">HIGH (5.0)</option>
+                        </select>
                     </div>
                     <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
                         <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PPN</label></div>
@@ -155,17 +158,17 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>Means Plate Gasoil (10D Avg)</span>
-                        <span class="text-yellow-500 animate-pulse">● Live Avg</span>
+                        <span>Means Plate (10-Day Avg)</span>
+                        <span class="text-yellow-500 animate-pulse">● SGBC1 Live</span>
                     </h3>
                     <div class="text-2xl font-bold mono mb-4 text-yellow-400" id="means-plate-val">0.00</div>
                     <div class="max-h-[120px] overflow-y-auto">
                         <table class="table-mini text-slate-400 mono">
                             <thead>
                                 <tr class="text-[8px] text-slate-500 uppercase">
-                                    <td class="pb-2">Date/Time</td>
-                                    <td class="text-right pb-2">MOPS 10ppm</td>
-                                    <td class="text-right pb-2">Chg</td>
+                                    <td class="pb-2">Reference</td>
+                                    <td class="text-right pb-2">SGBC1 ($)</td>
+                                    <td class="text-right pb-2">Status</td>
                                 </tr>
                             </thead>
                             <tbody id="mops-history"></tbody>
@@ -181,8 +184,20 @@
                             <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Tax Component</span><span id="tax-only" class="mono text-cyan-600 font-bold">Rp 0</span></div>
                         </div>
                     </div>
-                    <div class="glass-panel p-4 rounded flex-1 border-l-2 border-emerald-500">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
+                    <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Harga Publish Pertamina</h3>
+                        <div class="grid grid-cols-4 gap-1 mt-4" id="pertamina-prices">
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800"><span class="block text-[7px] text-slate-500 font-bold uppercase">W-I</span><span id="price-wil1" class="mono text-[9px] text-white">---</span></div>
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800"><span class="block text-[7px] text-slate-500 font-bold uppercase">W-II</span><span id="price-wil2" class="mono text-[9px] text-white">---</span></div>
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800"><span class="block text-[7px] text-slate-500 font-bold uppercase">W-III</span><span id="price-wil3" class="mono text-[9px] text-white">---</span></div>
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800"><span class="block text-[7px] text-slate-500 font-bold uppercase">W-IV</span><span id="price-wil4" class="mono text-[9px] text-white">---</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-4">
+                    <div class="glass-panel p-4 rounded border-l-2 border-emerald-500 flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Sentiment Market</h3>
                         <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
                             <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
                             <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
@@ -192,39 +207,15 @@
                             <span class="text-red-500" id="txt-bear">Bearish 35%</span>
                         </div>
                     </div>
-                </div>
-                
-                <div class="flex flex-col gap-4">
-                    <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex-1">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Harga Publish Pertamina</h3>
-                        <div class="grid grid-cols-4 gap-1 mt-4" id="pertamina-prices">
-                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-I</span>
-                                <span id="price-wil1" class="mono text-[9px] text-white">---</span>
-                            </div>
-                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-II</span>
-                                <span id="price-wil2" class="mono text-[9px] text-white">---</span>
-                            </div>
-                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-III</span>
-                                <span id="price-wil3" class="mono text-[9px] text-white">---</span>
-                            </div>
-                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-IV</span>
-                                <span id="price-wil4" class="mono text-[9px] text-white">---</span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="glass-panel p-4 rounded border-l-2 border-indigo-500 flex-1">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Correlation Matrix</h3>
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Correlation SGBC1/IDR</h3>
                         <div class="space-y-2 mt-2">
                             <div class="flex justify-between text-[9px] mono uppercase">
-                                <span class="text-slate-500">Crude vs IDR</span>
-                                <span class="text-indigo-400 font-bold">84.2%</span>
+                                <span class="text-slate-500">Stability</span>
+                                <span class="text-indigo-400 font-bold">88.2%</span>
                             </div>
                             <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-indigo-500" style="width: 84%"></div>
+                                <div class="h-full bg-indigo-500" style="width: 88%"></div>
                             </div>
                         </div>
                     </div>
@@ -245,30 +236,26 @@
 
         <div class="lg:col-span-3 space-y-4">
             <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">System Status</h4>
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">SGBC1 System Status</h4>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
-                        <span class="text-slate-400">Firebase Stream</span>
-                        <div class="flex items-center gap-2"><span class="text-green-500 font-bold">ONLINE</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span></div>
+                        <span class="text-slate-400">Platt Feed</span>
+                        <div class="flex items-center gap-2"><span class="text-green-500 font-bold">ACTIVE</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span></div>
                     </div>
                     <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
                         <span class="text-slate-400">Exchange API</span>
                         <div class="flex items-center gap-2"><span class="text-cyan-500 font-bold">STABLE</span><span class="w-2 h-2 bg-cyan-500 rounded-full"></span></div>
                     </div>
-                    <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
-                        <span class="text-slate-400">Market Feed</span>
-                        <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">ACTIVE</span><span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span></div>
-                    </div>
-                    <div class="flex justify-between items-center text-[11px]"><span>Latency</span><span class="mono text-blue-400 text-[10px]">12ms</span></div>
+                    <div class="flex justify-between items-center text-[11px]"><span>Latency</span><span class="mono text-blue-400 text-[10px]">8ms</span></div>
                 </div>
             </div>
 
             <button onclick="window.calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-3 rounded text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                Refresh Quote
+                Refresh Calculation
             </button>
 
             <div class="glass-panel p-2 rounded-lg">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-2 px-1">Trend Index (IDR)</p>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-2 px-1">Trend Index SGBC1</p>
                 <div id="small-chart"></div>
             </div>
         </div>
@@ -302,20 +289,19 @@
             }
         });
 
-        const BASELINE = { mops: 104.50, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
-        window.marketData = { ...BASELINE };
+        // Initialize SGBC1 History (10 Days)
+        let sgbc1History = [104.50, 103.85, 105.10, 104.90, 104.20, 103.95, 104.30, 105.00, 104.75, 104.50];
+        window.marketData = { mops: 104.50, brent: 90.82, wti: 88.96, dxy: 103.85 };
         window.kursIdr = 15850;
         let lastPrice = 0;
-        let lastKurs = 15850;
-        let mopsHistoryData = [104.50, 103.80, 105.10, 104.90, 104.20, 103.95, 104.30, 105.00, 104.75, 104.50];
 
         var smallChartOptions = {
-            series: [{ name: 'Price', data: [] }],
-            chart: { type: 'area', height: 120, sparkline: { enabled: true }, animations: { enabled: true, easing: 'linear', dynamicAnimation: { speed: 800 } } },
+            series: [{ name: 'SGBC1', data: sgbc1History }],
+            chart: { type: 'area', height: 120, sparkline: { enabled: true }, animations: { enabled: true, easing: 'linear' } },
             stroke: { curve: 'smooth', width: 2 },
             fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0 } },
-            colors: ['#06b6d4'],
-            tooltip: { theme: 'dark', x: { show: false }, y: { formatter: (v) => "Rp " + v.toLocaleString() } }
+            colors: ['#eab308'],
+            tooltip: { theme: 'dark', x: { show: false } }
         };
         var smallChart = new ApexCharts(document.querySelector("#small-chart"), smallChartOptions);
         smallChart.render();
@@ -323,8 +309,10 @@
         window.updateBaseInput = function() {
             const syncType = document.getElementById('market-sync').value;
             if(syncType === "means") {
-                const avg = mopsHistoryData.reduce((a,b) => a+b, 0) / mopsHistoryData.length;
+                const avg = sgbc1History.reduce((a,b) => a+b, 0) / sgbc1History.length;
                 document.getElementById('input-mops').value = avg.toFixed(2);
+            } else if (syncType === "mops") {
+                document.getElementById('input-mops').value = window.marketData.mops.toFixed(2);
             } else if (syncType !== "manual") {
                 document.getElementById('input-mops').value = window.marketData[syncType];
             }
@@ -337,11 +325,15 @@
             const mops = parseFloat(mopsInput.value) || 0;
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
+            
+            // Formula HSD: (MOPS + Alpha) / 158.98 * Kurs
             const baseL = ((mops + alpha) / 158.98) * kurs;
+            
             let taxM = 0;
             if (document.getElementById('check-ppn').checked) taxM += 0.11;
             if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
             if (document.getElementById('check-pph').checked) taxM += 0.003;
+            
             const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
             const containerEl = document.getElementById('final-price-container');
@@ -360,92 +352,65 @@
             }
             document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
             document.getElementById('tax-only').innerText = "Rp " + Math.round(baseL * taxM).toLocaleString('id-ID');
-            const currentData = smallChart.w.config.series[0].data;
-            const newData = [...currentData, finalP].slice(-25);
-            smallChart.updateSeries([{ data: newData }], false);
         };
 
-        function updateDate() {
-            const options = { day: '2-digit', month: 'short', year: 'numeric' };
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', options).toUpperCase();
+        function updateMopsHistoryUI() {
+            const historyTable = document.getElementById('mops-history');
+            const avgEl = document.getElementById('means-plate-val');
+            const topMeansEl = document.getElementById('top-means');
+            historyTable.innerHTML = '';
+            
+            let total = 0;
+            sgbc1History.forEach((price, i) => {
+                total += price;
+                const dateStr = i === 0 ? "CURRENT" : `DAY -${i}`;
+                const row = `<tr><td class="text-slate-500">${dateStr}</td><td class="text-right font-bold text-yellow-500">${price.toFixed(2)}</td><td class="text-right text-[8px] text-slate-600 uppercase">Settled</td></tr>`;
+                historyTable.insertAdjacentHTML('beforeend', row);
+            });
+            
+            const avg = total / sgbc1History.length;
+            avgEl.innerText = avg.toFixed(2);
+            topMeansEl.innerText = avg.toFixed(2);
         }
 
         async function fetchIDR() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
-                const newKurs = data.rates.IDR;
-                const trendEl = document.getElementById('trend-idr');
-                const diff = newKurs - lastKurs;
-                if (diff > 0) {
-                    trendEl.className = "trend-up";
-                    trendEl.innerText = `▲ ${Math.abs(Math.round(diff))}`;
-                } else if (diff < 0) {
-                    trendEl.className = "trend-down";
-                    trendEl.innerText = `▼ ${Math.abs(Math.round(diff))}`;
-                }
-                window.kursIdr = newKurs;
-                lastKurs = newKurs;
+                window.kursIdr = data.rates.IDR;
                 document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
-                window.calculateSolar();
-            } catch (e) { console.error("Kurs Fetch Failed", e); }
-        }
-
-        function updateMopsHistoryUI() {
-            const historyTable = document.getElementById('mops-history');
-            const avgEl = document.getElementById('means-plate-val');
-            historyTable.innerHTML = '';
-            
-            let total = 0;
-            mopsHistoryData.forEach((price, i) => {
-                total += price;
-                const prev = mopsHistoryData[i+1] || price;
-                const diff = (price - prev).toFixed(2);
-                const timeStr = i === 0 ? "LIVE" : `${i}D AGO`;
-                const row = `<tr><td>${timeStr}</td><td class="text-right font-bold">${price.toFixed(2)}</td><td class="text-right ${diff >= 0 ? 'text-green-500' : 'text-red-500'} text-[9px]">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}</td></tr>`;
-                historyTable.insertAdjacentHTML('beforeend', row);
-            });
-            
-            const avg = total / mopsHistoryData.length;
-            avgEl.innerText = avg.toFixed(2);
+            } catch (e) { console.warn("Kurs API delay"); }
         }
 
         function runLive() {
-            setInterval(fetchIDR, 60000);
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-                ['mops', 'brent', 'wti', 'murban', 'dxy'].forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.15;
-                    window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
-                    const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`);
-                    if(el) el.innerText = window.marketData[key];
-                });
                 
-                // Simulate MOPS 10D data shift occasionally
-                if(Math.random() > 0.8) {
-                    mopsHistoryData.unshift(window.marketData.mops);
-                    mopsHistoryData.pop();
+                // Simulate SGBC1 Live Movement
+                const volatility = (Math.random() - 0.5) * 0.1;
+                window.marketData.mops = parseFloat((window.marketData.mops + volatility).toFixed(2));
+                document.getElementById('live-mops').innerText = window.marketData.mops.toFixed(2);
+                
+                // Update 10-Day average data point (Current)
+                sgbc1History[0] = window.marketData.mops;
+                
+                if(Math.random() > 0.95) { // Occasional Shift
                     updateMopsHistoryUI();
+                    window.updateBaseInput();
                 }
-
-                const bull = Math.floor(Math.random() * 30) + 50; 
-                document.getElementById('sentiment-bull').style.width = bull + '%';
-                document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
-                document.getElementById('txt-bull').innerText = `Bullish ${bull}%`;
-                document.getElementById('txt-bear').innerText = `Bearish ${100 - bull}%`;
-                
-                window.updateBaseInput();
             }, 3000);
+            
+            setInterval(fetchIDR, 60000);
         }
 
         const news = {
             global: [
-                { t: "Reuters: Middle East tensions keep gasoil risk premium high.", u: "#" },
-                { t: "Bloomberg: Global Diesel supply remains tight as refineries enter maintenance.", u: "#" }
+                { t: "SGBC1: Singapore Gasoil 10ppm spreads widen amid refinery shifts.", u: "#" },
+                { t: "IEA: Global middle distillate demand projected to rise in Q2 2026.", u: "#" }
             ],
             domestic: [
-                { t: "CNBC ID: Harga Solar Industri per April 2026 Diprediksi Naik.", u: "#" },
-                { t: "Bisnis: Investama Kalimantan Energi Perluas Jaringan Distribusi.", u: "#" }
+                { t: "KSE: Optimasi Logistik BBM Kalimantan Timur dipercepat.", u: "#" },
+                { t: "Update: Penyesuaian PBBKB wilayah III mulai berlaku efektif.", u: "#" }
             ]
         };
 
@@ -454,7 +419,9 @@
             document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
         }
 
-        updateDate(); fetchIDR(); renderNews(); updateMopsHistoryUI(); runLive(); window.calculateSolar();
+        // Init
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+        fetchIDR(); renderNews(); updateMopsHistoryUI(); runLive(); window.calculateSolar();
     </script>
 </body> 
 </html>
