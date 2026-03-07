@@ -112,7 +112,7 @@
                     </div>
                     <div class="w-28">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium US/BBL</label>
-                        <input type="number" id="input-alpha" value="4.50" step="0.01" oninput="calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
+                        <input type="number" id="number" id="input-alpha" value="4.50" step="0.01" oninput="calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
                     </div>
                     <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
                         <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PPN</label></div>
@@ -146,19 +146,38 @@
                         <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Tax Component</span><span id="tax-only" class="mono text-cyan-600 font-bold">Rp 0</span></div>
                     </div>
                 </div>
-                <div class="glass-panel p-4 rounded border-l-2 border-amber-500">
+                
+                <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex flex-col">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
                     <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
-                        <div class="h-full bg-green-500 transition-all duration-500" id="sentiment-bull" style="width: 65%"></div>
-                        <div class="h-full bg-red-500 transition-all duration-500" id="sentiment-bear" style="width: 35%"></div>
+                        <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
+                        <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
                     </div>
-                    <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold mb-3">
-                        <span id="bull-text" class="text-green-500">Bullish 65%</span>
-                        <span id="bear-text" class="text-red-500">Bearish 35%</span>
+                    <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold mb-4">
+                        <span class="text-green-500" id="txt-bull">Bullish 65%</span>
+                        <span class="text-red-500" id="txt-bear">Bearish 35%</span>
                     </div>
-                    <div class="bg-black/30 p-2 rounded border border-slate-800">
-                        <p class="text-[8px] text-slate-500 uppercase font-black mb-1">Trade Recommendation:</p>
-                        <p id="market-recommendation" class="text-[10px] font-bold text-white tracking-tight leading-tight italic">Analyzing market...</p>
+                    
+                    <div class="mt-auto pt-2 border-t border-slate-800">
+                        <p class="text-[8px] text-cyan-500 font-black uppercase mb-2 tracking-tighter">PUBLISH PERTAMINA HSD (RP/LTR)</p>
+                        <div class="grid grid-cols-4 gap-1" id="pertamina-prices">
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
+                                <span class="block text-[7px] text-slate-500 font-bold">W-I</span>
+                                <span id="price-wil1" class="mono text-[10px] text-white">---</span>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
+                                <span class="block text-[7px] text-slate-500 font-bold">W-II</span>
+                                <span id="price-wil2" class="mono text-[10px] text-white">---</span>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
+                                <span class="block text-[7px] text-slate-500 font-bold">W-III</span>
+                                <span id="price-wil3" class="mono text-[10px] text-white">---</span>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
+                                <span class="block text-[7px] text-slate-500 font-bold">W-IV</span>
+                                <span id="price-wil4" class="mono text-[10px] text-white">---</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -194,6 +213,34 @@
             </div>
         </div>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey:"AIzaSyDenqfuE7Sjy773lp3k7WYh_3RRSr3nojM",
+            authDomain:"kse-harga-bbm-update.firebaseapp.com",
+            projectId:"kse-harga-bbm-update",
+            storageBucket:"kse-harga-bbm-update.firebasestorage.app",
+            messagingSenderId:"764165984284",
+            appId:"1:764165984284:web:a74aed43317539f5f1cfd9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Listen to Firebase Realtime Update
+        onSnapshot(doc(db, "hargaBBM", "periode"), (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                document.getElementById('price-wil1').innerText = data.wilayah1 || "---";
+                document.getElementById('price-wil2').innerText = data.wilayah2 || "---";
+                document.getElementById('price-wil3').innerText = data.wilayah3 || "---";
+                document.getElementById('price-wil4').innerText = data.wilayah4 || "---";
+            }
+        });
+    </script>
 
     <script>
         const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
@@ -260,29 +307,6 @@
             mopsLast = price;
         }
 
-        // UPDATE: Logika Rekomendasi Sentimen
-        function updateSentiment() {
-            const bull = Math.floor(Math.random() * (85 - 20 + 1)) + 20;
-            const bear = 100 - bull;
-            
-            document.getElementById('sentiment-bull').style.width = bull + '%';
-            document.getElementById('sentiment-bear').style.width = bear + '%';
-            document.getElementById('bull-text').innerText = `Bullish ${bull}%`;
-            document.getElementById('bear-text').innerText = `Bearish ${bear}%`;
-
-            const recoEl = document.getElementById('market-recommendation');
-            if (bull > 60) {
-                recoEl.innerText = "STRATEGY: PASAR MEMANAS. SEGERA LAKUKAN STOKING / LOCK HARGA SEBELUM KENAIKAN LANJUTAN.";
-                recoEl.className = "text-[10px] font-bold text-green-400 tracking-tight leading-tight italic";
-            } else if (bull < 40) {
-                recoEl.innerText = "STRATEGY: TREN MENURUN. BELI SECARA BERTAHAP (DOLLAR COST AVERAGING), TUNGGU BOTTOM PRICE.";
-                recoEl.className = "text-[10px] font-bold text-red-400 tracking-tight leading-tight italic";
-            } else {
-                recoEl.innerText = "STRATEGY: PASAR KONSOLIDASI. PERTAHANKAN LEVEL STOK AMAN DAN PANTAU PERGERAKAN DXY.";
-                recoEl.className = "text-[10px] font-bold text-amber-400 tracking-tight leading-tight italic";
-            }
-        }
-
         function runLive() {
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
@@ -294,7 +318,12 @@
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
                 
-                if(Math.random() > 0.8) updateSentiment();
+                // Randomize Sentiment Visuals
+                const bull = Math.floor(Math.random() * 40) + 40;
+                document.getElementById('sentiment-bull').style.width = bull + '%';
+                document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
+                document.getElementById('txt-bull').innerText = `Bullish ${bull}%`;
+                document.getElementById('txt-bear').innerText = `Bearish ${100 - bull}%`;
 
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
@@ -324,7 +353,7 @@
             smallChart.updateSeries([{ data: newData }]);
         }
 
-        updateDate(); fetchIDR(); renderNews(); runLive(); updateSentiment();
+        updateDate(); fetchIDR(); renderNews(); runLive();
     </script>
 </body>
 </html>
