@@ -89,7 +89,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • UPDATE HARGA MOPS GASOIL 10PPM: STABIL • IMPLEMENTASI B40 NASIONAL TERUS DIPANTAU • STOK TANKI TERMINAL DOMESTIK: AMAN • MONITORING VOLATILITAS HARGA MINYAK DUNIA •
+            • UPDATE TREND BBM INDUSTRI: HARGA HSD DIPREDIKSI STABIL • IMPLEMENTASI B40 SEKTOR PERTAMBANGAN • MONITORING PASOKAN TANKI TERMINAL • ANALISIS MOPS GASOIL 10PPM •
         </marquee>
     </div>
 
@@ -135,8 +135,7 @@
                     <div class="text-2xl font-bold mono mb-4" id="mops-live">139.02</div>
                     <div class="max-h-[120px] overflow-y-auto">
                         <table class="table-mini text-slate-400 mono">
-                            <tbody id="mops-history">
-                                </tbody>
+                            <tbody id="mops-history"></tbody>
                         </table>
                     </div>
                 </div>
@@ -162,11 +161,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h4 class="text-[11px] font-bold text-cyan-500 mb-4 uppercase tracking-widest border-b border-cyan-900 pb-1">Global Energy Pulse</h4>
+                    <h4 class="text-[11px] font-bold text-cyan-500 mb-4 uppercase tracking-widest border-b border-cyan-900 pb-1">Global Energy News</h4>
                     <div id="global-news" class="space-y-1"></div>
                 </div>
                 <div>
-                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Monitor HSD Domestik</h4>
+                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Trend BBM Industri Nasional</h4>
                     <div id="domestic-news" class="space-y-1"></div>
                 </div>
             </div>
@@ -225,39 +224,35 @@
             } catch (e) { window.kursIdr = 15850; }
         }
 
+        // UPDATED: Trend BBM Industri & Global Energy News Links
         const news = {
             global: [
-                { t: "Reuters: Oil steady as OPEC+ supply cuts face demand headwinds.", u: "https://www.reuters.com/business/energy/" },
-                { t: "Bloomberg: Gasoil crack spreads widen in Asian refining hubs.", u: "https://www.bloomberg.com/energy" },
-                { t: "CNBC: US Crude inventory sees unexpected draw as exports rise.", u: "https://www.cnbc.com/oil-prices/" },
-                { t: "OilPrice.com: Global diesel market tightens on refinery maintenance.", u: "https://oilprice.com/Energy/Energy-General/" }
+                { t: "Reuters: Middle East tensions keep gasoil risk premium high.", u: "https://www.reuters.com/business/energy/" },
+                { t: "Bloomberg: Global Diesel supply remains tight as refineries enter maintenance.", u: "https://www.bloomberg.com/markets/commodities/futures/oil" },
+                { t: "Argus Media: Singapore Gasoil 10ppm cracks show resilience.", u: "https://www.argusmedia.com/en/energy" },
+                { t: "CNBC: Why HSD prices are decoupled from Brent volatility.", u: "https://www.cnbc.com/oil-prices/" }
             ],
             domestic: [
-                { t: "CNBC Indonesia: Stok Solar B35 Dijamin Aman Sepanjang 2026.", u: "https://www.cnbcindonesia.com/market/energy" },
-                { t: "Kontan: Kementerian ESDM Pantau Ketat Penyaluran HSD Industri.", u: "https://industri.kontan.co.id/news/esdm-pantau-solar" },
-                { t: "Detik: Implementasi B40 Siap Diterapkan di Sektor Transportasi.", u: "https://finance.detik.com/energi" },
-                { t: "Bisnis: Sektor Pertambangan Genjot Konsumsi HSD Non-Subsidi.", u: "https://ekonomi.bisnis.com/energi" },
-                { t: "CNN Indonesia: Pemerintah Evaluasi Harga BBM Non-Subsidi Berkala.", u: "https://www.cnnindonesia.com/ekonomi" }
+                { t: "CNBC ID: Harga Solar Industri per April 2026 Diprediksi Naik Tipis.", u: "https://www.cnbcindonesia.com/market" },
+                { t: "Kontan: Kuota BBM Industri Meningkat 12% di Sektor Pertambangan.", u: "https://industri.kontan.co.id/" },
+                { t: "Bisnis: Pengusaha HSD Pantau Ketat Selisih Harga MOPS vs Domestik.", u: "https://ekonomi.bisnis.com/energi" },
+                { t: "Sindonews: Update Aturan PBBKB Terbaru untuk BBM Non-Subsidi.", u: "https://ekonomi.sindonews.com/" },
+                { t: "Investor ID: Proyeksi Kebutuhan HSD B40 untuk Industri Manufaktur.", u: "https://investor.id/market-and-corporate" }
             ]
         };
 
         function renderNews() {
             document.getElementById('global-news').innerHTML = news.global.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400">${n.t}</a></div>`).join('');
-            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400">${n.t}</a></div>`).join('');
+            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
         }
 
         function updateMopsHistory(price) {
             const historyTable = document.getElementById('mops-history');
             const now = new Date();
             const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
-            
             const diff = (price - mopsLast).toFixed(2);
-            const icon = diff >= 0 ? '▲' : '▼';
-            const colorClass = diff >= 0 ? 'text-green-500' : 'text-red-500';
-            
-            const row = `<tr><td>${timeStr}</td><td class="text-right">${price.toFixed(2)}</td><td class="text-right ${colorClass}">${icon} ${Math.abs(diff)}</td></tr>`;
+            const row = `<tr><td>${timeStr}</td><td class="text-right">${price.toFixed(2)}</td><td class="text-right ${diff >= 0 ? 'text-green-500' : 'text-red-500'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}</td></tr>`;
             historyTable.insertAdjacentHTML('afterbegin', row);
-            
             if(historyTable.rows.length > 20) historyTable.deleteRow(-1);
             mopsLast = price;
         }
@@ -265,23 +260,13 @@
         function runLive() {
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-                
-                const keys = ['mops', 'brent', 'wti', 'murban', 'dxy'];
-                keys.forEach(key => {
+                ['mops', 'brent', 'wti', 'murban', 'dxy'].forEach(key => {
                     const change = (Math.random() - 0.5) * 0.15;
                     window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`) || document.getElementById(`${key}-live`);
                     if(el) el.innerText = window.marketData[key];
-                    
-                    const trendEl = document.getElementById(`trend-${key}`);
-                    if(trendEl) {
-                        trendEl.innerText = `${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(2)}`;
-                        trendEl.className = change >= 0 ? 'trend-up' : 'trend-down';
-                    }
-
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
-
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = window.marketData[syncType];
@@ -295,23 +280,17 @@
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
             const baseL = ((mops + alpha) / 158.98) * kurs;
-            
             let taxM = 0;
             if (document.getElementById('check-ppn').checked) taxM += 0.11;
             if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
             if (document.getElementById('check-pph').checked) taxM += 0.003;
-            
-            const taxT = baseL * taxM;
-            const finalP = Math.round(baseL + taxT);
-            
+            const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
             priceEl.style.color = finalP > lastPrice ? '#f87171' : (finalP < lastPrice ? '#22d3ee' : '#ffffff');
             lastPrice = finalP;
-
             document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
-            document.getElementById('tax-only').innerText = "Rp " + Math.round(taxT).toLocaleString('id-ID');
+            document.getElementById('tax-only').innerText = "Rp " + Math.round(baseL * taxM).toLocaleString('id-ID');
             priceEl.innerText = "Rp " + finalP.toLocaleString('id-ID');
-
             const newData = [...smallChart.w.config.series[0].data, finalP].slice(-25);
             smallChart.updateSeries([{ data: newData }]);
         }
