@@ -101,23 +101,23 @@
                     <div class="flex-1 min-w-[180px]">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
                         <div class="flex gap-2">
-                            <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
+                            <select id="market-sync" onchange="window.calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
                                 <option value="mops">Mops Singapore</option>
                                 <option value="brent">Brent crude Oil</option>
                                 <option value="wti">WTI Crude Oil</option>
                                 <option value="manual">Manual</option>
                             </select>
-                            <input type="number" id="input-mops" value="139.02" step="0.01" oninput="calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
+                            <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
                         </div>
                     </div>
                     <div class="w-28">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium US/BBL</label>
-                        <input type="number" id="number" id="input-alpha" value="4.50" step="0.01" oninput="calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
+                        <input type="number" id="input-alpha" value="4.50" step="0.01" oninput="window.calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
                     </div>
                     <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PPN</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PBBKB</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PPh</label></div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PPN</label></div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pbbkb" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PBBKB</label></div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PPh</label></div>
                     </div>
                     <div class="flex-1 text-right border-l border-slate-800 pl-6">
                         <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Franco Quote (Rp/Ltr)</p>
@@ -203,7 +203,7 @@
                 </div>
             </div>
 
-            <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-3 rounded text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
+            <button onclick="window.calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-3 rounded text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
                 Refresh Quote
             </button>
 
@@ -229,20 +229,19 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        
-        // Listen to Firebase Realtime Update
-        onSnapshot(doc(db, "hargaBBM", "periode"), (doc) => {
-            if (doc.exists()) {
-                const data = doc.data();
+
+        // --- Logika Firestore ---
+        onSnapshot(doc(db, "hargaBBM", "periode"), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
                 document.getElementById('price-wil1').innerText = data.wilayah1 || "---";
                 document.getElementById('price-wil2').innerText = data.wilayah2 || "---";
                 document.getElementById('price-wil3').innerText = data.wilayah3 || "---";
                 document.getElementById('price-wil4').innerText = data.wilayah4 || "---";
             }
         });
-    </script>
 
-    <script>
+        // --- Variabel Global & Inisialisasi ---
         const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.marketData = { ...BASELINE };
         window.kursIdr = 15850;
@@ -260,6 +259,41 @@
         var smallChart = new ApexCharts(document.querySelector("#small-chart"), smallChartOptions);
         smallChart.render();
 
+        // --- Fungsi Kalkulasi (Didaftar ke window agar bisa dipanggil HTML) ---
+        window.calculateSolar = function() {
+            const mopsInput = document.getElementById('input-mops');
+            if (!mopsInput) return;
+
+            const mops = parseFloat(mopsInput.value) || 0;
+            const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
+            const kurs = window.kursIdr || 15850;
+            
+            // Rumus: ((MOPS + Alpha) / Konversi BBL ke Ltr) * Kurs
+            const baseL = ((mops + alpha) / 158.98) * kurs;
+            
+            let taxM = 0;
+            if (document.getElementById('check-ppn').checked) taxM += 0.11;
+            if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
+            if (document.getElementById('check-pph').checked) taxM += 0.003;
+            
+            const finalP = Math.round(baseL * (1 + taxM));
+            const priceEl = document.getElementById('final-price');
+            
+            if (priceEl) {
+                priceEl.style.color = finalP > lastPrice ? '#f87171' : (finalP < lastPrice ? '#22d3ee' : '#ffffff');
+                priceEl.innerText = "Rp " + finalP.toLocaleString('id-ID');
+                lastPrice = finalP;
+            }
+
+            document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
+            document.getElementById('tax-only').innerText = "Rp " + Math.round(baseL * taxM).toLocaleString('id-ID');
+
+            const currentData = smallChart.w.config.series[0].data;
+            const newData = [...currentData, finalP].slice(-25);
+            smallChart.updateSeries([{ data: newData }], false);
+        };
+
+        // --- Fungsi Pendukung Lainnya ---
         function updateDate() {
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
             document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', options).toUpperCase();
@@ -271,7 +305,7 @@
                 const data = await res.json();
                 window.kursIdr = data.rates.IDR;
                 document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
-                calculateSolar();
+                window.calculateSolar();
             } catch (e) { window.kursIdr = 15850; }
         }
 
@@ -318,7 +352,6 @@
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
                 
-                // Randomize Sentiment Visuals
                 const bull = Math.floor(Math.random() * 40) + 40;
                 document.getElementById('sentiment-bull').style.width = bull + '%';
                 document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
@@ -328,32 +361,17 @@
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = window.marketData[syncType];
-                    calculateSolar();
+                    window.calculateSolar();
                 }
             }, 3000);
         }
 
-        function calculateSolar() {
-            const mops = parseFloat(document.getElementById('input-mops').value) || 0;
-            const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
-            const kurs = window.kursIdr || 15850;
-            const baseL = ((mops + alpha) / 158.98) * kurs;
-            let taxM = 0;
-            if (document.getElementById('check-ppn').checked) taxM += 0.11;
-            if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
-            if (document.getElementById('check-pph').checked) taxM += 0.003;
-            const finalP = Math.round(baseL * (1 + taxM));
-            const priceEl = document.getElementById('final-price');
-            priceEl.style.color = finalP > lastPrice ? '#f87171' : (finalP < lastPrice ? '#22d3ee' : '#ffffff');
-            lastPrice = finalP;
-            document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
-            document.getElementById('tax-only').innerText = "Rp " + Math.round(baseL * taxM).toLocaleString('id-ID');
-            priceEl.innerText = "Rp " + finalP.toLocaleString('id-ID');
-            const newData = [...smallChart.w.config.series[0].data, finalP].slice(-25);
-            smallChart.updateSeries([{ data: newData }]);
-        }
-
-        updateDate(); fetchIDR(); renderNews(); runLive();
+        // Start App
+        updateDate(); 
+        fetchIDR(); 
+        renderNews(); 
+        runLive();
+        window.calculateSolar();
     </script>
 </body>
 </html>
