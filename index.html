@@ -140,11 +140,24 @@
                     </div>
                 </div>
 
-                <div class="glass-panel p-4 rounded">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Price Breakdown</h3>
-                    <div class="space-y-3 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Basic Ex-Work</span><span id="basic-price" class="mono font-bold">Rp 0</span></div>
-                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Tax Component</span><span id="tax-only" class="mono text-cyan-600 font-bold">Rp 0</span></div>
+                <div class="flex flex-col gap-4">
+                    <div class="glass-panel p-4 rounded flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Price Breakdown</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Basic Ex-Work</span><span id="basic-price" class="mono font-bold text-slate-200">Rp 0</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Tax Component</span><span id="tax-only" class="mono text-cyan-600 font-bold">Rp 0</span></div>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 rounded flex-1 border-l-2 border-emerald-500">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
+                        <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
+                            <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
+                            <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
+                        </div>
+                        <div class="flex justify-between text-[8px] mono uppercase font-bold">
+                            <span class="text-green-500" id="txt-bull">Bullish 65%</span>
+                            <span class="text-red-500" id="txt-bear">Bearish 35%</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -227,7 +240,6 @@
         const db = getFirestore(app);
         const ref = doc(db, "hargaBBM", "periode");
 
-        // --- Firebase Listener (Struktur Investama: data.sekarang.wilayahX) ---
         onSnapshot(ref, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -240,7 +252,6 @@
             }
         });
 
-        // --- Variables & Chart ---
         const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.marketData = { ...BASELINE };
         window.kursIdr = 15850;
@@ -258,7 +269,6 @@
         var smallChart = new ApexCharts(document.querySelector("#small-chart"), smallChartOptions);
         smallChart.render();
 
-        // --- Global Calculation Function ---
         window.calculateSolar = function() {
             const mopsInput = document.getElementById('input-mops');
             if (!mopsInput) return;
@@ -267,7 +277,6 @@
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
             
-            // Rumus: ((MOPS + Alpha) / Konversi 158.98) * Kurs
             const baseL = ((mops + alpha) / 158.98) * kurs;
             
             let taxM = 0;
@@ -292,7 +301,6 @@
             smallChart.updateSeries([{ data: newData }], false);
         };
 
-        // --- Utility Functions ---
         function updateDate() {
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
             document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', options).toUpperCase();
@@ -330,6 +338,13 @@
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
 
+                // Live Sentiment Randomizer (Simulation)
+                const bull = Math.floor(Math.random() * 30) + 50; 
+                document.getElementById('sentiment-bull').style.width = bull + '%';
+                document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
+                document.getElementById('txt-bull').innerText = `Bullish ${bull}%`;
+                document.getElementById('txt-bear').innerText = `Bearish ${100 - bull}%`;
+
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = window.marketData[syncType];
@@ -338,7 +353,6 @@
             }, 3000);
         }
 
-        // News Data
         const news = {
             global: [
                 { t: "Reuters: Middle East tensions keep gasoil risk premium high.", u: "#" },
@@ -355,12 +369,7 @@
             document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
         }
 
-        // Init App
-        updateDate(); 
-        fetchIDR(); 
-        renderNews(); 
-        runLive();
-        window.calculateSolar();
+        updateDate(); fetchIDR(); renderNews(); runLive(); window.calculateSolar();
     </script>
 </body>
 </html>
