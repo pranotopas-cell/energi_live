@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL - INVESTING SGBC1</title>
+    <title>HSD TERMINAL - MOPS SINGAPORE MONITOR</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -70,8 +70,8 @@
         <div class="flex items-center gap-6">
             <div>
                 <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
-                    CRUDE OIL<span class="text-cyan-500">MONITORING</span>
-                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">KSE TERMINAL DATA FEED • NYMEX SGBC1 </span>
+                    MOPS<span class="text-cyan-500">SINGAPORE</span>
+                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">KSE TERMINAL DATA FEED • NYMEX SGBC1 CONVERSION </span>
                 </h1>
             </div>
             <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
@@ -113,7 +113,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="4" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • DATA FEED SOURCE: INVESTING.COM (NYMEX SGBC1) • MONITORING MURBAN OIL • ANALISIS HARGA HSD INDUSTRI • PERHITUNGAN RATA-RATA 10 HARI (MEANS PLATE) • 
+            • UPDATE HARGA: MOPS SINGAPORE KSE TERMINAL • ALPHA PREMIUM ADJUSTMENT 1.0 - 8.0 • MEANS PLATE 10-DAY ANALYSIS • LIVE FEED NYMEX SGBC1 •
         </marquee>
     </div>
 
@@ -123,10 +123,10 @@
             <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500" id="main-quote-panel">
                 <div class="flex flex-wrap items-end gap-6">
                     <div class="flex-1 min-w-[220px]">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / MOPS ($/BBL)</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">SGBC1 (Investing)</option>
+                                <option value="mops">SGBC1 (Live)</option>
                                 <option value="means">Means Plate (10D Avg)</option>
                                 <option value="murban">Murban Crude Oil</option>
                                 <option value="manual">Manual Input</option>
@@ -137,9 +137,18 @@
                     <div class="w-44">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium US/BBL</label>
                         <select id="input-alpha" onchange="window.calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500 bg-slate-800 border-none">
-                            <option value="2.0">LOW (2.0)</option>
-                            <option value="3.5" selected>NORMAL (3.5)</option>
-                            <option value="5.0">HIGH (5.0)</option>
+                            <option value="1.0">1.0</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2.0">2.0</option>
+                            <option value="2.5">2.5</option>
+                            <option value="3.0">3.0</option>
+                            <option value="3.5" selected>3.5 (Normal)</option>
+                            <option value="4.0">4.0</option>
+                            <option value="4.5">4.5</option>
+                            <option value="5.0">5.0</option>
+                            <option value="6.0">6.0</option>
+                            <option value="7.0">7.0</option>
+                            <option value="8.0">8.0</option>
                         </select>
                     </div>
                     <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
@@ -158,7 +167,7 @@
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
                         <span>Means Plate (10D History)</span>
-                        <span class="text-yellow-500 animate-pulse">● SGBC1 Source</span>
+                        <span class="text-yellow-500 animate-pulse">● Singapore Avg</span>
                     </h3>
                     <div class="text-2xl font-bold mono mb-4 text-yellow-400" id="means-plate-val">0.00</div>
                     <div class="max-h-[120px] overflow-y-auto">
@@ -166,7 +175,7 @@
                             <thead>
                                 <tr class="text-[8px] text-slate-500 uppercase">
                                     <td class="pb-2">Reference</td>
-                                    <td class="text-right pb-2">SGBC1 ($)</td>
+                                    <td class="text-right pb-2">MOPS ($)</td>
                                     <td class="text-right pb-2">Status</td>
                                 </tr>
                             </thead>
@@ -287,14 +296,14 @@
             }
         });
 
-        // UPDATE: Initialize SGBC1 History dengan rentang angka 139
+        // 10-DAY HISTORY DATA (MOPS SINGAPORE)
         let sgbc1History = [139.02, 138.85, 139.10, 138.90, 138.20, 137.95, 138.30, 139.00, 138.75, 139.02];
         window.marketData = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.kursIdr = 15850;
         let lastPrice = 0;
 
         var smallChartOptions = {
-            series: [{ name: 'SGBC1', data: sgbc1History }],
+            series: [{ name: 'MOPS', data: sgbc1History }],
             chart: { type: 'area', height: 120, sparkline: { enabled: true }, animations: { enabled: true, easing: 'linear' } },
             stroke: { curve: 'smooth', width: 2 },
             fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0 } },
@@ -358,8 +367,8 @@
             let total = 0;
             sgbc1History.forEach((price, i) => {
                 total += price;
-                const label = i === 0 ? "REALTIME" : `${i}D AGO`;
-                const row = `<tr><td class="text-slate-500">${label}</td><td class="text-right font-bold text-yellow-500">${price.toFixed(2)}</td><td class="text-right text-[8px] text-slate-600 uppercase">Investing</td></tr>`;
+                const label = i === 0 ? "LIVE" : `${i}D AGO`;
+                const row = `<tr><td class="text-slate-500">${label}</td><td class="text-right font-bold text-yellow-500">${price.toFixed(2)}</td><td class="text-right text-[8px] text-slate-600 uppercase">Singapore</td></tr>`;
                 historyTable.insertAdjacentHTML('beforeend', row);
             });
             const avg = total / sgbc1History.length;
@@ -380,21 +389,21 @@
                 const timeEl = document.getElementById('current-time');
                 if(timeEl) timeEl.innerText = new Date().toLocaleTimeString('en-GB');
                 
-                // Simulate SGBC1 Live Movement di sekitar 139
+                // Simulate SGBC1 Live Movement
                 const vol = (Math.random() - 0.5) * 0.12;
                 window.marketData.mops = parseFloat((window.marketData.mops + vol).toFixed(2));
                 document.getElementById('live-mops').innerText = window.marketData.mops.toFixed(2);
                 
-                // Simulate Murban Live Movement
-                const mVol = (Math.random() - 0.5) * 0.08;
-                window.marketData.murban = parseFloat((window.marketData.murban + mVol).toFixed(2));
-                document.getElementById('live-murban').innerText = window.marketData.murban.toFixed(2);
-
                 sgbc1History[0] = window.marketData.mops;
                 
+                // Auto Sync UI if "Live" is selected
+                if(document.getElementById('market-sync').value === "mops") {
+                    document.getElementById('input-mops').value = window.marketData.mops.toFixed(2);
+                    window.calculateSolar();
+                }
+
                 if(Math.random() > 0.9) {
                     updateMopsHistoryUI();
-                    window.updateBaseInput();
                 }
             }, 3000);
             setInterval(fetchIDR, 60000);
@@ -402,12 +411,12 @@
 
         const news = {
             global: [
-                { t: "Investing.com: Singapore Gasoil SGBC1 prices steady amid Asian demand.", u: "#" },
-                { t: "Market Watch: Murban crude sees higher interest in DME trading.", u: "#" }
+                { t: "MOPS Singapore: Gasoil prices tracking NYMEX SGBC1 trends.", u: "#" },
+                { t: "Market Update: Singapore oil hub reports stable supply inventory.", u: "#" }
             ],
             domestic: [
-                { t: "KSE Update: Distribusi HSD Industri di Kalimantan terpantau stabil.", u: "#" },
-                { t: "Regulasi: Penyesuaian Pajak BBM Industri tahun 2026.", u: "#" }
+                { t: "KSE Terminal: System online. Premium adjustments sync complete.", u: "#" },
+                { t: "Indonesia Energy: Domestic fuel logistics optimization ongoing.", u: "#" }
             ]
         };
 
