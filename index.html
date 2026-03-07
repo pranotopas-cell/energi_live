@@ -149,12 +149,16 @@
                 <div class="glass-panel p-4 rounded border-l-2 border-amber-500">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
                     <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
-                        <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
-                        <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
+                        <div class="h-full bg-green-500 transition-all duration-500" id="sentiment-bull" style="width: 65%"></div>
+                        <div class="h-full bg-red-500 transition-all duration-500" id="sentiment-bear" style="width: 35%"></div>
                     </div>
-                    <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold">
-                        <span class="text-green-500">Bullish 65%</span>
-                        <span class="text-red-500">Bearish 35%</span>
+                    <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold mb-3">
+                        <span id="bull-text" class="text-green-500">Bullish 65%</span>
+                        <span id="bear-text" class="text-red-500">Bearish 35%</span>
+                    </div>
+                    <div class="bg-black/30 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-500 uppercase font-black mb-1">Trade Recommendation:</p>
+                        <p id="market-recommendation" class="text-[10px] font-bold text-white tracking-tight leading-tight italic">Analyzing market...</p>
                     </div>
                 </div>
             </div>
@@ -224,7 +228,6 @@
             } catch (e) { window.kursIdr = 15850; }
         }
 
-        // UPDATED: Trend BBM Industri & Global Energy News Links
         const news = {
             global: [
                 { t: "Reuters: Middle East tensions keep gasoil risk premium high.", u: "https://www.reuters.com/business/energy/" },
@@ -257,6 +260,29 @@
             mopsLast = price;
         }
 
+        // UPDATE: Logika Rekomendasi Sentimen
+        function updateSentiment() {
+            const bull = Math.floor(Math.random() * (85 - 20 + 1)) + 20;
+            const bear = 100 - bull;
+            
+            document.getElementById('sentiment-bull').style.width = bull + '%';
+            document.getElementById('sentiment-bear').style.width = bear + '%';
+            document.getElementById('bull-text').innerText = `Bullish ${bull}%`;
+            document.getElementById('bear-text').innerText = `Bearish ${bear}%`;
+
+            const recoEl = document.getElementById('market-recommendation');
+            if (bull > 60) {
+                recoEl.innerText = "STRATEGY: PASAR MEMANAS. SEGERA LAKUKAN STOKING / LOCK HARGA SEBELUM KENAIKAN LANJUTAN.";
+                recoEl.className = "text-[10px] font-bold text-green-400 tracking-tight leading-tight italic";
+            } else if (bull < 40) {
+                recoEl.innerText = "STRATEGY: TREN MENURUN. BELI SECARA BERTAHAP (DOLLAR COST AVERAGING), TUNGGU BOTTOM PRICE.";
+                recoEl.className = "text-[10px] font-bold text-red-400 tracking-tight leading-tight italic";
+            } else {
+                recoEl.innerText = "STRATEGY: PASAR KONSOLIDASI. PERTAHANKAN LEVEL STOK AMAN DAN PANTAU PERGERAKAN DXY.";
+                recoEl.className = "text-[10px] font-bold text-amber-400 tracking-tight leading-tight italic";
+            }
+        }
+
         function runLive() {
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
@@ -267,6 +293,9 @@
                     if(el) el.innerText = window.marketData[key];
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
+                
+                if(Math.random() > 0.8) updateSentiment();
+
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = window.marketData[syncType];
@@ -295,11 +324,7 @@
             smallChart.updateSeries([{ data: newData }]);
         }
 
-        updateDate(); fetchIDR(); renderNews(); runLive();
+        updateDate(); fetchIDR(); renderNews(); runLive(); updateSentiment();
     </script>
 </body>
 </html>
-
-
-
-
