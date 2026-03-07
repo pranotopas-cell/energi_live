@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL MONITORING PRO</title>
+    <title>HSD TERMINAL MONITORING - IKE & PAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -54,12 +54,12 @@
             <div>
                 <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
                     CRUDE OIL<span class="text-cyan-500">MONITORING</span>
-                    <span class="block text-[8px] text-white tracking-[0.3em] font-light">SEARCH ENGINE KHATULISTIWA SINAR ENERGI</span>
+                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">Investama Kalimantan Energi - Pejuang Energi</span>
                 </h1>
             </div>
             <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
                 <span id="current-time" class="mono text-cyan-400 text-xl font-bold leading-none">00:00:00</span>
-                <span id="current-date" class="text-[11px] text-slate-500 uppercase tracking-widest mt-1">07 MAR 2026</span>
+                <span id="current-date" class="text-[11px] text-slate-500 uppercase tracking-widest mt-1">---</span>
             </div>
         </div>
 
@@ -89,7 +89,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • SINERGI MENGALIRKAN ENERGI  • UPDATE TREND BBM INDUSTRI: HARGA HSD DIPREDIKSI STABIL • IMPLEMENTASI B40 SEKTOR PERTAMBANGAN • MONITORING PASOKAN TANKI TERMINAL • ANALISIS MOPS GASOIL 10PPM •
+            • SINERGI MENGALIRKAN ENERGI • PT. INVESTAMA KALIMANTAN ENERGI • PENYALUR BBM INDUSTRI PETRO ANDALAN NUSANTARA • MONITORING HARGA PUBLISH PERTAMINA • ANALISIS MOPS GASOIL 10PPM •
         </marquee>
     </div>
 
@@ -129,7 +129,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>MOPS Gasoil Singapore (SGBc1) History</span>
+                        <span>MOPS Gasoil Singapore (SGBc1)</span>
                         <span class="text-cyan-500 animate-pulse">● Live</span>
                     </h3>
                     <div class="text-2xl font-bold mono mb-4" id="mops-live">139.02</div>
@@ -139,6 +139,7 @@
                         </table>
                     </div>
                 </div>
+
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Price Breakdown</h3>
                     <div class="space-y-3 text-xs">
@@ -148,34 +149,29 @@
                 </div>
                 
                 <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex flex-col">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
-                    <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
-                        <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
-                        <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
-                    </div>
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Harga Publish Pertamina</h3>
                     <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold mb-4">
-                        <span class="text-green-500" id="txt-bull">Bullish 65%</span>
-                        <span class="text-red-500" id="txt-bear">Bearish 35%</span>
+                        <span class="text-slate-500">Live Database KSE</span>
+                        <span class="text-amber-500">Periode Sekarang</span>
                     </div>
                     
                     <div class="mt-auto pt-2 border-t border-slate-800">
-                        <p class="text-[8px] text-cyan-500 font-black uppercase mb-2 tracking-tighter">PUBLISH PERTAMINA HSD (RP/LTR)</p>
                         <div class="grid grid-cols-4 gap-1" id="pertamina-prices">
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold">W-I</span>
-                                <span id="price-wil1" class="mono text-[10px] text-white">---</span>
+                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-I</span>
+                                <span id="price-wil1" class="mono text-[9px] text-white">---</span>
                             </div>
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold">W-II</span>
-                                <span id="price-wil2" class="mono text-[10px] text-white">---</span>
+                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-II</span>
+                                <span id="price-wil2" class="mono text-[9px] text-white">---</span>
                             </div>
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold">W-III</span>
-                                <span id="price-wil3" class="mono text-[10px] text-white">---</span>
+                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-III</span>
+                                <span id="price-wil3" class="mono text-[9px] text-white">---</span>
                             </div>
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800">
-                                <span class="block text-[7px] text-slate-500 font-bold">W-IV</span>
-                                <span id="price-wil4" class="mono text-[10px] text-white">---</span>
+                                <span class="block text-[7px] text-slate-500 font-bold uppercase">W-IV</span>
+                                <span id="price-wil4" class="mono text-[9px] text-white">---</span>
                             </div>
                         </div>
                     </div>
@@ -196,10 +192,10 @@
 
         <div class="lg:col-span-3 space-y-4">
             <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">Terminal Status</h4>
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">System Status</h4>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center text-[11px]"><span>Feed Connection</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></span></div>
-                    <div class="flex justify-between items-center text-[11px]"><span>API Latency</span><span class="mono text-blue-400 text-[10px]">12ms</span></div>
+                    <div class="flex justify-between items-center text-[11px]"><span>Firebase Stream</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></span></div>
+                    <div class="flex justify-between items-center text-[11px]"><span>Latency</span><span class="mono text-blue-400 text-[10px]">12ms</span></div>
                 </div>
             </div>
 
@@ -229,19 +225,22 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const ref = doc(db, "hargaBBM", "periode");
 
-        // --- Logika Firestore ---
-        onSnapshot(doc(db, "hargaBBM", "periode"), (docSnap) => {
+        // --- Firebase Listener (Struktur Investama: data.sekarang.wilayahX) ---
+        onSnapshot(ref, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                document.getElementById('price-wil1').innerText = data.wilayah1 || "---";
-                document.getElementById('price-wil2').innerText = data.wilayah2 || "---";
-                document.getElementById('price-wil3').innerText = data.wilayah3 || "---";
-                document.getElementById('price-wil4').innerText = data.wilayah4 || "---";
+                const harga = data.sekarang || {};
+                
+                document.getElementById('price-wil1').innerText = harga.wilayah1 ? harga.wilayah1.toLocaleString('id-ID') : "---";
+                document.getElementById('price-wil2').innerText = harga.wilayah2 ? harga.wilayah2.toLocaleString('id-ID') : "---";
+                document.getElementById('price-wil3').innerText = harga.wilayah3 ? harga.wilayah3.toLocaleString('id-ID') : "---";
+                document.getElementById('price-wil4').innerText = harga.wilayah4 ? harga.wilayah4.toLocaleString('id-ID') : "---";
             }
         });
 
-        // --- Variabel Global & Inisialisasi ---
+        // --- Variables & Chart ---
         const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.marketData = { ...BASELINE };
         window.kursIdr = 15850;
@@ -259,7 +258,7 @@
         var smallChart = new ApexCharts(document.querySelector("#small-chart"), smallChartOptions);
         smallChart.render();
 
-        // --- Fungsi Kalkulasi (Didaftar ke window agar bisa dipanggil HTML) ---
+        // --- Global Calculation Function ---
         window.calculateSolar = function() {
             const mopsInput = document.getElementById('input-mops');
             if (!mopsInput) return;
@@ -268,7 +267,7 @@
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
             
-            // Rumus: ((MOPS + Alpha) / Konversi BBL ke Ltr) * Kurs
+            // Rumus: ((MOPS + Alpha) / Konversi 158.98) * Kurs
             const baseL = ((mops + alpha) / 158.98) * kurs;
             
             let taxM = 0;
@@ -293,7 +292,7 @@
             smallChart.updateSeries([{ data: newData }], false);
         };
 
-        // --- Fungsi Pendukung Lainnya ---
+        // --- Utility Functions ---
         function updateDate() {
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
             document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', options).toUpperCase();
@@ -307,27 +306,6 @@
                 document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
                 window.calculateSolar();
             } catch (e) { window.kursIdr = 15850; }
-        }
-
-        const news = {
-            global: [
-                { t: "Reuters: Middle East tensions keep gasoil risk premium high.", u: "https://www.reuters.com/business/energy/" },
-                { t: "Bloomberg: Global Diesel supply remains tight as refineries enter maintenance.", u: "https://www.bloomberg.com/markets/commodities/futures/oil" },
-                { t: "Argus Media: Singapore Gasoil 10ppm cracks show resilience.", u: "https://www.argusmedia.com/en/energy" },
-                { t: "CNBC: Why HSD prices are decoupled from Brent volatility.", u: "https://www.cnbc.com/oil-prices/" }
-            ],
-            domestic: [
-                { t: "CNBC ID: Harga Solar Industri per April 2026 Diprediksi Naik Tipis.", u: "https://www.cnbcindonesia.com/market" },
-                { t: "Kontan: Kuota BBM Industri Meningkat 12% di Sektor Pertambangan.", u: "https://industri.kontan.co.id/" },
-                { t: "Bisnis: Pengusaha HSD Pantau Ketat Selisih Harga MOPS vs Domestik.", u: "https://ekonomi.bisnis.com/energi" },
-                { t: "Sindonews: Update Aturan PBBKB Terbaru untuk BBM Non-Subsidi.", u: "https://ekonomi.sindonews.com/" },
-                { t: "Investor ID: Proyeksi Kebutuhan HSD B40 untuk Industri Manufaktur.", u: "https://investor.id/market-and-corporate" }
-            ]
-        };
-
-        function renderNews() {
-            document.getElementById('global-news').innerHTML = news.global.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400">${n.t}</a></div>`).join('');
-            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
         }
 
         function updateMopsHistory(price) {
@@ -351,12 +329,6 @@
                     if(el) el.innerText = window.marketData[key];
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
-                
-                const bull = Math.floor(Math.random() * 40) + 40;
-                document.getElementById('sentiment-bull').style.width = bull + '%';
-                document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
-                document.getElementById('txt-bull').innerText = `Bullish ${bull}%`;
-                document.getElementById('txt-bear').innerText = `Bearish ${100 - bull}%`;
 
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
@@ -366,7 +338,24 @@
             }, 3000);
         }
 
-        // Start App
+        // News Data
+        const news = {
+            global: [
+                { t: "Reuters: Middle East tensions keep gasoil risk premium high.", u: "#" },
+                { t: "Bloomberg: Global Diesel supply remains tight as refineries enter maintenance.", u: "#" }
+            ],
+            domestic: [
+                { t: "CNBC ID: Harga Solar Industri per April 2026 Diprediksi Naik.", u: "#" },
+                { t: "Bisnis: Investama Kalimantan Energi Perluas Jaringan Distribusi.", u: "#" }
+            ]
+        };
+
+        function renderNews() {
+            document.getElementById('global-news').innerHTML = news.global.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400">${n.t}</a></div>`).join('');
+            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
+        }
+
+        // Init App
         updateDate(); 
         fetchIDR(); 
         renderNews(); 
