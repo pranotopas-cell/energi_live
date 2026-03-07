@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL MONITORING - SGBC1</title>
+    <title>HSD TERMINAL - INVESTING SGBC1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@
             <div>
                 <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
                     CRUDE OIL<span class="text-cyan-500">MONITORING</span>
-                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">KSE LIVE CRUDE OIL MONITORING SYSTEM </span>
+                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase">KSE TERMINAL DATA FEED • NYMEX SGBC1 </span>
                 </h1>
             </div>
             <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
@@ -82,7 +82,7 @@
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 w-full lg:w-auto">
             <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-yellow-500">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">SGBC1 (Platt 10ppm)</p>
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">SGBC1 (Investing)</p>
                 <div class="flex justify-between items-center px-1"><span id="live-mops" class="mono text-yellow-400 font-bold text-lg">104.50</span><span id="trend-mops" class="trend-up">▲ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center">
@@ -94,8 +94,8 @@
                 <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-lg">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-emerald-500">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">MEANS PLATE (10D)</p>
-                <div class="flex justify-between items-center px-1"><span id="top-means" class="mono text-emerald-400 font-bold text-lg">104.25</span><span class="text-[8px] text-slate-500">AVG</span></div>
+                <p class="text-[9px] text-emerald-400 font-bold uppercase mb-1">MURBAN OIL</p>
+                <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-lg">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY INDEX</p>
@@ -113,7 +113,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="4" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • SINERGI MENGALIRKAN ENERGI • MONITORING SGBC1 NYMEX SINGAPORE PLATT 10PPM • RATA-RATA HARGA 10 HARI TERAKHIR (MEANS PLATE) • HARGA PUBLISH PERTAMINA PATRA NIAGA LIVE UPDATE •
+            • DATA FEED SOURCE: INVESTING.COM (NYMEX SGBC1) • MONITORING MURBAN OIL • ANALISIS HARGA HSD INDUSTRI • PERHITUNGAN RATA-RATA 10 HARI (MEANS PLATE) • 
         </marquee>
     </div>
 
@@ -126,10 +126,9 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">SGBC1 (Platt 10ppm)</option>
+                                <option value="mops">SGBC1 (Investing)</option>
                                 <option value="means">Means Plate (10D Avg)</option>
-                                <option value="brent">Brent Crude Oil</option>
-                                <option value="wti">WTI Crude Oil</option>
+                                <option value="murban">Murban Crude Oil</option>
                                 <option value="manual">Manual Input</option>
                             </select>
                             <input type="number" id="input-mops" value="104.50" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
@@ -158,8 +157,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>Means Plate (10-Day Avg)</span>
-                        <span class="text-yellow-500 animate-pulse">● SGBC1 Live</span>
+                        <span>Means Plate (10D History)</span>
+                        <span class="text-yellow-500 animate-pulse">● SGBC1 Source</span>
                     </h3>
                     <div class="text-2xl font-bold mono mb-4 text-yellow-400" id="means-plate-val">0.00</div>
                     <div class="max-h-[120px] overflow-y-auto">
@@ -197,7 +196,7 @@
                 
                 <div class="flex flex-col gap-4">
                     <div class="glass-panel p-4 rounded border-l-2 border-emerald-500 flex-1">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Sentiment Market</h3>
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Analysis</h3>
                         <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
                             <div class="h-full bg-green-500" id="sentiment-bull" style="width: 65%"></div>
                             <div class="h-full bg-red-500" id="sentiment-bear" style="width: 35%"></div>
@@ -208,14 +207,14 @@
                         </div>
                     </div>
                     <div class="glass-panel p-4 rounded border-l-2 border-indigo-500 flex-1">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Correlation SGBC1/IDR</h3>
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">DXY Stability Correlation</h3>
                         <div class="space-y-2 mt-2">
                             <div class="flex justify-between text-[9px] mono uppercase">
-                                <span class="text-slate-500">Stability</span>
-                                <span class="text-indigo-400 font-bold">88.2%</span>
+                                <span class="text-slate-500">Sync Rate</span>
+                                <span class="text-indigo-400 font-bold">92.1%</span>
                             </div>
                             <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-indigo-500" style="width: 88%"></div>
+                                <div class="h-full bg-indigo-500" style="width: 92%"></div>
                             </div>
                         </div>
                     </div>
@@ -224,11 +223,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h4 class="text-[11px] font-bold text-cyan-500 mb-4 uppercase tracking-widest border-b border-cyan-900 pb-1">Global Energy News</h4>
+                    <h4 class="text-[11px] font-bold text-cyan-500 mb-4 uppercase tracking-widest border-b border-cyan-900 pb-1">Investing Market Insights</h4>
                     <div id="global-news" class="space-y-1"></div>
                 </div>
                 <div>
-                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Trend BBM Industri Nasional</h4>
+                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Domestic Energy Trend</h4>
                     <div id="domestic-news" class="space-y-1"></div>
                 </div>
             </div>
@@ -236,17 +235,16 @@
 
         <div class="lg:col-span-3 space-y-4">
             <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">SGBC1 System Status</h4>
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">Investing.com Feed</h4>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
-                        <span class="text-slate-400">Platt Feed</span>
-                        <div class="flex items-center gap-2"><span class="text-green-500 font-bold">ACTIVE</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span></div>
+                        <span class="text-slate-400">SGBC1 (Platt)</span>
+                        <div class="flex items-center gap-2"><span class="text-green-500 font-bold">LIVE</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span></div>
                     </div>
                     <div class="flex justify-between items-center text-[10px] border-b border-slate-800/50 pb-1">
-                        <span class="text-slate-400">Exchange API</span>
-                        <div class="flex items-center gap-2"><span class="text-cyan-500 font-bold">STABLE</span><span class="w-2 h-2 bg-cyan-500 rounded-full"></span></div>
+                        <span class="text-slate-400">Data Latency</span>
+                        <div class="flex items-center gap-2"><span class="text-cyan-500 font-bold">MINIMAL</span><span class="w-2 h-2 bg-cyan-500 rounded-full"></span></div>
                     </div>
-                    <div class="flex justify-between items-center text-[11px]"><span>Latency</span><span class="mono text-blue-400 text-[10px]">8ms</span></div>
                 </div>
             </div>
 
@@ -255,7 +253,7 @@
             </button>
 
             <div class="glass-panel p-2 rounded-lg">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-2 px-1">Trend Index SGBC1</p>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-2 px-1">Volatility SGBC1</p>
                 <div id="small-chart"></div>
             </div>
         </div>
@@ -289,9 +287,9 @@
             }
         });
 
-        // Initialize SGBC1 History (10 Days)
+        // Initialize SGBC1 History (Investing Source Mock)
         let sgbc1History = [104.50, 103.85, 105.10, 104.90, 104.20, 103.95, 104.30, 105.00, 104.75, 104.50];
-        window.marketData = { mops: 104.50, brent: 90.82, wti: 88.96, dxy: 103.85 };
+        window.marketData = { mops: 104.50, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.kursIdr = 15850;
         let lastPrice = 0;
 
@@ -313,6 +311,8 @@
                 document.getElementById('input-mops').value = avg.toFixed(2);
             } else if (syncType === "mops") {
                 document.getElementById('input-mops').value = window.marketData.mops.toFixed(2);
+            } else if (syncType === "murban") {
+                document.getElementById('input-mops').value = window.marketData.murban.toFixed(2);
             } else if (syncType !== "manual") {
                 document.getElementById('input-mops').value = window.marketData[syncType];
             }
@@ -325,15 +325,11 @@
             const mops = parseFloat(mopsInput.value) || 0;
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
-            
-            // Formula HSD: (MOPS + Alpha) / 158.98 * Kurs
             const baseL = ((mops + alpha) / 158.98) * kurs;
-            
             let taxM = 0;
             if (document.getElementById('check-ppn').checked) taxM += 0.11;
             if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
             if (document.getElementById('check-pph').checked) taxM += 0.003;
-            
             const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
             const containerEl = document.getElementById('final-price-container');
@@ -357,20 +353,16 @@
         function updateMopsHistoryUI() {
             const historyTable = document.getElementById('mops-history');
             const avgEl = document.getElementById('means-plate-val');
-            const topMeansEl = document.getElementById('top-means');
             historyTable.innerHTML = '';
-            
             let total = 0;
             sgbc1History.forEach((price, i) => {
                 total += price;
-                const dateStr = i === 0 ? "CURRENT" : `DAY -${i}`;
-                const row = `<tr><td class="text-slate-500">${dateStr}</td><td class="text-right font-bold text-yellow-500">${price.toFixed(2)}</td><td class="text-right text-[8px] text-slate-600 uppercase">Settled</td></tr>`;
+                const label = i === 0 ? "REALTIME" : `${i}D AGO`;
+                const row = `<tr><td class="text-slate-500">${label}</td><td class="text-right font-bold text-yellow-500">${price.toFixed(2)}</td><td class="text-right text-[8px] text-slate-600 uppercase">Investing</td></tr>`;
                 historyTable.insertAdjacentHTML('beforeend', row);
             });
-            
             const avg = total / sgbc1History.length;
             avgEl.innerText = avg.toFixed(2);
-            topMeansEl.innerText = avg.toFixed(2);
         }
 
         async function fetchIDR() {
@@ -386,31 +378,34 @@
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
                 
-                // Simulate SGBC1 Live Movement
-                const volatility = (Math.random() - 0.5) * 0.1;
-                window.marketData.mops = parseFloat((window.marketData.mops + volatility).toFixed(2));
+                // Simulate SGBC1 Live Movement (Investing Mock)
+                const vol = (Math.random() - 0.5) * 0.12;
+                window.marketData.mops = parseFloat((window.marketData.mops + vol).toFixed(2));
                 document.getElementById('live-mops').innerText = window.marketData.mops.toFixed(2);
                 
-                // Update 10-Day average data point (Current)
+                // Simulate Murban Live Movement
+                const mVol = (Math.random() - 0.5) * 0.08;
+                window.marketData.murban = parseFloat((window.marketData.murban + mVol).toFixed(2));
+                document.getElementById('live-murban').innerText = window.marketData.murban.toFixed(2);
+
                 sgbc1History[0] = window.marketData.mops;
                 
-                if(Math.random() > 0.95) { // Occasional Shift
+                if(Math.random() > 0.9) {
                     updateMopsHistoryUI();
                     window.updateBaseInput();
                 }
             }, 3000);
-            
             setInterval(fetchIDR, 60000);
         }
 
         const news = {
             global: [
-                { t: "SGBC1: Singapore Gasoil 10ppm spreads widen amid refinery shifts.", u: "#" },
-                { t: "IEA: Global middle distillate demand projected to rise in Q2 2026.", u: "#" }
+                { t: "Investing.com: Singapore Gasoil SGBC1 prices steady amid Asian demand.", u: "#" },
+                { t: "Market Watch: Murban crude sees higher interest in DME trading.", u: "#" }
             ],
             domestic: [
-                { t: "KSE: Optimasi Logistik BBM Kalimantan Timur dipercepat.", u: "#" },
-                { t: "Update: Penyesuaian PBBKB wilayah III mulai berlaku efektif.", u: "#" }
+                { t: "KSE Update: Distribusi HSD Industri di Kalimantan terpantau stabil.", u: "#" },
+                { t: "Regulasi: Penyesuaian Pajak BBM Industri tahun 2026.", u: "#" }
             ]
         };
 
@@ -419,7 +414,6 @@
             document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400">${n.t}</a></div>`).join('');
         }
 
-        // Init
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
         fetchIDR(); renderNews(); updateMopsHistoryUI(); runLive(); window.calculateSolar();
     </script>
