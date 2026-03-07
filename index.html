@@ -227,24 +227,23 @@
 
         const news = {
             global: [
-                { t: "Gasoil crack spreads widen in Asian markets.", u: "#" },
-                { t: "OPEC output cut extended until end of year.", u: "#" },
-                { t: "US SPR sees slight draw as refinery runs increase.", u: "#" },
-                { t: "China demand recovery hits monthly high.", u: "#" }
+                { t: "Reuters: Oil steady as OPEC+ supply cuts face demand headwinds.", u: "https://www.reuters.com/business/energy/" },
+                { t: "Bloomberg: Gasoil crack spreads widen in Asian refining hubs.", u: "https://www.bloomberg.com/energy" },
+                { t: "CNBC: US Crude inventory sees unexpected draw as exports rise.", u: "https://www.cnbc.com/oil-prices/" },
+                { t: "OilPrice.com: Global diesel market tightens on refinery maintenance.", u: "https://oilprice.com/Energy/Energy-General/" }
             ],
             domestic: [
-                { t: "Pertamina jamin stok HSD B35 aman selama periode Lebaran.", u: "#" },
-                { t: "Kementerian ESDM tinjau aturan impor solar industri.", u: "#" },
-                { t: "Hub distribusi baru dibuka di Kalimantan Timur guna dukung IKN.", u: "#" },
-                { t: "Update harga BBM Non-Subsidi per April 2026.", u: "#" },
-                { t: "Sektor pertambangan tingkatkan konsumsi solar industri 15%.", u: "#" },
-                { t: "Proyeksi implementasi B40 akan dipercepat semester ini.", u: "#" }
+                { t: "CNBC Indonesia: Stok Solar B35 Dijamin Aman Sepanjang 2026.", u: "https://www.cnbcindonesia.com/market/energy" },
+                { t: "Kontan: Kementerian ESDM Pantau Ketat Penyaluran HSD Industri.", u: "https://industri.kontan.co.id/news/esdm-pantau-solar" },
+                { t: "Detik: Implementasi B40 Siap Diterapkan di Sektor Transportasi.", u: "https://finance.detik.com/energi" },
+                { t: "Bisnis: Sektor Pertambangan Genjot Konsumsi HSD Non-Subsidi.", u: "https://ekonomi.bisnis.com/energi" },
+                { t: "CNN Indonesia: Pemerintah Evaluasi Harga BBM Non-Subsidi Berkala.", u: "https://www.cnnindonesia.com/ekonomi" }
             ]
         };
 
         function renderNews() {
-            document.getElementById('global-news').innerHTML = news.global.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300">${n.t}</a></div>`).join('');
-            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300">${n.t}</a></div>`).join('');
+            document.getElementById('global-news').innerHTML = news.global.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400">${n.t}</a></div>`).join('');
+            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400">${n.t}</a></div>`).join('');
         }
 
         function updateMopsHistory(price) {
