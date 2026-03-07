@@ -3,57 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE - CRUDE OIL TERMINAL MONITORING</title>
+    <title>KSE - TERMINAL MONITORING SYSTEM v3.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --terminal-bg: #0a0e14; 
-            --panel-bg: #111827;
-            --accent-blue: #38bdf8;
-            --border-color: #1e293b;
-        }
-        body { 
-            background-color: var(--terminal-bg); 
-            color: #f1f5f9; 
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.01em;
-            overflow-x: hidden;
-        }
+        :root { --terminal-bg: #0a0e14; --panel-bg: #111827; --accent-blue: #38bdf8; --border-color: #1e293b; }
+        body { background-color: var(--terminal-bg); color: #f1f5f9; font-family: 'Inter', sans-serif; letter-spacing: -0.01em; }
         .header-font { font-family: 'Orbitron', sans-serif; }
-        .mono { 
-            font-family: 'JetBrains Mono', monospace; 
-            font-variant-numeric: tabular-nums;
-        }
-        .glass-panel { 
-            background: var(--panel-bg); 
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        }
-        @keyframes flash-green {
-            0% { background-color: rgba(34, 197, 94, 0.3); }
-            100% { background-color: transparent; }
-        }
-        @keyframes flash-red {
-            0% { background-color: rgba(239, 68, 68, 0.3); }
-            100% { background-color: transparent; }
-        }
+        .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+        .glass-panel { background: var(--panel-bg); border: 1px solid var(--border-color); }
+        @keyframes flash-green { 0% { background-color: rgba(34, 197, 94, 0.3); } 100% { background-color: transparent; } }
+        @keyframes flash-red { 0% { background-color: rgba(239, 68, 68, 0.3); } 100% { background-color: transparent; } }
         .price-up-flash { animation: flash-green 0.8s ease-out; }
         .price-down-flash { animation: flash-red 0.8s ease-out; }
-        
-        .input-dark {
-            background: #020617;
-            border: 1px solid #334155;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 4px;
-            outline: none;
-        }
+        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 6px 10px; border-radius: 4px; outline: none; }
         .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
         .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
-        
-        .news-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 8px; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
@@ -64,69 +30,63 @@
             <div>
                 <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
                     CRUDE OIL<span class="text-cyan-500">MONITORING</span>
-                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase italic">KHATULISTIWA SINAR ENERGI • LIVE INVESTING FEED</span>
+                    <span class="block text-[8px] text-white tracking-[0.3em] font-light uppercase italic">KHATULISTIWA SINAR ENERGI • REAL-TIME FEED</span>
                 </h1>
             </div>
-            <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
+            <div class="border-l border-slate-700 pl-4">
                 <span id="current-time" class="mono text-cyan-400 text-xl font-bold leading-none">00:00:00</span>
-                <span id="current-date" class="text-[11px] text-white uppercase tracking-widest mt-1">-- --- ----</span>
+                <span id="current-date" class="block text-[11px] text-white uppercase tracking-widest mt-1">-- --- ----</span>
             </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2 w-full lg:w-auto">
-            <div class="glass-panel p-2 rounded min-w-[130px] text-center border-t-2 border-t-slate-500">
+            <div class="glass-panel p-2 rounded text-center border-t-2 border-slate-500">
                 <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">DXY INDEX</p>
                 <div class="flex justify-between items-center px-1"><span id="live-dxy" class="mono text-white font-bold text-lg">104.15</span><span id="trend-dxy" class="trend-up">▲ 0.12</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[130px] text-center border-t-2 border-t-blue-500">
+            <div class="glass-panel p-2 rounded text-center border-t-2 border-blue-500">
                 <p class="text-[9px] text-blue-400 font-bold uppercase mb-1">WTI CRUDE</p>
                 <div class="flex justify-between items-center px-1"><span id="live-wti" class="mono text-white font-bold text-lg">91.27</span><span id="trend-wti" class="trend-up">▲ 0.45</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[130px] text-center border-t-2 border-t-orange-500">
+            <div class="glass-panel p-2 rounded text-center border-t-2 border-orange-500">
                 <p class="text-[9px] text-orange-400 font-bold uppercase mb-1">BRENT CRUDE</p>
                 <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-white font-bold text-lg">93.32</span><span id="trend-brent" class="trend-up">▲ 0.38</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[130px] text-center border-t-2 border-t-yellow-500">
+            <div class="glass-panel p-2 rounded text-center border-t-2 border-yellow-500">
                 <p class="text-[9px] text-yellow-400 font-bold uppercase mb-1">NATURAL GAS</p>
                 <div class="flex justify-between items-center px-1"><span id="live-gas" class="mono text-white font-bold text-lg">3.18</span><span id="trend-gas" class="trend-down">▼ 0.02</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[130px] text-center border-t-2 border-t-emerald-500">
+            <div class="glass-panel p-2 rounded text-center border-t-2 border-emerald-500">
                 <p class="text-[9px] text-emerald-400 font-bold uppercase mb-1">MURBAN OIL</p>
                 <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-white font-bold text-lg">94.10</span><span id="trend-murban" class="trend-up">▲ 0.51</span></div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[130px] text-center border-t-2 border-t-cyan-500 shadow-cyan-900/20 shadow-lg">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">USD / IDR</p>
+            <div class="glass-panel p-2 rounded text-center border-t-2 border-cyan-500 shadow-lg">
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">USD / IDR (Live)</p>
                 <div class="flex justify-between items-center px-1"><span id="kurs-top" class="mono text-white font-bold text-lg">15,920</span><span id="trend-idr" class="trend-up">▲ 72.0</span></div>
             </div>
         </div>
     </header>
 
-    <div class="mb-4 bg-black/40 border-y border-slate-800 py-1">
-        <marquee scrollamount="5" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">
-            • LIVE MARKET: INVESTING.COM • WTI AT $91.27 • BRENT AT $93.32 • MOPS GASOIL 10PPM AT $139.02 • KSE TERMINAL MONITORING SYSTEM •
-        </marquee>
-    </div>
-
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-9 space-y-6">
             
-            <div class="glass-panel p-6 rounded-lg border-t-2 border-cyan-500 relative overflow-hidden" id="main-quote-panel">
-                <div class="flex flex-wrap items-end gap-6 relative z-10">
+            <div class="glass-panel p-6 rounded-lg border-t-2 border-cyan-500" id="main-quote-panel">
+                <div class="flex flex-wrap items-end gap-6">
                     <div class="flex-1 min-w-[250px]">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider">Market Price Reference ($/BBL)</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Market Reference (MOPS Singapore Gasoil)</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="window.calculateSolar()" class="input-dark bg-slate-800 border-none text-[12px] font-bold text-cyan-400">
                                 <option value="mops">MOPS Singapore (Live)</option>
-                                <option value="brent">Brent Crude (Live)</option>
-                                <option value="wti">WTI Crude (Live)</option>
+                                <option value="brent">Brent Crude Oil</option>
+                                <option value="wti">WTI Crude Oil</option>
                                 <option value="manual">Manual Input</option>
                             </select>
                             <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-xl mono text-white bg-slate-900">
                         </div>
                     </div>
                     <div class="w-32">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider">Alpha Premium</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Alpha Premium</label>
                         <input type="number" id="input-alpha" value="4.50" step="0.01" oninput="window.calculateSolar()" class="input-dark w-full font-bold text-xl mono text-emerald-400 bg-slate-900">
                     </div>
                     <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/80 rounded border border-slate-700">
@@ -135,198 +95,150 @@
                         <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="window.calculateSolar()"><label class="text-[10px] font-bold">PPh</label></div>
                     </div>
                     <div class="flex-1 text-right border-l border-slate-800 pl-6" id="final-price-container">
-                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Franco Quote (Rp/Ltr)</p>
-                        <div id="final-price" class="text-4xl font-black text-white mono tracking-tighter">Rp 0</div>
+                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Franco Price (Rp/Ltr)</p>
+                        <div id="final-price" class="text-4xl font-black text-white mono">Rp 0</div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="glass-panel p-4 rounded">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>Price Summary</span>
-                        <span class="text-cyan-500">Live Feedback</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-panel p-4 rounded border-l-4 border-amber-500">
+                    <h3 class="text-[11px] font-bold text-amber-500 uppercase mb-4 flex justify-between">
+                        <span>Harga Publish Pertamina (Industri)</span>
+                        <span class="italic text-[9px] text-slate-500">Periode 1-14 Mar 2026</span>
                     </h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between border-b border-slate-800 pb-2">
-                            <span class="text-xs text-slate-500 uppercase">Basic Ex-Work</span>
-                            <span id="basic-price" class="mono font-bold text-white text-sm">Rp 0</span>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-black/40 p-2 rounded text-center">
+                            <span class="block text-[8px] text-slate-400 uppercase">Wilayah I</span>
+                            <span class="mono text-sm font-bold text-white">19,450</span>
                         </div>
-                        <div class="flex justify-between border-b border-slate-800 pb-2">
-                            <span class="text-xs text-slate-500 uppercase">Total Pajak</span>
-                            <span id="tax-only" class="mono font-bold text-cyan-600 text-sm">Rp 0</span>
+                        <div class="bg-black/40 p-2 rounded text-center">
+                            <span class="block text-[8px] text-slate-400 uppercase">Wilayah II</span>
+                            <span class="mono text-sm font-bold text-white">19,450</span>
+                        </div>
+                        <div class="bg-black/40 p-2 rounded text-center border border-amber-900">
+                            <span class="block text-[8px] text-slate-400 uppercase">Wilayah III</span>
+                            <span class="mono text-sm font-bold text-white">19,550</span>
+                        </div>
+                        <div class="bg-black/40 p-2 rounded text-center">
+                            <span class="block text-[8px] text-slate-400 uppercase">Wilayah IV</span>
+                            <span class="mono text-sm font-bold text-white">19,700</span>
                         </div>
                     </div>
                 </div>
-                <div class="glass-panel p-4 rounded border-l-2 border-indigo-500">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Market Sentiment</h3>
-                    <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex mb-3">
-                        <div id="sentiment-bull" class="bg-emerald-500 h-full w-[68%]"></div>
-                        <div id="sentiment-bear" class="bg-red-500 h-full w-[32%]"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] mono font-bold">
-                        <span class="text-emerald-500 uppercase">Bullish 68%</span>
-                        <span class="text-red-500 uppercase">Bearish 32%</span>
-                    </div>
-                </div>
+                
                 <div class="glass-panel p-4 rounded">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Trend Analysis (IDR)</h3>
-                    <div id="small-chart"></div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="text-[11px] font-bold text-cyan-500 mb-4 uppercase tracking-widest border-b border-cyan-900 pb-1">Investing.com Global News</h4>
-                    <div id="global-news" class="space-y-2"></div>
-                </div>
-                <div>
-                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">National Energy Trends</h4>
-                    <div id="domestic-news" class="space-y-2"></div>
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3">IDR Exchange Trend</h3>
+                    <div id="chart-idr"></div>
                 </div>
             </div>
         </div>
 
         <div class="lg:col-span-3 space-y-4">
-            <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest">System Health</h4>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center text-[10px]">
-                        <span class="text-slate-400">Investing Feed</span>
-                        <div class="flex items-center gap-2"><span class="text-green-500 font-bold uppercase">Linked</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span></div>
+            <div class="glass-panel p-4 rounded-lg">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-3 tracking-widest italic">Live Market Status</h4>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[9px] text-slate-400 uppercase">MOPS Gasoil 10ppm</p>
+                        <div class="flex justify-between items-baseline"><span class="mono text-xl font-bold text-cyan-400" id="mops-display">139.02</span><span class="text-[10px] text-green-500 font-bold">+0.85%</span></div>
                     </div>
-                    <div class="flex justify-between items-center text-[10px]">
-                        <span class="text-slate-400">Exchange Rate API</span>
-                        <div class="flex items-center gap-2"><span class="text-cyan-500 font-bold uppercase">Ready</span><span class="w-2 h-2 bg-cyan-500 rounded-full"></span></div>
-                    </div>
-                    <div class="flex justify-between items-center text-[11px] pt-2 border-t border-slate-800">
-                        <span class="text-slate-400 uppercase font-bold text-[9px]">Market Status</span>
-                        <span class="text-white font-bold text-[10px]">TRADING OPEN</span>
+                    <div class="pt-3 border-t border-slate-800">
+                        <p class="text-[9px] text-slate-400 uppercase">USD to IDR (Investing)</p>
+                        <div class="flex justify-between items-baseline"><span class="mono text-xl font-bold text-white" id="idr-display">15,920</span><span class="text-[10px] text-red-500 font-bold">+0.42%</span></div>
                     </div>
                 </div>
             </div>
-
-            <button onclick="window.calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-4 rounded-lg text-[11px] uppercase tracking-[0.2em] transition-all shadow-[0_0_20px_rgba(8,145,178,0.3)] active:scale-95">
-                Refresh Live Feed
+            <button onclick="window.calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-4 rounded text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-cyan-900/20">
+                Update Data Manual
             </button>
         </div>
     </div>
 
     <script>
-        // DATA BASELINE INVESTING.COM (7 MARET 2026)
-        const BASELINE = {
-            mops: 139.02,
-            wti: 91.27,
-            brent: 93.32,
-            gas: 3.18,
-            murban: 94.10,
-            dxy: 104.15
-        };
-
-        window.marketData = { ...BASELINE };
+        // DATA PASAR LIVE SIMULATION (SESUAI INVESTING 7 MAR 2026)
+        const MARKET_BASE = { dxy: 104.15, wti: 91.27, brent: 93.32, gas: 3.18, murban: 94.10, mops: 139.02 };
+        window.marketData = { ...MARKET_BASE };
         window.kursIdr = 15920;
-        let lastFinalPrice = 0;
+        let lastPrice = 0;
 
-        // SMALL SPARKLINE CHART
+        // FETCH USD/IDR (Simulasi koneksi Investing/API)
+        async function updateKurs() {
+            try {
+                // Dalam implementasi real, fetch ke API (ex: Open Exchange Rates)
+                const fluctuation = (Math.random() - 0.5) * 15;
+                window.kursIdr = Math.round(15920 + fluctuation);
+                document.getElementById('kurs-top').innerText = window.kursIdr.toLocaleString('id-ID');
+                document.getElementById('idr-display').innerText = window.kursIdr.toLocaleString('id-ID');
+                window.calculateSolar();
+            } catch (e) { console.error("Kurs update failed"); }
+        }
+
+        // CHART USD/IDR
         var options = {
-            series: [{ data: [15400, 15450, 15420, 15500, 15600, 15550, 15700, 15920] }],
-            chart: { type: 'area', height: 80, sparkline: { enabled: true }, animations: { speed: 800 } },
-            stroke: { curve: 'smooth', width: 2 },
-            colors: ['#06b6d4'],
-            fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0 } },
+            series: [{ name: 'IDR', data: [15800, 15840, 15820, 15880, 15910, 15920, 15915] }],
+            chart: { type: 'line', height: 80, sparkline: { enabled: true }, animations: { speed: 800 } },
+            stroke: { curve: 'smooth', width: 2, colors:['#22d3ee'] },
             tooltip: { theme: 'dark', x: { show: false } }
         };
-        var chart = new ApexCharts(document.querySelector("#small-chart"), options);
+        var chart = new ApexCharts(document.querySelector("#chart-idr"), options);
         chart.render();
 
-        // LOGIKA KALKULATOR SOLAR (FRANCO)
+        // KALKULASI HARGA FRANCO
         window.calculateSolar = function() {
             const mopsValue = parseFloat(document.getElementById('input-mops').value) || 0;
             const alphaValue = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr;
             
-            // Rumus: ((Harga Dasar + Alpha) / Konversi BBL ke Liter) * Kurs
+            // Konversi Barrel ke Liter (/158.98)
             const basicPrice = ((mopsValue + alphaValue) / 158.98) * kurs;
             
-            let taxMultiplier = 0;
-            if (document.getElementById('check-ppn').checked) taxMultiplier += 0.11;
-            if (document.getElementById('check-pbbkb').checked) taxMultiplier += 0.075;
-            if (document.getElementById('check-pph').checked) taxMultiplier += 0.003;
+            // Pajak: PPN 11%, PBBKB 7.5%, PPh 0.3% (Total Multiplier 1.188)
+            let tax = 0;
+            if(document.getElementById('check-ppn').checked) tax += 0.11;
+            if(document.getElementById('check-pbbkb').checked) tax += 0.075;
+            if(document.getElementById('check-pph').checked) tax += 0.003;
 
-            const finalPrice = Math.round(basicPrice * (1 + taxMultiplier));
-            const container = document.getElementById('final-price-container');
+            const finalPrice = Math.round(basicPrice * (1 + tax));
             const display = document.getElementById('final-price');
+            const container = document.getElementById('final-price-container');
 
-            // Efek Animasi jika harga berubah
             container.classList.remove('price-up-flash', 'price-down-flash');
-            if (finalPrice > lastFinalPrice && lastFinalPrice !== 0) {
-                container.classList.add('price-up-flash');
-            } else if (finalPrice < lastFinalPrice && lastFinalPrice !== 0) {
-                container.classList.add('price-down-flash');
-            }
+            if (finalPrice > lastPrice && lastPrice !== 0) container.classList.add('price-up-flash');
+            if (finalPrice < lastPrice && lastPrice !== 0) container.classList.add('price-down-flash');
 
             display.innerText = "Rp " + finalPrice.toLocaleString('id-ID');
-            document.getElementById('basic-price').innerText = "Rp " + Math.round(basicPrice).toLocaleString('id-ID');
-            document.getElementById('tax-only').innerText = "Rp " + Math.round(basicPrice * taxMultiplier).toLocaleString('id-ID');
-            
-            lastFinalPrice = finalPrice;
+            lastPrice = finalPrice;
         };
 
-        // LIVE FEED SIMULATION (INVESTING DATA)
-        function runLiveFeed() {
+        // LIVE UPDATE ENGINE
+        function initLiveFeed() {
             setInterval(() => {
-                // Update Waktu
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
                 
-                // Update Pergerakan Pasar
-                ['dxy', 'mops', 'brent', 'wti', 'gas', 'murban'].forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.08;
+                // Update 6 Kotak Header
+                ['dxy', 'wti', 'brent', 'gas', 'murban', 'mops'].forEach(key => {
+                    const change = (Math.random() - 0.5) * 0.05;
                     window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`);
                     if(el) el.innerText = window.marketData[key];
-                    
-                    const trend = document.getElementById(`trend-${key}`);
-                    if(trend) {
-                        trend.innerText = (change >= 0 ? '▲ ' : '▼ ') + Math.abs(change).toFixed(2);
-                        trend.className = change >= 0 ? 'trend-up' : 'trend-down';
-                    }
+                    if(key === 'mops') document.getElementById('mops-display').innerText = window.marketData[key];
                 });
 
-                // Sinkronisasi ke Input Kalkulator (Jika tidak Manual)
-                const selection = document.getElementById('market-sync').value;
-                if (selection !== "manual") {
-                    document.getElementById('input-mops').value = window.marketData[selection];
+                // Auto-sync input dari Live Data (kecuali mode manual)
+                const syncType = document.getElementById('market-sync').value;
+                if (syncType !== "manual") {
+                    document.getElementById('input-mops').value = window.marketData[syncType];
                     window.calculateSolar();
                 }
-
             }, 3000);
-        }
 
-        // NEWS MOCK DATA
-        const newsItems = {
-            global: [
-                "OIL BREAKING: WTI climbs above $91 as geopolitical tensions rise.",
-                "US Dollar Index (DXY) steadies at 104.15 ahead of Fed meeting.",
-                "Brent Crude target revised to $95 by major analysts for Q2."
-            ],
-            domestic: [
-                "BBM Industri: Permintaan solar sektor tambang naik 12% bulan ini.",
-                "Pertamina mencatat stabilisasi distribusi di Wilayah II.",
-                "Nilai tukar Rupiah terhadap USD bertahan di level 15,900."
-            ]
-        };
-
-        function renderNews() {
-            document.getElementById('global-news').innerHTML = newsItems.global.map(n => `<div class="news-item text-[11px] text-slate-300 hover:text-cyan-400 cursor-pointer">${n}</div>`).join('');
-            document.getElementById('domestic-news').innerHTML = newsItems.domestic.map(n => `<div class="news-item text-[11px] text-slate-300 hover:text-emerald-400 cursor-pointer">${n}</div>`).join('');
+            setInterval(updateKurs, 60000); // Update kurs per menit
         }
 
         // INIT
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
-        renderNews();
-        runLiveFeed();
+        initLiveFeed();
         window.calculateSolar();
-
     </script>
 </body>
 </html>
