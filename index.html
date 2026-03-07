@@ -21,14 +21,35 @@
             letter-spacing: -0.01em;
         }
         .header-font { font-family: 'Orbitron', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Font Mono dengan fitur Tabular Nums agar angka tidak goyang saat update */
+        .mono { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+        }
+
         .glass-panel { 
             background: var(--panel-bg); 
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
+
+        /* Animasi Flash untuk Update Harga */
+        @keyframes flash-green {
+            0% { background-color: rgba(34, 197, 94, 0.3); }
+            100% { background-color: transparent; }
+        }
+        @keyframes flash-red {
+            0% { background-color: rgba(239, 68, 68, 0.3); }
+            100% { background-color: transparent; }
+        }
+        .price-up-flash { animation: flash-green 0.8s ease-out; }
+        .price-down-flash { animation: flash-red 0.8s ease-out; }
+
         .table-mini { font-size: 11px; width: 100%; }
         .table-mini td { padding: 6px 4px; border-bottom: 1px solid #1e293b; }
+        
         .input-dark {
             background: #020617;
             border: 1px solid #334155;
@@ -42,9 +63,16 @@
         .input-dark:focus { border-color: var(--accent-blue); }
         .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
         .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
+        
         .news-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 8px; transition: all 0.2s; }
         .news-item:hover { border-left-color: var(--accent-blue); background: #1e293b; }
+        
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Scrollbar Style */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--terminal-bg); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4">
@@ -88,7 +116,7 @@
     </header>
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
-        <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
+        <marquee scrollamount="4" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
             • SINERGI MENGALIRKAN ENERGI • PT. INVESTAMA KALIMANTAN ENERGI • PENYALUR BBM INDUSTRI PETRO ANDALAN NUSANTARA • MONITORING HARGA PUBLISH PERTAMINA • ANALISIS MOPS GASOIL 10PPM •
         </marquee>
     </div>
@@ -96,7 +124,7 @@
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-9 space-y-6">
-            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500">
+            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500" id="main-quote-panel">
                 <div class="flex flex-wrap items-end gap-6">
                     <div class="flex-1 min-w-[180px]">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base ($/BBL)</label>
@@ -119,9 +147,9 @@
                         <div class="flex items-center gap-2"><input type="checkbox" id="check-pbbkb" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PBBKB</label></div>
                         <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PPh</label></div>
                     </div>
-                    <div class="flex-1 text-right border-l border-slate-800 pl-6">
+                    <div class="flex-1 text-right border-l border-slate-800 pl-6 rounded transition-all duration-500" id="final-price-container">
                         <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Franco Quote (Rp/Ltr)</p>
-                        <div id="final-price" class="text-3xl font-black text-white mono tracking-tighter leading-none transition-all duration-300">Rp 0</div>
+                        <div id="final-price" class="text-3xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
                     </div>
                 </div>
             </div>
@@ -286,9 +314,20 @@
             
             const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
+            const containerEl = document.getElementById('final-price-container');
             
             if (priceEl) {
-                priceEl.style.color = finalP > lastPrice ? '#f87171' : (finalP < lastPrice ? '#22d3ee' : '#ffffff');
+                // Efek Visual Trading Pro (Flash & Color)
+                containerEl.classList.remove('price-up-flash', 'price-down-flash');
+                
+                if (finalP > lastPrice && lastPrice !== 0) {
+                    priceEl.style.color = '#4ade80'; // Hijau Cerah
+                    containerEl.classList.add('price-up-flash');
+                } else if (finalP < lastPrice && lastPrice !== 0) {
+                    priceEl.style.color = '#f87171'; // Merah Cerah
+                    containerEl.classList.add('price-down-flash');
+                }
+                
                 priceEl.innerText = "Rp " + finalP.toLocaleString('id-ID');
                 lastPrice = finalP;
             }
@@ -338,7 +377,6 @@
                     if(key === 'mops' && Math.random() > 0.6) updateMopsHistory(window.marketData.mops);
                 });
 
-                // Live Sentiment Randomizer (Simulation)
                 const bull = Math.floor(Math.random() * 30) + 50; 
                 document.getElementById('sentiment-bull').style.width = bull + '%';
                 document.getElementById('sentiment-bear').style.width = (100 - bull) + '%';
@@ -373,6 +411,3 @@
     </script>
 </body>
 </html>
-
-
-
