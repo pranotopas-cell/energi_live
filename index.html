@@ -99,7 +99,7 @@
             </div>
             <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[135px] text-center">
                 <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">USD / IDR</p>
-                <div class="flex justify-between items-baseline px-1"><span id="kurs-top" class="mono text-white font-bold text-lg">--.---</span><span class="text-[7px] text-slate-600">SPOT</span></div>
+                <div class="flex justify-between items-center px-1"><span id="kurs-top" class="mono text-white font-bold text-lg">--.---</span><span id="trend-idr" class="trend-up">▲ 0.00</span></div>
             </div>
         </div>
     </header>
@@ -291,7 +291,7 @@
         window.marketData = { ...BASELINE };
         window.kursIdr = 15850;
         let lastPrice = 0;
-        let mopsLast = 139.02;
+        let lastKursIdr = 15850;
 
         // ApexCharts Initialization
         var smallChartOptions = {
@@ -350,13 +350,25 @@
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
-                window.kursIdr = data.rates.IDR;
+                const newKurs = data.rates.IDR;
+                const trendEl = document.getElementById('trend-idr');
+                
+                if (newKurs > lastKursIdr) {
+                    trendEl.innerText = `▲ ${(newKurs - lastKursIdr).toFixed(2)}`;
+                    trendEl.className = 'trend-up';
+                } else if (newKurs < lastKursIdr) {
+                    trendEl.innerText = `▼ ${(lastKursIdr - newKurs).toFixed(2)}`;
+                    trendEl.className = 'trend-down';
+                }
+                
+                window.kursIdr = newKurs;
+                lastKursIdr = newKurs;
                 document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
                 window.calculateSolar();
             } catch (e) { window.kursIdr = 15850; }
         }
 
-        // Live Market Update Simulation (Ready for Real API)
+        // Live Market Update Simulation
         function runLive() {
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
@@ -365,15 +377,22 @@
                     window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`) || document.getElementById(`${key}-live`);
                     if(el) el.innerText = window.marketData[key];
+                    
+                    const tr = document.getElementById(`trend-${key}`);
+                    if(tr) {
+                        tr.innerText = (change >= 0 ? '▲ ' : '▼ ') + Math.abs(change).toFixed(2);
+                        tr.className = change >= 0 ? 'trend-up' : 'trend-down';
+                    }
                 });
 
-                // Sync to calculator if selected
                 const syncType = document.getElementById('market-sync').value;
                 if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
                     document.getElementById('input-mops').value = window.marketData[syncType];
                     window.calculateSolar();
                 }
             }, 3000);
+            
+            setInterval(fetchIDR, 60000); // Update kurs every minute
         }
 
         const news = {
