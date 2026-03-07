@@ -82,7 +82,7 @@
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 w-full lg:w-auto">
             <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-yellow-500">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">SGBC1 (Investing)</p>
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">NYMEX SINGAPORE GAS OIL</p>
                 <div class="flex justify-between items-center px-1"><span id="live-mops" class="mono text-yellow-400 font-bold text-lg">139.02</span><span id="trend-mops" class="trend-up">▲ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center">
@@ -94,11 +94,11 @@
                 <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-lg">90.82</span><span id="trend-brent" class="trend-down">▼ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-emerald-500">
-                <p class="text-[9px] text-emerald-400 font-bold uppercase mb-1">MURBAN OIL</p>
+                <p class="text-[9px] text-emerald-400 font-bold uppercase mb-1">MURBAN CRUDE OIL</p>
                 <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-lg">91.45</span><span id="trend-murban" class="trend-up">▲ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px] text-center">
-                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY INDEX</p>
+                <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY U.S INDEX</p>
                 <div class="flex justify-between items-center px-1"><span id="dxy-top" class="mono text-amber-500 font-bold text-lg">103.85</span><span id="trend-dxy" class="trend-up">▲ 0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[120px] text-center">
@@ -126,9 +126,11 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / MOPS ($/BBL)</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">SGBC1 (Live)</option>
-                                <option value="means">Means Plate (10D Avg)</option>
+                                <option value="mops">Nymex Singapore oil</option>
+                                <option value="means">MOPS Average (10 D Avg)</option>
                                 <option value="murban">Murban Crude Oil</option>
+                                <option value="wti">WTI Crude Oil</option>
+                                <option value="brent">BRENT Crude Oil</option>
                                 <option value="manual">Manual Input</option>
                             </select>
                             <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
@@ -139,7 +141,7 @@
                         <select id="input-alpha" onchange="window.calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500 bg-slate-800 border-none">
                             <option value="1.0">1.0</option>
                             <option value="1.5">1.5</option>
-                            <option value="2.0">2.0</option>
+                            <option value="2.0">2.0</option>(low)</option>
                             <option value="2.5">2.5</option>
                             <option value="3.0">3.0</option>
                             <option value="3.5" selected>3.5 (Normal)</option>
@@ -147,7 +149,7 @@
                             <option value="4.5">4.5</option>
                             <option value="5.0">5.0</option>
                             <option value="6.0">6.0</option>
-                            <option value="7.0">7.0</option>
+                            <option value="7.0">7.0</option>(Hight)</option>
                             <option value="8.0">8.0</option>
                         </select>
                     </div>
@@ -166,8 +168,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>Means Plate (10D History)</span>
-                        <span class="text-yellow-500 animate-pulse">● Singapore Avg</span>
+                        <span>MOPS Average (10 D History)</span>
+                        <span class="text-cyan-500 animate-pulse">● Singapore Avg</span>
                     </h3>
                     <div class="text-2xl font-bold mono mb-4 text-yellow-400" id="means-plate-val">0.00</div>
                     <div class="max-h-[120px] overflow-y-auto">
@@ -193,7 +195,7 @@
                         </div>
                     </div>
                     <div class="glass-panel p-4 rounded border-l-2 border-amber-500 flex-1">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Harga Publish Pertamina</h3>
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">update Harga Publish Pertamina Patra Niaga</h3>
                         <div class="grid grid-cols-4 gap-1 mt-4" id="pertamina-prices">
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800"><span class="block text-[7px] text-slate-500 font-bold uppercase">W-I</span><span id="price-wil1" class="mono text-[9px] text-white">---</span></div>
                             <div class="bg-black/40 p-1 rounded text-center border border-slate-800"><span class="block text-[7px] text-slate-500 font-bold uppercase">W-II</span><span id="price-wil2" class="mono text-[9px] text-white">---</span></div>
@@ -297,7 +299,7 @@
         });
 
         // 10-DAY HISTORY DATA (MOPS SINGAPORE)
-        let sgbc1History = [139.02, 138.85, 139.10, 138.90, 138.20, 137.95, 138.30, 139.00, 138.75, 139.02];
+        let sgbc1History = [102.02, 102.85, 103.10, 103.90, 103.20, 101.95, 102.30, 103.00, 102.75, 103.02];
         window.marketData = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.kursIdr = 15850;
         let lastPrice = 0;
@@ -430,5 +432,6 @@
     </script>
 </body> 
 </html>
+
 
 
