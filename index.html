@@ -81,18 +81,30 @@
                 <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase tracking-widest italic mb-4">Analisis Tren Harga</h3>
                 <div class="h-[240px]"><canvas id="predictionChart"></canvas></div>
             </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="glass-panel p-4 rounded-lg border-b-2 border-green-500 bg-green-500/5 text-center">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Turun</p>
-                    <p id="pred-down" class="mono text-xl font-bold text-green-500">Rp 0</p>
+                <div class="glass-panel p-4 rounded-lg border-b-2 border-green-500 bg-green-500/5">
+                    <p class="text-[9px] text-slate-500 font-bold uppercase text-center">Skenario Turun (Optimis)</p>
+                    <p id="pred-down" class="mono text-xl font-bold text-green-500 text-center">Rp 0</p>
+                    <div class="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div id="bar-down" class="h-full bg-green-500 transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                    <p id="perc-down" class="text-[8px] text-green-500/70 mono mt-1 text-right">-0.00%</p>
                 </div>
-                <div class="glass-panel p-4 rounded-lg border-b-2 border-slate-700 text-center">
+
+                <div class="glass-panel p-4 rounded-lg border-b-2 border-slate-700 text-center flex flex-col justify-center">
                     <p class="text-[9px] text-slate-500 font-bold uppercase">Harga Sekarang</p>
                     <p class="mono text-xl font-bold text-white">Rp 21.250</p>
+                    <p class="text-[8px] text-slate-500 mono mt-1">BASE REF</p>
                 </div>
-                <div class="glass-panel p-4 rounded-lg border-b-2 border-red-500 bg-red-500/5 text-center">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Naik (15 Mar)</p>
-                    <p id="pred-up" class="mono text-xl font-bold text-red-500">Rp 0</p>
+
+                <div class="glass-panel p-4 rounded-lg border-b-2 border-red-500 bg-red-500/5">
+                    <p class="text-[9px] text-slate-500 font-bold uppercase text-center">Skenario Naik (Risiko)</p>
+                    <p id="pred-up" class="mono text-xl font-bold text-red-500 text-center">Rp 0</p>
+                    <div class="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div id="bar-up" class="h-full bg-red-500 transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                    <p id="perc-up" class="text-[8px] text-red-500/70 mono mt-1 text-right">+0.00%</p>
                 </div>
             </div>
         </div>
@@ -137,6 +149,7 @@
 
     <script>
         const STATE = { pertamina: 21250, brent: 90.82, wti: 88.96, mops: 139.02, kurs: 15850 };
+        const INITIAL_BRENT = 90.82;
         
         async function updateKurs() {
             try {
@@ -151,12 +164,13 @@
         function livePriceMovement() {
             setInterval(() => {
                 ['wti', 'brent', 'mops'].forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.04;
+                    const change = (Math.random() - 0.5) * 0.08; // Peningkatan volatilitas simulasi
                     STATE[key] = parseFloat((STATE[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`);
                     if(el) {
                         el.innerText = STATE[key].toFixed(2);
                         el.classList.remove('price-up', 'price-down');
+                        void el.offsetWidth; // trigger reflow
                         el.classList.add(change >= 0 ? 'price-up' : 'price-down');
                     }
                 });
@@ -188,25 +202,49 @@
         function calculateSolar() {
             const syncType = document.getElementById('market-sync').value;
             const val = parseFloat(document.getElementById('input-base').value) || 0;
+            
+            // Perhitungan Harga Utama
             let baseL = (syncType === 'pertamina') ? val : ((val + 4.5) / 158.98) * STATE.kurs;
             const finalP = baseL * 1.188;
             
             const elFinal = document.getElementById('final-price');
-            const elPredDown = document.getElementById('pred-down');
-            const elPredUp = document.getElementById('pred-up');
-            
             if(elFinal) elFinal.innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
-            if(elPredDown) elPredDown.innerText = "Rp " + Math.round(STATE.pertamina * 0.985).toLocaleString('id-ID');
-            if(elPredUp) elPredUp.innerText = "Rp " + Math.round(STATE.pertamina * 1.03).toLocaleString('id-ID');
+
+            // --- LOGIKA SKENARIO DINAMIS MENGIKUTI BRENT ---
+            const brentRatio = STATE.brent / INITIAL_BRENT;
+            
+            // Skenario Turun (Optimis) - Berkurang jika brent turun, tapi terbatas
+            const factorDown = 0.02 * (1 / brentRatio);
+            const priceDown = STATE.pertamina * (1 - factorDown);
+            
+            // Skenario Naik (Risiko) - Meningkat tajam jika brent naik
+            const factorUp = 0.035 * brentRatio;
+            const priceUp = STATE.pertamina * (1 + factorUp);
+
+            // Update UI Skenario
+            document.getElementById('pred-down').innerText = "Rp " + Math.round(priceDown).toLocaleString('id-ID');
+            document.getElementById('pred-up').innerText = "Rp " + Math.round(priceUp).toLocaleString('id-ID');
+
+            // Update Persentase
+            const pDown = (factorDown * 100).toFixed(2);
+            const pUp = (factorUp * 100).toFixed(2);
+            document.getElementById('perc-down').innerText = `-${pDown}% volatility`;
+            document.getElementById('perc-up').innerText = `+${pUp}% volatility`;
+
+            // Update Progress Bar
+            document.getElementById('bar-down').style.width = Math.min(Math.max(pDown * 15, 5), 95) + "%";
+            document.getElementById('bar-up').style.width = Math.min(Math.max(pUp * 15, 5), 95) + "%";
         }
 
         function updateDecision() {
             const box = document.getElementById('decision-box');
             if(!box) return;
-            if(STATE.brent > 89.5) {
-                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">Urgensi Tinggi!</span><br>Brent naik ke $${STATE.brent.toFixed(2)}. Amankan PO segera sebelum tgl 15 Mar.`;
+            if(STATE.brent > 91.5) {
+                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">Urgensi Tinggi!</span><br>Brent menembus $${STATE.brent.toFixed(2)}. Tren Bullish kuat. Amankan stok sebelum tgl 15.`;
+            } else if (STATE.brent < 89.5) {
+                box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase">Peluang!</span><br>Brent melemah ke $${STATE.brent.toFixed(2)}. Pertimbangkan menunggu koreksi harga lebih dalam.`;
             } else {
-                box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase">Monitor.</span><br>Harga masih stabil. Eksekusi PO sesuai kebutuhan operasional rutin.`;
+                box.innerHTML = `⚖️ <span class="text-cyan-500 font-bold uppercase">Stabil.</span><br>Pasar bergerak sideways. Lakukan pengadaan sesuai jadwal rutin operasional.`;
             }
         }
 
@@ -226,7 +264,10 @@
                 options: { 
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { y: { grid: { color: '#1e293b' } }, x: { grid: { display: false } } }
+                    scales: { 
+                        y: { grid: { color: '#1e293b' }, ticks: { font: { size: 10 } } }, 
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
+                    }
                 }
             });
         }
@@ -238,7 +279,12 @@
             if(elDate) elDate.innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
         }, 1000);
 
-        window.onload = () => { updateKurs(); initChart(); livePriceMovement(); };
+        window.onload = () => { 
+            updateKurs(); 
+            initChart(); 
+            livePriceMovement(); 
+            calculateSolar();
+        };
     </script>
 </body>
 </html>
