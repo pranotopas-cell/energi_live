@@ -13,7 +13,6 @@
         .header-font { font-family: 'Orbitron', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; position: relative; overflow: hidden; }
-        .glow-cyan { box-shadow: 0 0 15px rgba(56, 189, 248, 0.05); }
         .scanner::after {
             content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.05), transparent);
@@ -44,12 +43,12 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 w-full lg:w-auto text-center">
-            <div onclick="window.open('https://www.tradingview.com/symbols/NYMEX-CL1!/', '_blank')" class="glass-panel p-3 rounded-lg widget-box glow-cyan">
+            <div onclick="window.open('https://www.tradingview.com/symbols/NYMEX-CL1!/', '_blank')" class="glass-panel p-3 rounded-lg widget-box">
                 <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE</p>
                 <div class="mono text-blue-400 font-bold text-lg leading-none">$<span id="live-wti">88.96</span></div>
                 <div class="text-[9px] text-slate-400 mt-1 mono">Rp <span id="idr-wti">0</span></div>
             </div>
-            <div onclick="window.open('https://www.tradingview.com/symbols/ICEEUR-BRN1!/', '_blank')" class="glass-panel p-3 rounded-lg widget-box glow-cyan">
+            <div onclick="window.open('https://www.tradingview.com/symbols/ICEEUR-BRN1!/', '_blank')" class="glass-panel p-3 rounded-lg widget-box">
                 <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE</p>
                 <div class="mono text-orange-400 font-bold text-lg leading-none">$<span id="live-brent">90.82</span></div>
                 <div class="text-[9px] text-slate-400 mt-1 mono">Rp <span id="idr-brent">0</span></div>
@@ -59,7 +58,7 @@
                 <div class="mono text-white font-bold text-lg leading-none">$<span id="usd-pertamina">0.00</span></div>
                 <div class="text-[9px] text-slate-400 mt-1 mono">Rp 21.250</div>
             </div>
-            <div onclick="window.open('https://www.marketwatch.com/investing/future/sgbc1', '_blank')" class="glass-panel p-3 rounded-lg widget-box glow-cyan">
+            <div onclick="window.open('https://www.marketwatch.com/investing/future/sgbc1', '_blank')" class="glass-panel p-3 rounded-lg widget-box">
                 <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">NYMEX SGBC1</p>
                 <div class="mono text-emerald-400 font-bold text-lg leading-none">$<span id="live-mops">139.02</span></div>
                 <div class="text-[9px] text-slate-400 mt-1 mono">Rp <span id="idr-mops">0</span></div>
@@ -78,7 +77,7 @@
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <div class="lg:col-span-8 space-y-6">
             <div class="glass-panel p-5 rounded-xl scanner h-[320px]">
-                <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase tracking-widest italic mb-4">Analisis Tren Harga</h3>
+                <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase tracking-widest italic mb-4">Analisis Tren & Prediksi Harga</h3>
                 <div class="h-[240px]"><canvas id="predictionChart"></canvas></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -91,7 +90,7 @@
                     <p class="mono text-xl font-bold text-white">Rp 21.250</p>
                 </div>
                 <div class="glass-panel p-4 rounded-lg border-b-2 border-red-500 bg-red-500/5 text-center">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Naik (15 Mar)</p>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase">Prediksi 15 Mar (Naik)</p>
                     <p id="pred-up" class="mono text-xl font-bold text-red-500">Rp 0</p>
                 </div>
             </div>
@@ -104,13 +103,13 @@
                     Memproses data pasar...
                 </div>
                 <div class="mt-3 flex gap-2">
-                    <div class="flex-1 bg-amber-600 text-black text-[9px] font-black py-2 rounded text-center uppercase">Segera PO</div>
-                    <div class="flex-1 bg-slate-800 text-white text-[9px] font-black py-2 rounded text-center uppercase">Tunggu</div>
+                    <div class="flex-1 bg-amber-600 text-black text-[9px] font-black py-2 rounded text-center uppercase shadow-lg">Segera PO</div>
+                    <div class="flex-1 bg-slate-800 text-white text-[9px] font-black py-2 rounded text-center uppercase">Hold</div>
                 </div>
             </div>
 
             <div class="glass-panel p-4 rounded-xl border-t-4 border-cyan-500">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-widest">Simulasi Franco</h3>
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-widest">Simulasi Franco (Incl. Pajak)</h3>
                 <div class="grid grid-cols-2 gap-3 mb-3">
                     <div>
                         <label class="text-[8px] text-slate-500 uppercase font-bold">Base Ref:</label>
@@ -126,11 +125,25 @@
                         <input type="number" id="input-base" value="21250" oninput="calculateSolar()" class="input-dark mt-1 mono text-cyan-400">
                     </div>
                 </div>
-                <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-                    <p class="text-[9px] text-slate-500 uppercase font-bold">Total Franco</p>
-                    <div id="final-price" class="text-xl font-black text-white mono">Rp 0</div>
+                
+                <div class="pt-2 border-t border-slate-800 space-y-1">
+                    <div class="flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Harga Dasar (DPP)</span>
+                        <span id="price-dpp" class="mono">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] text-slate-500">
+                        <span>Pajak (18.8%)</span>
+                        <span id="price-tax" class="mono">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1 border-t border-slate-800/50">
+                        <p class="text-[10px] text-white font-bold uppercase">Total Net Franco</p>
+                        <div id="final-price" class="text-xl font-black text-white mono">Rp 0</div>
+                    </div>
                 </div>
-                <button onclick="calculateSolar()" class="w-full bg-cyan-600/10 hover:bg-cyan-600/30 text-cyan-400 text-[9px] font-bold py-1.5 rounded mt-3 uppercase border border-cyan-600/30 transition-all">Recalculate</button>
+                
+                <p class="text-[7px] text-slate-600 mt-3 italic uppercase leading-tight">
+                    *Termasuk PPN 11%, PBBKB 7.5%, PPh 0.3%
+                </p>
             </div>
         </div>
     </div>
@@ -165,16 +178,10 @@
         }
 
         function refreshDisplays() {
-            const elIdrWti = document.getElementById('idr-wti');
-            const elIdrBrent = document.getElementById('idr-brent');
-            const elIdrMops = document.getElementById('idr-mops');
-            const elUsdPertamina = document.getElementById('usd-pertamina');
-            
-            if(elIdrWti) elIdrWti.innerText = Math.round(STATE.wti * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            if(elIdrBrent) elIdrBrent.innerText = Math.round(STATE.brent * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            if(elIdrMops) elIdrMops.innerText = Math.round(STATE.mops * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            if(elUsdPertamina) elUsdPertamina.innerText = (STATE.pertamina / STATE.kurs).toFixed(2);
-            
+            document.getElementById('idr-wti').innerText = Math.round(STATE.wti * (STATE.kurs / 158.98)).toLocaleString('id-ID');
+            document.getElementById('idr-brent').innerText = Math.round(STATE.brent * (STATE.kurs / 158.98)).toLocaleString('id-ID');
+            document.getElementById('idr-mops').innerText = Math.round(STATE.mops * (STATE.kurs / 158.98)).toLocaleString('id-ID');
+            document.getElementById('usd-pertamina').innerText = (STATE.pertamina / STATE.kurs).toFixed(2);
             calculateSolar();
             updateDecision();
         }
@@ -188,25 +195,34 @@
         function calculateSolar() {
             const syncType = document.getElementById('market-sync').value;
             const val = parseFloat(document.getElementById('input-base').value) || 0;
-            let baseL = (syncType === 'pertamina') ? val : ((val + 4.5) / 158.98) * STATE.kurs;
-            const finalP = baseL * 1.188;
             
-            const elFinal = document.getElementById('final-price');
-            const elPredDown = document.getElementById('pred-down');
-            const elPredUp = document.getElementById('pred-up');
+            // Logika: Jika base dari Pertamina, asumsikan itu harga publish (sudah include pajak)
+            // Jika base dari MOPS/WTI/Brent, hitung dari dasar lalu tambah pajak
+            let baseL;
+            if (syncType === 'pertamina') {
+                baseL = val / 1.188; // Cari DPP-nya
+            } else {
+                baseL = ((val + 4.5) / 158.98) * STATE.kurs;
+            }
             
-            if(elFinal) elFinal.innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
-            if(elPredDown) elPredDown.innerText = "Rp " + Math.round(STATE.pertamina * 0.985).toLocaleString('id-ID');
-            if(elPredUp) elPredUp.innerText = "Rp " + Math.round(STATE.pertamina * 1.03).toLocaleString('id-ID');
+            const taxTotal = baseL * 0.188;
+            const finalP = baseL + taxTotal;
+            
+            document.getElementById('price-dpp').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
+            document.getElementById('price-tax').innerText = "Rp " + Math.round(taxTotal).toLocaleString('id-ID');
+            document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
+            
+            document.getElementById('pred-down').innerText = "Rp " + Math.round(STATE.pertamina * 0.985).toLocaleString('id-ID');
+            document.getElementById('pred-up').innerText = "Rp " + Math.round(STATE.pertamina * 1.03).toLocaleString('id-ID');
         }
 
         function updateDecision() {
             const box = document.getElementById('decision-box');
             if(!box) return;
             if(STATE.brent > 89.5) {
-                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">Urgensi Tinggi!</span><br>Brent naik ke $${STATE.brent.toFixed(2)}. Amankan PO segera sebelum tgl 15 Mar.`;
+                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase underline">Analisis Eksekusi:</span><br>Brent di level $${STATE.brent.toFixed(2)}. Tren MOPS menunjukkan penguatan. Disarankan **SEGERA PO** untuk volume s/d akhir periode tgl 15.`;
             } else {
-                box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase">Monitor.</span><br>Harga masih stabil. Eksekusi PO sesuai kebutuhan operasional rutin.`;
+                box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase underline">Analisis Eksekusi:</span><br>Harga minyak mentah relatif stabil. Bapak bisa melakukan pembelian sesuai kebutuhan operasional harian saja.`;
             }
         }
 
@@ -232,10 +248,8 @@
         }
 
         setInterval(() => {
-            const elTime = document.getElementById('current-time');
-            const elDate = document.getElementById('current-date');
-            if(elTime) elTime.innerText = new Date().toLocaleTimeString('en-GB');
-            if(elDate) elDate.innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+            document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
         }, 1000);
 
         window.onload = () => { updateKurs(); initChart(); livePriceMovement(); };
