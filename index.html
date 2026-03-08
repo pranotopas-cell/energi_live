@@ -3,191 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL MONITORING - MARKETSTACK</title>
+    <title>PRO-TERMINAL | KSE MONITORING</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0e14; --panel: #111827; --accent: #38bdf8; }
-        body { background-color: var(--bg); color: #f1f5f9; font-family: 'Inter', sans-serif; }
-        .header-font { font-family: 'Orbitron', sans-serif; }
+        body { 
+            background-color: #05070a; 
+            color: #d1d5db; 
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Fix layout untuk feel aplikasi desktop */
+        }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { background: var(--panel); border: 1px solid #1e293b; border-radius: 8px; }
-        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 6px 10px; border-radius: 4px; outline: none; }
-        .trend-up { color: #22c55e; }
-        .trend-down { color: #ef4444; }
+        .border-terminal { border-color: #1e293b; }
+        .bg-panel { background-color: #0f172a; }
+        .text-neon-blue { color: #0ea5e9; text-shadow: 0 0 8px rgba(14, 165, 233, 0.4); }
+        .active-tab { border-bottom: 2px solid #0ea5e9; color: white; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #05070a; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
-<body class="p-4">
+<body class="h-screen flex flex-col">
 
-    <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6 border-b border-slate-800 pb-4">
-        <div>
-            <h1 class="header-font text-2xl font-black text-white uppercase tracking-tighter">
-                OIL MARKET<span class="text-cyan-500"> STACK</span>
-            </h1>
-            <p class="text-[9px] text-slate-500 tracking-[0.2em] font-bold">PT KHATULISTIWA SINAR ENERGI - MONITORING SYSTEM</p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full lg:w-auto">
-            <div class="glass-panel p-3 min-w-[140px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Brent Crude</p>
-                <div class="flex justify-between items-baseline">
-                    <span id="live-brent" class="mono text-orange-400 font-bold text-xl">--.--</span>
-                    <span class="text-[10px] text-slate-600">USD</span>
-                </div>
+    <nav class="h-12 border-b border-terminal bg-black flex items-center justify-between px-4 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 bg-cyan-500 rounded-sm rotate-45"></div>
+                <span class="font-bold text-sm tracking-tighter text-white">KSE <span class="text-cyan-500">TERMINAL v2.0</span></span>
             </div>
-            <div class="glass-panel p-3 min-w-[140px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI Crude</p>
-                <div class="flex justify-between items-baseline">
-                    <span id="live-wti" class="mono text-blue-400 font-bold text-xl">--.--</span>
-                    <span class="text-[10px] text-slate-600">USD</span>
-                </div>
-            </div>
-            <div class="glass-panel p-3 min-w-[140px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Kurs USD/IDR</p>
-                <div class="flex justify-between items-baseline">
-                    <span id="kurs-top" class="mono text-white font-bold text-xl">--.---</span>
-                </div>
-            </div>
-            <div class="glass-panel p-3 border-r-2 border-r-cyan-500">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Last Sync</p>
-                <div id="current-time" class="mono text-cyan-400 font-bold text-lg leading-none mt-1">00:00:00</div>
+            <div class="h-4 w-[1px] bg-slate-800 mx-2"></div>
+            <div class="flex gap-4 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <a href="#" class="active-tab pb-1">Dashboard</a>
+                <a href="#" class="hover:text-white transition-colors">Market Data</a>
+                <a href="#" class="hover:text-white transition-colors">History</a>
+                <a href="#" class="hover:text-white transition-colors">Settings</a>
             </div>
         </div>
-    </header>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="mono text-[10px] text-green-500">SERVER CONNECTED</span>
+            </div>
+            <span id="clock" class="mono text-sm text-slate-400">22:13:45</span>
+        </div>
+    </nav>
 
-    <div class="max-w-6xl mx-auto space-y-6">
-        <div class="glass-panel p-6 border-t-2 border-cyan-500 shadow-xl">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-                
-                <div class="md:col-span-4">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Market Reference & Base Price</label>
-                    <div class="flex gap-2">
-                        <select id="market-sync" onchange="syncFromMarket()" class="input-dark bg-slate-800 text-xs font-bold">
-                            <option value="brent">Brent Oil</option>
-                            <option value="wti">WTI Oil</option>
-                            <option value="manual">Manual Input</option>
-                        </select>
-                        <input type="number" id="input-mops" value="80.00" step="0.01" oninput="calculateSolar()" class="input-dark flex-1 font-bold text-xl mono text-cyan-400">
+    <main class="flex-1 flex overflow-hidden">
+        
+        <aside class="w-72 border-r border-terminal bg-black flex flex-col shrink-0">
+            <div class="p-3 border-b border-terminal flex justify-between items-center">
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Live Watchlist</span>
+                <span class="text-[10px] text-cyan-500 mono">USD/IDR</span>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+                <div class="p-4 border-b border-terminal/50 hover:bg-slate-900/50 cursor-pointer">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="font-bold text-xs text-white">BRENT CRUDE</span>
+                        <span class="mono text-xs text-green-400" id="side-brent">82.45</span>
+                    </div>
+                    <div class="flex justify-between text-[10px]">
+                        <span class="text-slate-500 italic uppercase">ICE Futures</span>
+                        <span class="text-green-500">+1.24%</span>
                     </div>
                 </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Alpha Premium</label>
-                    <select id="input-alpha" onchange="calculateSolar()" class="input-dark w-full font-bold text-xl mono text-green-500 bg-slate-900">
-                        <option value="2.0">2.0</option>
-                        <option value="2.5">2.5</option>
-                        <option value="3.0">3.0</option>
-                        <option value="3.5">3.5</option>
-                        <option value="4.0">4.0</option>
-                        <option value="4.5" selected>4.5</option>
-                        <option value="5.0">5.0</option>
-                        <option value="5.5">5.5</option>
-                        <option value="6.0">6.0</option>
-                        <option value="6.5">6.5</option>
-                        <option value="7.0">7.0</option>
-                        <option value="7.5">7.5</option>
-                        <option value="8.0">8.0</option>
-                    </select>
+                <div class="p-4 border-b border-terminal/50 hover:bg-slate-900/50 cursor-pointer">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="font-bold text-xs text-white">WTI CRUDE</span>
+                        <span class="mono text-xs text-blue-400" id="side-wti">78.12</span>
+                    </div>
+                    <div class="flex justify-between text-[10px]">
+                        <span class="text-slate-500 italic uppercase">NYMEX</span>
+                        <span class="text-red-500">-0.45%</span>
+                    </div>
                 </div>
-
-                <div class="md:col-span-3 flex justify-around py-3 px-4 bg-slate-900/50 rounded border border-slate-800">
-                    <div class="flex flex-col items-center"><input type="checkbox" id="check-ppn" checked onchange="calculateSolar()"><label class="text-[8px] mt-1 font-bold text-slate-500">PPN</label></div>
-                    <div class="flex flex-col items-center"><input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()"><label class="text-[8px] mt-1 font-bold text-slate-500">PBBKB</label></div>
-                    <div class="flex flex-col items-center"><input type="checkbox" id="check-pph" checked onchange="calculateSolar()"><label class="text-[8px] mt-1 font-bold text-slate-500">PPH</label></div>
-                </div>
-
-                <div class="md:col-span-3 text-right">
-                    <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Franco Quote (IDR/Ltr)</p>
-                    <div id="final-price" class="text-4xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
+                <div class="p-4 border-b border-terminal/50 hover:bg-slate-900/50 cursor-pointer bg-slate-900/30">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="font-bold text-xs text-white">USD / IDR</span>
+                        <span class="mono text-xs text-white" id="side-kurs">15.850</span>
+                    </div>
+                    <div class="flex justify-between text-[10px]">
+                        <span class="text-slate-500 italic uppercase">Spot Rate</span>
+                        <span class="text-slate-400">0.00%</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <button onclick="fetchAllData()" class="w-full md:w-auto px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-black font-black rounded text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg">
-            Update Market Data Now
-        </button>
-    </div>
+        <section class="flex-1 flex flex-col bg-[#05070a] p-4 gap-4 overflow-y-auto">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-panel border border-terminal p-4 rounded-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 rounded-full -mr-8 -mt-8"></div>
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Base Reference</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-bold text-white mono" id="main-price-val">82.45</span>
+                        <span class="text-xs text-slate-500">USD/BBL</span>
+                    </div>
+                </div>
+                <div class="bg-panel border border-terminal p-4 rounded-sm">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Conversion (IDR/Ltr)</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-bold text-cyan-500 mono" id="idr-ltr-val">8.225</span>
+                    </div>
+                </div>
+                <div class="bg-panel border border-terminal p-4 rounded-sm border-r-4 border-r-emerald-500">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Final Franco</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-bold text-white mono" id="franco-val">9.870</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-panel border border-terminal rounded-sm flex flex-col">
+                <div class="p-3 border-b border-terminal bg-slate-900/30 flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-tighter">Pricing Engine</span>
+                    <div class="flex gap-2">
+                        <button class="w-3 h-3 rounded-full bg-slate-700"></button>
+                        <button class="w-3 h-3 rounded-full bg-slate-700"></button>
+                    </div>
+                </div>
+                <div class="p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Market Source</label>
+                            <select id="m-sync" onchange="updateCalculations()" class="w-full bg-black border border-terminal p-2 text-xs mono text-cyan-400 outline-none focus:border-cyan-500">
+                                <option value="brent">BRENT CRUDE (ICE)</option>
+                                <option value="wti">WTI CRUDE (NYMEX)</option>
+                                <option value="manual">MANUAL OVERRIDE</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Alpha Premium</label>
+                            <select id="m-alpha" onchange="updateCalculations()" class="w-full bg-black border border-terminal p-2 text-xs mono text-emerald-400 outline-none">
+                                <option value="2.0">2.00</option>
+                                <option value="4.5" selected>4.50</option>
+                                <option value="8.0">8.00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Tax Configuration</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center justify-between bg-black/50 p-2 rounded cursor-pointer group">
+                                    <span class="text-[10px] group-hover:text-white transition-colors">PPN (11%)</span>
+                                    <input type="checkbox" id="m-ppn" checked onchange="updateCalculations()" class="accent-cyan-500">
+                                </label>
+                                <label class="flex items-center justify-between bg-black/50 p-2 rounded cursor-pointer group">
+                                    <span class="text-[10px] group-hover:text-white transition-colors">PBBKB (7.5%)</span>
+                                    <input type="checkbox" id="m-pbbkb" checked onchange="updateCalculations()" class="accent-cyan-500">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 bg-black/40 p-4 border border-terminal rounded-sm">
+                        <div class="flex justify-between mb-4">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase italic">Execution Summary</span>
+                            <span class="text-[10px] text-slate-500 mono">ID: KSE-9902</span>
+                        </div>
+                        <div class="space-y-2 text-xs mono">
+                            <div class="flex justify-between border-b border-terminal/30 pb-1">
+                                <span>Exchange Rate</span>
+                                <span class="text-white" id="stat-kurs">15.850,00</span>
+                            </div>
+                            <div class="flex justify-between border-b border-terminal/30 pb-1">
+                                <span>Ltr/Bbl Factor</span>
+                                <span class="text-white">158.98</span>
+                            </div>
+                            <div class="flex justify-between border-b border-terminal/30 pb-1">
+                                <span>Tax Total</span>
+                                <span class="text-cyan-500" id="stat-tax">Rp 1.545</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="h-8 bg-slate-900 border-t border-terminal flex items-center justify-between px-4 text-[10px] mono shrink-0">
+        <div class="flex gap-4">
+            <span class="text-slate-400">DATA SOURCE: <span class="text-white">MARKETSTACK API</span></span>
+            <span class="text-slate-400">TICKER: <span class="text-white">XBRUSD (BRENT)</span></span>
+        </div>
+        <div class="flex gap-4">
+            <span class="text-cyan-500">PT KHATULISTIWA SINAR ENERGI © 2026</span>
+        </div>
+    </footer>
 
     <script>
-        // MASUKKAN API KEY MARKETSTACK ANDA DI SINI
-        const MARKETSTACK_KEY = 'YOUR_MARKETSTACK_API_KEY'; 
-        const KURS_API = 'https://open.er-api.com/v6/latest/USD';
+        // Data Dummy untuk Demo UI
+        let prices = { brent: 82.45, wti: 78.12, kurs: 15850 };
 
-        window.marketData = { brent: 82.50, wti: 78.10 };
-        window.kursIdr = 15850;
+        function updateCalculations() {
+            const sync = document.getElementById('m-sync').value;
+            const alpha = parseFloat(document.getElementById('m-alpha').value);
+            const basePrice = sync === 'manual' ? 80.00 : prices[sync];
+            const kurs = prices.kurs;
 
-        async function fetchMarketStack() {
-            try {
-                // Catatan: Ticker di MarketStack untuk minyak biasanya menggunakan indeks komoditas
-                // Contoh penggunaan: http://api.marketstack.com/v1/eod?access_key=KEY&symbols=BRENT,WTI
-                const res = await fetch(`http://api.marketstack.com/v1/eod/latest?access_key=${MARKETSTACK_KEY}&symbols=XBRUSD,XTIUSD`);
-                const data = await res.json();
-                
-                if (data && data.data) {
-                    data.data.forEach(item => {
-                        if(item.symbol === 'XBRUSD') window.marketData.brent = item.close;
-                        if(item.symbol === 'XTIUSD') window.marketData.wti = item.close;
-                    });
-                }
-            } catch (e) {
-                console.log("MarketStack Error (Check HTTP/HTTPS or API Key)");
-                // Tetap gunakan baseline jika error
-                window.marketData.brent += (Math.random() - 0.5) * 0.1;
-                window.marketData.wti += (Math.random() - 0.5) * 0.1;
-            }
-            updateUI();
-        }
-
-        async function fetchKurs() {
-            try {
-                const res = await fetch(KURS_API);
-                const data = await res.json();
-                window.kursIdr = data.rates.IDR;
-                document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
-                calculateSolar();
-            } catch (e) { console.error("Kurs Error"); }
-        }
-
-        function updateUI() {
-            document.getElementById('live-brent').innerText = window.marketData.brent.toFixed(2);
-            document.getElementById('live-wti').innerText = window.marketData.wti.toFixed(2);
-            syncFromMarket();
-        }
-
-        function syncFromMarket() {
-            const mode = document.getElementById('market-sync').value;
-            if (mode !== 'manual') {
-                document.getElementById('input-mops').value = window.marketData[mode].toFixed(2);
-                calculateSolar();
-            }
-        }
-
-        function calculateSolar() {
-            const baseVal = parseFloat(document.getElementById('input-mops').value) || 0;
-            const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
-            const kurs = window.kursIdr;
+            // Dasar Rupiah/Liter
+            const rawLtr = ((basePrice + alpha) / 158.98) * kurs;
             
-            // Rumus: ((Base + Alpha) / 158.98) * Kurs
-            const priceLtrBase = ((baseVal + alpha) / 158.98) * kurs;
+            // Tax
+            let taxRate = 0;
+            if(document.getElementById('m-ppn').checked) taxRate += 0.11;
+            if(document.getElementById('m-pbbkb').checked) taxRate += 0.075;
             
-            let tax = 0;
-            if (document.getElementById('check-ppn').checked) tax += 0.11;
-            if (document.getElementById('check-pbbkb').checked) tax += 0.075;
-            if (document.getElementById('check-pph').checked) tax += 0.003;
-            
-            const final = priceLtrBase + (priceLtrBase * tax);
-            document.getElementById('final-price').innerText = "Rp " + Math.round(final).toLocaleString('id-ID');
+            const totalTax = rawLtr * taxRate;
+            const final = rawLtr + totalTax;
+
+            // UI Updates
+            document.getElementById('main-price-val').innerText = basePrice.toFixed(2);
+            document.getElementById('idr-ltr-val').innerText = Math.round(rawLtr).toLocaleString('id-ID');
+            document.getElementById('franco-val').innerText = Math.round(final).toLocaleString('id-ID');
+            document.getElementById('stat-tax').innerText = "Rp " + Math.round(totalTax).toLocaleString('id-ID');
+            document.getElementById('stat-kurs').innerText = kurs.toLocaleString('id-ID') + ",00";
         }
 
-        function fetchAllData() {
-            fetchKurs();
-            fetchMarketStack();
-            document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
+        function runClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-GB');
+            setTimeout(runClock, 1000);
         }
 
-        // Jalankan
-        fetchAllData();
-        setInterval(fetchAllData, 600000); // Update otomatis setiap 10 menit
+        // Initialize
+        runClock();
+        updateCalculations();
+
+        // Simulate Price Movement
+        setInterval(() => {
+            prices.brent += (Math.random() - 0.5) * 0.1;
+            document.getElementById('side-brent').innerText = prices.brent.toFixed(2);
+            updateCalculations();
+        }, 5000);
     </script>
 </body>
 </html>
