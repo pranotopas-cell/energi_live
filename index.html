@@ -8,24 +8,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --terminal-bg: #0a0e14; --panel-bg: #111827; --accent-blue: #38bdf8; }
-        body { background-color: var(--terminal-bg); color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        :root { --terminal-bg: #020617; --panel-bg: #0f172a; --accent: #38bdf8; }
+        body { background-color: var(--terminal-bg); color: #f1f5f9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; transition: all 0.2s; }
-        .widget-box { cursor: pointer; }
-        .widget-box:hover { border-color: var(--accent-blue); background: #1e293b; transform: translateY(-2px); }
-        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 6px; border-radius: 4px; font-size: 13px; outline: none; width: 100%; }
-        .trend-label { font-size: 10px; font-weight: bold; margin-top: 2px; }
+        
+        /* Glass Effect & Glow */
+        .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; position: relative; overflow: hidden; }
+        .glow-cyan { box-shadow: 0 0 15px rgba(56, 189, 248, 0.1); }
+        
+        /* Animasi Garis Scanner */
+        .scanner::after {
+            content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.05), transparent);
+            animation: scan 4s infinite linear;
+        }
+        @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
+
+        /* Widget Hover */
+        .widget-box { cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .widget-box:hover { border-color: var(--accent); transform: scale(1.02); background: #1e293b; }
+        
+        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 8px; border-radius: 4px; font-size: 13px; outline: none; width: 100%; }
+        
+        /* Animasi angka berubah */
+        .price-up { animation: flashGreen 1s; }
+        .price-down { animation: flashRed 1s; }
+        @keyframes flashGreen { from { color: #22c55e; } to { color: inherit; } }
+        @keyframes flashRed { from { color: #ef4444; } to { color: inherit; } }
     </style>
 </head>
 <body class="p-4">
 
-    <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 border-b border-slate-800 pb-4">
+    <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6 border-b border-slate-800 pb-4">
         <div class="flex items-center gap-6">
-            <div>
+            <div class="relative">
                 <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
-                    HSD<span class="text-cyan-500">MONITORING</span>
+                    HSD<span class="text-cyan-500 animate-pulse">MONITORING</span>
                     <span class="block text-[8px] text-slate-500 tracking-[0.3em] font-light">PT KHATULISTIWA SINAR ENERGI</span>
                 </h1>
             </div>
@@ -35,31 +54,34 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full lg:w-auto text-center">
-            <div onclick="window.open('https://www.tradingview.com/symbols/NYMEX-CL1!/', '_blank')" class="glass-panel p-2 rounded widget-box">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">WTI CRUDE</p>
-                <div class="mono text-blue-400 font-bold text-lg leading-none">$<span id="live-wti">88.96</span></div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 w-full lg:w-auto text-center">
+            <div onclick="window.open('https://www.tradingview.com/symbols/NYMEX-CL1!/', '_blank')" class="glass-panel p-3 rounded-lg widget-box glow-cyan">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE</p>
+                <div class="mono text-blue-400 font-bold text-xl leading-none">$<span id="live-wti">88.96</span></div>
                 <div class="text-[10px] text-slate-400 mt-1 mono">Rp <span id="idr-wti">0</span></div>
             </div>
-            <div onclick="window.open('https://www.tradingview.com/symbols/ICEEUR-BRN1!/', '_blank')" class="glass-panel p-2 rounded widget-box">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">BRENT CRUDE</p>
-                <div class="mono text-orange-400 font-bold text-lg leading-none">$<span id="live-brent">90.82</span></div>
+            <div onclick="window.open('https://www.tradingview.com/symbols/ICEEUR-BRN1!/', '_blank')" class="glass-panel p-3 rounded-lg widget-box glow-cyan">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE</p>
+                <div class="mono text-orange-400 font-bold text-xl leading-none">$<span id="live-brent">90.82</span></div>
                 <div class="text-[10px] text-slate-400 mt-1 mono">Rp <span id="idr-brent">0</span></div>
             </div>
-            <div class="bg-white p-2 rounded shadow-lg">
-                <p class="text-[9px] text-slate-900 font-black uppercase">PUB. PERTAMINA</p>
-                <div class="mono text-black font-black text-lg leading-none">$<span id="usd-pertamina">0.00</span></div>
+            <div class="bg-white p-3 rounded-lg shadow-xl transform scale-105 border-2 border-cyan-500">
+                <p class="text-[9px] text-slate-900 font-black uppercase mb-1">PUB. PERTAMINA</p>
+                <div class="mono text-black font-black text-xl leading-none">$<span id="usd-pertamina">0.00</span></div>
                 <div class="text-[10px] text-slate-600 mt-1 font-bold mono">Rp 21.250</div>
             </div>
-            <div onclick="window.open('https://www.marketwatch.com/investing/future/sgbc1', '_blank')" class="glass-panel p-2 rounded widget-box">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">NYMEX SGBC1</p>
-                <div class="mono text-emerald-400 font-bold text-lg leading-none">$<span id="live-mops">139.02</span></div>
+            <div onclick="window.open('https://www.marketwatch.com/investing/future/sgbc1', '_blank')" class="glass-panel p-3 rounded-lg widget-box glow-cyan">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">NYMEX SGBC1</p>
+                <div class="mono text-emerald-400 font-bold text-xl leading-none">$<span id="live-mops">139.02</span></div>
                 <div class="text-[10px] text-slate-400 mt-1 mono">Rp <span id="idr-mops">0</span></div>
             </div>
-            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">USD / IDR LIVE</p>
-                <span id="kurs-top" class="mono text-white font-bold text-lg leading-none">15.850</span>
-                <div class="text-[8px] text-cyan-500 mt-1 font-bold animate-pulse">● LIVE UPDATE</div>
+            <div class="glass-panel p-3 rounded-lg border-r-4 border-r-cyan-500 bg-slate-900">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">USD / IDR LIVE</p>
+                <span id="kurs-top" class="mono text-white font-bold text-xl leading-none">15.850</span>
+                <div class="flex items-center justify-center gap-1 mt-1">
+                    <span class="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-ping"></span>
+                    <span class="text-[8px] text-cyan-500 font-bold tracking-tighter uppercase">Market Live</span>
+                </div>
             </div>
         </div>
     </header>
@@ -67,23 +89,29 @@
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-8 space-y-6">
-            <div class="glass-panel p-4 rounded-lg">
-                <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase tracking-widest italic mb-4">Grafik Analisis & Prediksi Harga</h3>
-                <div class="h-[250px] w-full">
+            <div class="glass-panel p-5 rounded-xl scanner">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase tracking-widest italic">Analisis Volatilitas Harga</h3>
+                    <div class="flex gap-4 text-[9px] uppercase font-bold text-slate-500">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 bg-cyan-500 rounded-full"></span> Trend</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> Prediksi 15 Mar</span>
+                    </div>
+                </div>
+                <div class="h-[280px]">
                     <canvas id="predictionChart"></canvas>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="glass-panel p-4 rounded-lg border-l-4 border-green-500">
+                <div class="glass-panel p-5 rounded-lg border-b-4 border-green-500 bg-green-500/5">
                     <p class="text-[10px] text-slate-500 font-bold uppercase">Skenario Turun</p>
                     <p id="pred-down" class="mono text-2xl font-bold text-green-500">Rp 0</p>
                 </div>
-                <div class="glass-panel p-4 rounded-lg border-l-4 border-slate-500">
-                    <p class="text-[10px] text-slate-500 font-bold uppercase">Harga Sekarang</p>
+                <div class="glass-panel p-5 rounded-lg border-b-4 border-slate-700">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase">Harga Saat Ini</p>
                     <p class="mono text-2xl font-bold text-white">Rp 21.250</p>
                 </div>
-                <div class="glass-panel p-4 rounded-lg border-l-4 border-red-500">
+                <div class="glass-panel p-5 rounded-lg border-b-4 border-red-500 bg-red-500/5">
                     <p class="text-[10px] text-slate-500 font-bold uppercase">Skenario Naik (15 Mar)</p>
                     <p id="pred-up" class="mono text-2xl font-bold text-red-500">Rp 0</p>
                 </div>
@@ -91,38 +119,42 @@
         </div>
 
         <div class="lg:col-span-4 space-y-4">
-            <div class="glass-panel p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
-                <h3 class="header-font text-xs font-bold text-amber-500 uppercase mb-3">Rekomendasi Strategis</h3>
-                <div id="decision-box" class="p-3 bg-black/40 rounded border border-amber-500/20 text-[12px] leading-relaxed">
-                    Menganalisa data pasar...
+            <div class="glass-panel p-6 rounded-xl border border-amber-500/30 bg-amber-500/5 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 text-amber-500/10 rotate-12">
+                    <svg width="100" height="100" fill="currentColor" viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3m4.83 2.17l-1.42 1.42A6.92 6.92 0 0 1 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-1.91.76-3.64 2-4.91L5.58 5.67A8.93 8.93 0 0 0 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.42-.96-4.62-2.51-6.24z"></path></svg>
+                </div>
+                <h3 class="header-font text-xs font-bold text-amber-500 uppercase mb-4 tracking-widest">Keputusan Eksekusi</h3>
+                <div id="decision-box" class="p-4 bg-black/60 rounded-lg border border-amber-500/20 text-[13px] leading-relaxed shadow-inner italic">
+                    Menghubungkan ke satelit pasar...
+                </div>
+                <div class="mt-4 flex gap-2">
+                    <div class="flex-1 bg-amber-600 text-black text-[10px] font-black p-2 rounded text-center uppercase">Segera PO</div>
+                    <div class="flex-1 bg-slate-800 text-white text-[10px] font-black p-2 rounded text-center uppercase tracking-tighter underline">Cek Margin</div>
                 </div>
             </div>
 
-            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3">Simulasi Cepat Franco</h3>
+            <div class="glass-panel p-5 rounded-xl border-t-4 border-cyan-500">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-widest">Kalkulator Strategis</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="text-[9px] text-slate-500 uppercase font-bold">Pilih Acuan Dasar (Base):</label>
-                        <select id="market-sync" onchange="syncInputVal()" class="input-dark mt-1 font-bold">
+                        <label class="text-[9px] text-slate-500 uppercase font-bold">Base Reference:</label>
+                        <select id="market-sync" onchange="syncInputVal()" class="input-dark mt-1 border-none bg-slate-800">
                             <option value="pertamina">Pertamina Publish (Rp/Ltr)</option>
                             <option value="mops">NYMEX MOPS SGBC1 ($/Bbl)</option>
-                            <option value="wti">WTI Crude Oil ($/Bbl)</option>
-                            <option value="brent">Brent Crude Oil ($/Bbl)</option>
+                            <option value="wti">WTI Crude ($/Bbl)</option>
+                            <option value="brent">Brent Crude ($/Bbl)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-[9px] text-slate-500 uppercase font-bold">Input Nilai:</label>
-                        <input type="number" id="input-base" value="21250" oninput="calculateSolar()" class="input-dark text-lg mono text-cyan-400 mt-1">
+                        <label class="text-[9px] text-slate-500 uppercase font-bold">Market Value:</label>
+                        <input type="number" id="input-base" value="21250" oninput="calculateSolar()" class="input-dark text-xl mono text-cyan-400 mt-1">
                     </div>
-                    <div>
-                        <label class="text-[9px] text-slate-500 uppercase font-bold">Alpha Premium:</label>
-                        <select id="input-alpha" onchange="calculateSolar()" class="input-dark mt-1">
-                            <option value="2.0">2.00</option><option value="3.0">3.00</option><option value="4.5" selected>4.50</option><option value="6.0">6.00</option>
-                        </select>
-                    </div>
-                    <div class="pt-2 border-t border-slate-800">
-                        <p class="text-[9px] text-slate-500 uppercase font-black text-right">Estimasi Franco Wil. 2</p>
-                        <div id="final-price" class="text-3xl font-black text-white mono text-right">Rp 0</div>
+                    <div class="pt-4 border-t border-slate-800 flex justify-between items-end">
+                        <div>
+                            <p class="text-[9px] text-slate-500 uppercase font-bold">Total Franco Wil. 2</p>
+                            <div id="final-price" class="text-3xl font-black text-white mono leading-none mt-1">Rp 0</div>
+                        </div>
+                        <div class="text-[10px] text-green-500 font-bold animate-pulse">READY</div>
                     </div>
                 </div>
             </div>
@@ -143,15 +175,28 @@
             } catch (e) { refreshDisplays(); }
         }
 
+        // Animasi Pergerakan Harga Acak (Fake Live)
+        function livePriceMovement() {
+            setInterval(() => {
+                ['wti', 'brent', 'mops'].forEach(key => {
+                    const change = (Math.random() - 0.5) * 0.05;
+                    const oldVal = STATE[key];
+                    STATE[key] = parseFloat((oldVal + change).toFixed(2));
+                    
+                    const el = document.getElementById(`live-${key}`);
+                    el.innerText = STATE[key].toFixed(2);
+                    el.classList.remove('price-up', 'price-down');
+                    el.classList.add(change >= 0 ? 'price-up' : 'price-down');
+                });
+                refreshDisplays();
+            }, 3000);
+        }
+
         function refreshDisplays() {
-            // Update Dollar ke IDR di Widget
             document.getElementById('idr-wti').innerText = Math.round(STATE.wti * (STATE.kurs / 158.98)).toLocaleString('id-ID');
             document.getElementById('idr-brent').innerText = Math.round(STATE.brent * (STATE.kurs / 158.98)).toLocaleString('id-ID');
             document.getElementById('idr-mops').innerText = Math.round(STATE.mops * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            
-            // Update Pertamina IDR ke USD
             document.getElementById('usd-pertamina').innerText = (STATE.pertamina / STATE.kurs).toFixed(2);
-            
             calculateSolar();
             updateDecision();
         }
@@ -165,22 +210,19 @@
         function calculateSolar() {
             const syncType = document.getElementById('market-sync').value;
             const val = parseFloat(document.getElementById('input-base').value) || 0;
-            const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
-            
-            let baseL = (syncType === 'pertamina') ? val : ((val + alpha) / 158.98) * STATE.kurs;
-            const finalP = baseL * 1.188; // PPN 11% + PBBKB 7.5% + PPh 0.3%
-            
+            let baseL = (syncType === 'pertamina') ? val : ((val + 4.5) / 158.98) * STATE.kurs;
+            const finalP = baseL * 1.188;
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
             document.getElementById('pred-down').innerText = "Rp " + Math.round(STATE.pertamina * 0.985).toLocaleString('id-ID');
-            document.getElementById('pred-up').innerText = "Rp " + Math.round(STATE.pertamina * 1.025).toLocaleString('id-ID');
+            document.getElementById('pred-up').innerText = "Rp " + Math.round(STATE.pertamina * 1.03).toLocaleString('id-ID');
         }
 
         function updateDecision() {
             const box = document.getElementById('decision-box');
-            if(STATE.brent > 88) {
-                box.innerHTML = `<span class="text-red-500 font-bold underline uppercase">Peringatan: Potensi Naik!</span><br>Brent di atas $88 menandakan biaya impor naik. Disarankan <strong>EKSEKUSI PO SEKARANG</strong> sebelum tgl 15.`;
+            if(STATE.brent > 89) {
+                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">Sinyal Kenaikan Kuat!</span><br>Brent menyentuh <strong>$${STATE.brent}</strong>. Diprediksi ada kenaikan harga tgl 15 Mar. Segera amankan PO malam ini atau maksimal tgl 12 Mar.`;
             } else {
-                box.innerHTML = `<span class="text-green-500 font-bold uppercase">Pasar Stabil.</span><br>Harga cenderung flat. Tunggu konfirmasi tgl 14 untuk eksekusi volume besar.`;
+                box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase">Pasar Konsolidasi.</span><br>Harga masih dalam batas aman. Pantau pergerakan NYMEX besok untuk kepastian eksekusi volume besar.`;
             }
         }
 
@@ -189,20 +231,16 @@
             predictionChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['1 Mar', '4 Mar', '8 Mar', '12 Mar (Est)', '15 Mar (Pred)'],
+                    labels: ['1 Mar', '4 Mar', '8 Mar', '11 Mar', '15 Mar (Pred)'],
                     datasets: [{
-                        data: [21050, 21100, 21250, 21400, 21750],
-                        borderColor: '#38bdf8',
-                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 6,
-                        pointBackgroundColor: '#fff'
+                        data: [21100, 21050, 21250, 21500, 21950],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        fill: true, tension: 0.4, pointRadius: 5, pointBackgroundColor: '#fff'
                     }]
                 },
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { y: { grid: { color: '#1e293b' } }, x: { grid: { display: false } } }
                 }
@@ -211,9 +249,11 @@
 
         setInterval(() => {
             document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
+            const now = new Date();
+            document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
         }, 1000);
 
-        window.onload = () => { updateKurs(); initChart(); };
+        window.onload = () => { updateKurs(); initChart(); livePriceMovement(); };
     </script>
 </body>
 </html>
