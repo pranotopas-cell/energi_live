@@ -12,22 +12,17 @@
         body { background-color: var(--terminal-bg); color: #f1f5f9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        
         .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; position: relative; overflow: hidden; }
         .glow-cyan { box-shadow: 0 0 15px rgba(56, 189, 248, 0.05); }
-        
         .scanner::after {
             content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.05), transparent);
             animation: scan 4s infinite linear;
         }
         @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
-
         .widget-box { cursor: pointer; transition: all 0.3s ease; }
         .widget-box:hover { border-color: var(--accent); transform: translateY(-2px); background: #1e293b; }
-        
-        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 6px; border-radius: 4px; font-size: 12px; outline: none; width: 100%; }
-        
+        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; outline: none; width: 100%; }
         .price-up { animation: flashGreen 1s; }
         .price-down { animation: flashRed 1s; }
         @keyframes flashGreen { from { color: #22c55e; } to { color: inherit; } }
@@ -80,11 +75,11 @@
         </div>
     </header>
 
-    <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <div class="lg:col-span-8 space-y-6">
-            <div class="glass-panel p-5 rounded-xl scanner">
+            <div class="glass-panel p-5 rounded-xl scanner h-[320px]">
                 <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase tracking-widest italic mb-4">Analisis Tren Harga</h3>
-                <div class="h-[250px]"><canvas id="predictionChart"></canvas></div>
+                <div class="h-[240px]"><canvas id="predictionChart"></canvas></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded-lg border-b-2 border-green-500 bg-green-500/5 text-center">
@@ -102,40 +97,40 @@
             </div>
         </div>
 
-        <div class="lg:col-span-4 space-y-4">
-            <div class="glass-panel p-5 rounded-xl border border-amber-500/30 bg-amber-500/5">
+        <div class="lg:col-span-4 flex flex-col gap-4">
+            <div class="glass-panel p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 flex-grow">
                 <h3 class="header-font text-[10px] font-bold text-amber-500 uppercase mb-3">Keputusan Eksekusi</h3>
-                <div id="decision-box" class="p-3 bg-black/60 rounded border border-amber-500/20 text-[12px] italic leading-snug">
+                <div id="decision-box" class="p-3 bg-black/60 rounded border border-amber-500/20 text-[12px] italic leading-snug min-h-[80px]">
                     Memproses data pasar...
                 </div>
                 <div class="mt-3 flex gap-2">
                     <div class="flex-1 bg-amber-600 text-black text-[9px] font-black py-2 rounded text-center uppercase">Segera PO</div>
-                    <div class="flex-1 bg-slate-800 text-white text-[9px] font-black py-2 rounded text-center uppercase tracking-tighter">Tunggu</div>
+                    <div class="flex-1 bg-slate-800 text-white text-[9px] font-black py-2 rounded text-center uppercase">Tunggu</div>
                 </div>
             </div>
 
-            <div class="glass-panel p-5 rounded-xl border-t-4 border-cyan-500 h-fit">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-widest">Simulasi Franco</h3>
-                <div class="space-y-3">
+            <div class="glass-panel p-4 rounded-xl border-t-4 border-cyan-500">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-widest">Simulasi Franco</h3>
+                <div class="grid grid-cols-2 gap-3 mb-3">
                     <div>
-                        <label class="text-[9px] text-slate-500 uppercase font-bold">Base Ref:</label>
+                        <label class="text-[8px] text-slate-500 uppercase font-bold">Base Ref:</label>
                         <select id="market-sync" onchange="syncInputVal()" class="input-dark mt-1 bg-slate-800 border-none">
-                            <option value="pertamina">Pertamina (Rp/Ltr)</option>
-                            <option value="mops">NYMEX MOPS ($/Bbl)</option>
-                            <option value="wti">WTI Crude ($/Bbl)</option>
-                            <option value="brent">Brent Crude ($/Bbl)</option>
+                            <option value="pertamina">Pertamina</option>
+                            <option value="mops">MOPS</option>
+                            <option value="wti">WTI</option>
+                            <option value="brent">Brent</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-[9px] text-slate-500 uppercase font-bold">Nilai:</label>
-                        <input type="number" id="input-base" value="21250" oninput="calculateSolar()" class="input-dark text-lg mono text-cyan-400 mt-1">
+                        <label class="text-[8px] text-slate-500 uppercase font-bold">Value:</label>
+                        <input type="number" id="input-base" value="21250" oninput="calculateSolar()" class="input-dark mt-1 mono text-cyan-400">
                     </div>
-                    <div class="pt-3 border-t border-slate-800">
-                        <p class="text-[9px] text-slate-500 uppercase font-bold">Total Franco Wil. 2</p>
-                        <div id="final-price" class="text-2xl font-black text-white mono mt-1">Rp 0</div>
-                    </div>
-                    <button onclick="calculateSolar()" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-400 hover:text-black text-[9px] font-bold py-2 rounded transition-all uppercase">Update Harga</button>
                 </div>
+                <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+                    <p class="text-[9px] text-slate-500 uppercase font-bold">Total Franco</p>
+                    <div id="final-price" class="text-xl font-black text-white mono">Rp 0</div>
+                </div>
+                <button onclick="calculateSolar()" class="w-full bg-cyan-600/10 hover:bg-cyan-600/30 text-cyan-400 text-[9px] font-bold py-1.5 rounded mt-3 uppercase border border-cyan-600/30 transition-all">Recalculate</button>
             </div>
         </div>
     </div>
@@ -159,19 +154,27 @@
                     const change = (Math.random() - 0.5) * 0.04;
                     STATE[key] = parseFloat((STATE[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`);
-                    el.innerText = STATE[key].toFixed(2);
-                    el.classList.remove('price-up', 'price-down');
-                    el.classList.add(change >= 0 ? 'price-up' : 'price-down');
+                    if(el) {
+                        el.innerText = STATE[key].toFixed(2);
+                        el.classList.remove('price-up', 'price-down');
+                        el.classList.add(change >= 0 ? 'price-up' : 'price-down');
+                    }
                 });
                 refreshDisplays();
             }, 3000);
         }
 
         function refreshDisplays() {
-            document.getElementById('idr-wti').innerText = Math.round(STATE.wti * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            document.getElementById('idr-brent').innerText = Math.round(STATE.brent * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            document.getElementById('idr-mops').innerText = Math.round(STATE.mops * (STATE.kurs / 158.98)).toLocaleString('id-ID');
-            document.getElementById('usd-pertamina').innerText = (STATE.pertamina / STATE.kurs).toFixed(2);
+            const elIdrWti = document.getElementById('idr-wti');
+            const elIdrBrent = document.getElementById('idr-brent');
+            const elIdrMops = document.getElementById('idr-mops');
+            const elUsdPertamina = document.getElementById('usd-pertamina');
+            
+            if(elIdrWti) elIdrWti.innerText = Math.round(STATE.wti * (STATE.kurs / 158.98)).toLocaleString('id-ID');
+            if(elIdrBrent) elIdrBrent.innerText = Math.round(STATE.brent * (STATE.kurs / 158.98)).toLocaleString('id-ID');
+            if(elIdrMops) elIdrMops.innerText = Math.round(STATE.mops * (STATE.kurs / 158.98)).toLocaleString('id-ID');
+            if(elUsdPertamina) elUsdPertamina.innerText = (STATE.pertamina / STATE.kurs).toFixed(2);
+            
             calculateSolar();
             updateDecision();
         }
@@ -187,15 +190,21 @@
             const val = parseFloat(document.getElementById('input-base').value) || 0;
             let baseL = (syncType === 'pertamina') ? val : ((val + 4.5) / 158.98) * STATE.kurs;
             const finalP = baseL * 1.188;
-            document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
-            document.getElementById('pred-down').innerText = "Rp " + Math.round(STATE.pertamina * 0.985).toLocaleString('id-ID');
-            document.getElementById('pred-up').innerText = "Rp " + Math.round(STATE.pertamina * 1.03).toLocaleString('id-ID');
+            
+            const elFinal = document.getElementById('final-price');
+            const elPredDown = document.getElementById('pred-down');
+            const elPredUp = document.getElementById('pred-up');
+            
+            if(elFinal) elFinal.innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
+            if(elPredDown) elPredDown.innerText = "Rp " + Math.round(STATE.pertamina * 0.985).toLocaleString('id-ID');
+            if(elPredUp) elPredUp.innerText = "Rp " + Math.round(STATE.pertamina * 1.03).toLocaleString('id-ID');
         }
 
         function updateDecision() {
             const box = document.getElementById('decision-box');
+            if(!box) return;
             if(STATE.brent > 89.5) {
-                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">Urgensi Tinggi!</span><br>Brent naik ke $${STATE.brent}. Amankan PO segera sebelum tgl 15 Mar.`;
+                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">Urgensi Tinggi!</span><br>Brent naik ke $${STATE.brent.toFixed(2)}. Amankan PO segera sebelum tgl 15 Mar.`;
             } else {
                 box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase">Monitor.</span><br>Harga masih stabil. Eksekusi PO sesuai kebutuhan operasional rutin.`;
             }
@@ -223,8 +232,10 @@
         }
 
         setInterval(() => {
-            document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+            const elTime = document.getElementById('current-time');
+            const elDate = document.getElementById('current-date');
+            if(elTime) elTime.innerText = new Date().toLocaleTimeString('en-GB');
+            if(elDate) elDate.innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
         }, 1000);
 
         window.onload = () => { updateKurs(); initChart(); livePriceMovement(); };
