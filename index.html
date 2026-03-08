@@ -98,12 +98,10 @@
                         <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark w-1/2 font-bold mono text-white text-center">
                     </div>
                 </div>
-
                 <div class="md:col-span-2">
                     <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider">Alpha Premium</label>
                     <input type="number" id="input-alpha" value="2.5" step="0.1" oninput="window.calculateSolar()" class="input-dark w-full font-bold mono text-green-400 text-center">
                 </div>
-
                 <div class="md:col-span-3">
                     <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider text-center">Pajak Komponen</label>
                     <div class="flex items-center justify-around h-[42px] bg-slate-950/50 rounded border border-slate-800 px-2">
@@ -112,14 +110,12 @@
                         <div class="flex items-center gap-1.5"><input type="checkbox" id="check-pph" checked onchange="window.calculateSolar()" class="tax-checkbox"><label class="text-[10px] text-slate-400">PPH</label></div>
                     </div>
                 </div>
-
                 <div class="md:col-span-3 text-right bg-slate-950/80 p-2 rounded border border-slate-800 h-[70px] flex flex-col justify-center">
                     <p class="text-[9px] text-cyan-500 uppercase font-black tracking-widest mb-1">Franco Quote (Rp/Ltr)</p>
                     <div id="final-price" class="text-2xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
                 </div>
             </div>
         </div>
-
         <div class="glass-panel p-4 rounded border-l-2 border-amber-500">
             <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Publish Pertamina Patra Niaga</h3>
             <div class="grid grid-cols-4 gap-2">
@@ -130,7 +126,6 @@
             </div>
         </div>
     </div>
-
     <div class="lg:col-span-3 space-y-4">
         <div class="glass-panel p-4 rounded-lg">
             <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">Koneksi Sistem</h4>
@@ -139,7 +134,6 @@
                 <div class="flex justify-between"><span>Finnhub API</span><span id="finnhub-status" class="text-yellow-500">WAITING</span></div>
             </div>
         </div>
-        <div id="small-chart"></div>
     </div>
 </div>
 
@@ -147,9 +141,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // --- BARIS 248: GANTI DENGAN API KEY FINNHUB ANDA ---
-    const FINNHUB_KEY = 'MASUKKAN_API_KEY_ANDA_DI_SINI'; 
-    // ----------------------------------------------------
+    // API Key dari screenshot Anda
+    const FINNHUB_KEY = 'd6mlu41r01qi0ajmolsgd6mlu41r01qi0ajmolt0'; 
 
     const firebaseConfig = {
         apiKey: "AIzaSyDenqfuE7Sjy773lp3k7WYh_3RRSr3nojM",
@@ -163,7 +156,6 @@
     window.marketData = { mops: 139.02, brent: 0, wti: 0 };
     window.kursIdr = 15850;
 
-    // Listen data Pertamina
     onSnapshot(doc(db, "hargaBBM", "periode"), (snap) => {
         if (snap.exists()) {
             const h = snap.data().sekarang || {};
@@ -174,60 +166,46 @@
         }
     });
 
-    // Fungsi Ambil Data Pasar Live
     async function fetchLiveMarket() {
-        // 1. Ambil Kurs IDR Live
         try {
             const res = await fetch('https://open.er-api.com/v6/latest/USD');
             const data = await res.json();
             window.kursIdr = data.rates.IDR;
             document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
-        } catch (e) { console.error("Gagal ambil kurs"); }
+        } catch (e) { console.error("Kurs Error"); }
 
-        // 2. Ambil Data Finnhub (API v1)
-        if (FINNHUB_KEY && FINNHUB_KEY !== 'd6mlu41r01qi0ajmolsgd6mlu41r01qi0ajmolt0') {
-            try {
-                // Fetch WTI (Simbol: CL)
-                const resWti = await fetch(`https://finnhub.io/api/v1/quote?symbol=CL&token=${FINNHUB_KEY}`);
-                const dataWti = await resWti.json();
-                if(dataWti.c) {
-                    window.marketData.wti = dataWti.c;
-                    document.getElementById('live-wti').innerText = dataWti.c.toFixed(2);
-                }
-
-                // Fetch Brent (Simbol: BZ)
-                const resBrent = await fetch(`https://finnhub.io/api/v1/quote?symbol=BZ&token=${FINNHUB_KEY}`);
-                const dataBrent = await resBrent.json();
-                if(dataBrent.c) {
-                    window.marketData.brent = dataBrent.c;
-                    document.getElementById('live-brent').innerText = dataBrent.c.toFixed(2);
-                }
-
-                document.getElementById('finnhub-status').innerText = "CONNECTED";
-                document.getElementById('finnhub-status').className = "text-green-500";
-            } catch (e) {
-                document.getElementById('finnhub-status').innerText = "API ERROR";
-                document.getElementById('finnhub-status').className = "text-red-500";
+        // Pemanggilan Finnhub menggunakan API v1 sesuai screenshot
+        try {
+            const resWti = await fetch(`https://finnhub.io/api/v1/quote?symbol=CL&token=${FINNHUB_KEY}`);
+            const dataWti = await resWti.json();
+            if(dataWti.c) {
+                window.marketData.wti = dataWti.c;
+                document.getElementById('live-wti').innerText = dataWti.c.toFixed(2);
             }
+            const resBrent = await fetch(`https://finnhub.io/api/v1/quote?symbol=BZ&token=${FINNHUB_KEY}`);
+            const dataBrent = await resBrent.json();
+            if(dataBrent.c) {
+                window.marketData.brent = dataBrent.c;
+                document.getElementById('live-brent').innerText = dataBrent.c.toFixed(2);
+            }
+            document.getElementById('finnhub-status').innerText = "CONNECTED";
+            document.getElementById('finnhub-status').className = "text-green-500";
+        } catch (e) {
+            document.getElementById('finnhub-status').innerText = "API ERROR";
+            document.getElementById('finnhub-status').className = "text-red-500";
         }
     }
 
-    // Logika Perhitungan
     window.calculateSolar = function() {
         const mops = parseFloat(document.getElementById('input-mops').value) || 0;
         const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
-        const kurs = window.kursIdr || 15850;
-        
-        // Rumus Dasar: ((MOPS + Alpha) / 158.98) * Kurs
-        const baseL = ((mops + alpha) / 158.98) * kurs;
-        
+        const baseL = ((mops + alpha) / 158.98) * window.kursIdr;
         let tax = 0;
         if (document.getElementById('check-ppn').checked) tax += 0.11;
         if (document.getElementById('check-pbbkb').checked) tax += 0.075;
         if (document.getElementById('check-pph').checked) tax += 0.003;
-        
-        const finalPrice = Math.round(baseL * (1 + tax));
-        document.getElementById('final-price').innerText = "Rp " + finalPrice.toLocaleString('id-ID');
+        const final = Math.round(baseL * (1 + tax));
+        document.getElementById('final-price').innerText = "Rp " + final.toLocaleString('id-ID');
     };
 
     window.updateBaseInput = function() {
@@ -238,14 +216,10 @@
         }
     };
 
-    // Initialize Terminal
-    setInterval(() => {
-        document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-    }, 1000);
+    setInterval(() => { document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB'); }, 1000);
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-
     fetchLiveMarket();
-    setInterval(fetchLiveMarket, 300000); // Update setiap 5 menit
+    setInterval(fetchLiveMarket, 300000);
     window.calculateSolar();
 </script>
 </body>
