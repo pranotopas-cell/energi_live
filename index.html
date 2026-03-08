@@ -47,13 +47,14 @@
             background: #020617;
             border: 1px solid #334155;
             color: white;
-            padding: 4px 8px;
+            padding: 8px 12px;
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            height: 42px;
         }
-        .input-dark:focus { border-color: var(--accent-blue); }
+        .input-dark:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 1px var(--accent-blue); }
         .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
         .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
         .news-item { border-left: 2px solid #334155; padding: 4px 10px; margin-bottom: 8px; transition: all 0.2s; background: rgba(255,255,255,0.02); }
@@ -62,6 +63,32 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--terminal-bg); }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        /* Custom Checkbox Style */
+        .tax-checkbox {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1px solid #475569;
+            border-radius: 2px;
+            background: #0f172a;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .tax-checkbox:checked {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        .tax-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #000;
+            font-size: 10px;
+            font-weight: bold;
+            left: 2px;
+            top: -1px;
+        }
     </style>
 </head>
 <body class="p-4">
@@ -120,48 +147,58 @@
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-9 space-y-6">
-            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500" id="main-quote-panel">
-                <div class="flex flex-wrap items-end gap-6">
-                    <div class="flex-1 min-w-[220px]">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Reference Source / Link</label>
-                        <div class="flex gap-2">
-                            <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">Live SG Gasoil (Investing)</option>
-                                <option value="means">10-Day Moving Average</option>
-                                <option value="murban">Murban Crude Oil</option>
-                                <option value="wti">WTI Crude Oil</option>
-                                <option value="brent">BRENT Crude Oil</option>
+            <div class="glass-panel p-5 rounded-lg border-t-2 border-cyan-500 bg-slate-900/20" id="main-quote-panel">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    
+                    <div class="md:col-span-4">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider">Market Reference Link</label>
+                        <div class="flex gap-1">
+                            <select id="market-sync" onchange="window.updateBaseInput()" class="input-dark w-1/2 bg-slate-950 border-slate-800 text-[11px] font-bold text-cyan-500">
+                                <option value="mops">Live SG Gasoil</option>
+                                <option value="means">10-Day Avg</option>
+                                <option value="murban">Murban Crude</option>
+                                <option value="wti">WTI Crude</option>
+                                <option value="brent">Brent Crude</option>
                                 <option value="manual">Manual Input</option>
                             </select>
-                            <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
+                            <input type="number" id="input-mops" value="139.02" step="0.01" oninput="window.calculateSolar()" class="input-dark w-1/2 font-bold mono text-white text-center">
                         </div>
                     </div>
-                    <div class="w-32">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium ($/BBL)</label>
-                        <select id="input-alpha" onchange="window.calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-300 bg-slate-800 border-none">
+
+                    <div class="md:col-span-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider">Alpha Premium</label>
+                        <select id="input-alpha" onchange="window.calculateSolar()" class="input-dark w-full font-bold mono text-green-400 bg-slate-950 border-slate-800 text-center">
                             <option value="1.0">1.0</option>
-                            <option value="1.5">1.5</option>
-                            <option value="2.0">2.0</option>
-                            <option value="2.5">2.5</option>
-                            <option value="3.0">3.0</option>
-                            <option value="3.5" selected>3.5 (Normal)</option>
+                            <option value="2.5" selected>2.5</option>
                             <option value="4.0">4.0</option>
-                            <option value="4.5">4.5</option>
-                            <option value="5.0">5.0</option>
                             <option value="6.0">6.0</option>
-                            <option value="7.0">7.0</option>
-                            <option value="8.0">8.0</option> 
+                            <option value="8.0">8.0</option>
                         </select>
                     </div>
-                    <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PPN</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pbbkb" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PBBKB</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="window.calculateSolar()"><label class="text-[9px] font-bold">PPh</label></div>
+
+                    <div class="md:col-span-3">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-wider text-center">Tax Components</label>
+                        <div class="flex items-center justify-around h-[42px] bg-slate-950/50 rounded border border-slate-800 px-2">
+                            <div class="flex items-center gap-1.5">
+                                <input type="checkbox" id="check-ppn" checked onchange="window.calculateSolar()" class="tax-checkbox">
+                                <label class="text-[10px] font-bold text-slate-400">PPN</label>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <input type="checkbox" id="check-pbbkb" checked onchange="window.calculateSolar()" class="tax-checkbox">
+                                <label class="text-[10px] font-bold text-slate-400">PBBKB</label>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <input type="checkbox" id="check-pph" checked onchange="window.calculateSolar()" class="tax-checkbox">
+                                <label class="text-[10px] font-bold text-slate-400">PPH</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex-1 text-right border-l border-slate-800 pl-6 rounded transition-all duration-500" id="final-price-container">
-                        <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Franco Quote (Rp/Ltr)</p>
-                        <div id="final-price" class="text-3xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
+
+                    <div class="md:col-span-3 text-right bg-slate-950/80 p-2 rounded border border-slate-800 h-[70px] flex flex-col justify-center transition-all duration-500" id="final-price-container">
+                        <p class="text-[9px] text-cyan-500 uppercase font-black tracking-widest mb-1">Franco Quote (Rp/Ltr)</p>
+                        <div id="final-price" class="text-2xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
                     </div>
+
                 </div>
             </div>
 
@@ -238,16 +275,14 @@
                         <span>Reuters Market Insights</span>
                         <span class="text-[8px] text-slate-500">Global Feed</span>
                     </h4>
-                    <div id="global-news" class="space-y-1">
-                        </div>
+                    <div id="global-news" class="space-y-1"></div>
                 </div>
                 <div>
                     <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1 flex justify-between">
                         <span>CNN & Berita Satu</span>
                         <span class="text-[8px] text-slate-500">Domestic Feed</span>
                     </h4>
-                    <div id="domestic-news" class="space-y-1">
-                        </div>
+                    <div id="domestic-news" class="space-y-1"></div>
                 </div>
             </div>
         </div>
@@ -282,7 +317,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Config (Keep as provided)
         const firebaseConfig = {
             apiKey:"AIzaSyDenqfuE7Sjy773lp3k7WYh_3RRSr3nojM",
             authDomain:"kse-harga-bbm-update.firebaseapp.com",
@@ -307,13 +341,11 @@
             }
         });
 
-        // --- GLOBAL DATA ---
         let sgbc1History = [139.02, 138.85, 140.10, 139.90, 138.20, 137.95, 139.30, 141.00, 140.75, 139.50];
         window.marketData = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
         window.kursIdr = 15850;
         let lastPrice = 0;
 
-        // --- CHART INITIALIZATION ---
         var smallChartOptions = {
             series: [{ name: 'Gasoil', data: [...sgbc1History].reverse() }],
             chart: { type: 'area', height: 120, sparkline: { enabled: true }, animations: { enabled: true, easing: 'linear', dynamicAnimation: { speed: 800 } } },
@@ -325,7 +357,6 @@
         var smallChart = new ApexCharts(document.querySelector("#small-chart"), smallChartOptions);
         smallChart.render();
 
-        // --- CORE LOGIC: MOPS & CALCULATION ---
         window.updateBaseInput = function() {
             const syncType = document.getElementById('market-sync').value;
             if(syncType === "means") {
@@ -342,19 +373,14 @@
             const mops = parseFloat(mopsInput.value) || 0;
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.kursIdr || 15850;
-            
-            // Formula: ((MOPS + ALPHA) / 158.98) * KURS
             const baseL = ((mops + alpha) / 158.98) * kurs;
-            
             let taxM = 0;
             if (document.getElementById('check-ppn').checked) taxM += 0.11;
             if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
             if (document.getElementById('check-pph').checked) taxM += 0.003;
-            
             const finalP = Math.round(baseL * (1 + taxM));
             const priceEl = document.getElementById('final-price');
             const containerEl = document.getElementById('final-price-container');
-            
             if (priceEl) {
                 containerEl.classList.remove('price-up-flash', 'price-down-flash');
                 if (finalP > lastPrice && lastPrice !== 0) {
@@ -375,24 +401,18 @@
             const historyTable = document.getElementById('mops-history');
             const avgEl = document.getElementById('means-plate-val');
             if(!historyTable) return;
-            
             historyTable.innerHTML = '';
             let total = 0;
             sgbc1History.forEach((price, i) => {
                 total += price;
                 const label = i === 0 ? "LIVE" : `${i}D AGO`;
-                const row = `<tr>
-                    <td class="text-slate-500">${label}</td>
-                    <td class="text-right font-bold ${i===0?'text-cyan-400':'text-yellow-500'}">${price.toFixed(2)}</td>
-                    <td class="text-right text-[8px] text-slate-600 uppercase">Investing</td>
-                </tr>`;
+                const row = `<tr><td class="text-slate-500">${label}</td><td class="text-right font-bold ${i===0?'text-cyan-400':'text-yellow-500'}">${price.toFixed(2)}</td><td class="text-right text-[8px] text-slate-600 uppercase">Investing</td></tr>`;
                 historyTable.insertAdjacentHTML('beforeend', row);
             });
             const avg = total / sgbc1History.length;
             avgEl.innerText = avg.toFixed(2);
         }
 
-        // --- NEWS DATA & RENDERING ---
         const news = {
             global: [
                 { t: "Reuters: Oil prices edge higher on Middle East supply concerns.", u: "https://www.reuters.com/business/energy/" },
@@ -407,21 +427,10 @@
         };
 
         function renderNews() {
-            document.getElementById('global-news').innerHTML = news.global.map(n => `
-                <div class="news-item">
-                    <a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400 transition-all">
-                        <span class="text-cyan-600 mr-1">▶</span> ${n.t}
-                    </a>
-                </div>`).join('');
-            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `
-                <div class="news-item border-l-emerald-800">
-                    <a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400 transition-all">
-                        <span class="text-emerald-600 mr-1">▶</span> ${n.t}
-                    </a>
-                </div>`).join('');
+            document.getElementById('global-news').innerHTML = news.global.map(n => `<div class="news-item"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-cyan-400"><span class="text-cyan-600 mr-1">▶</span> ${n.t}</a></div>`).join('');
+            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `<div class="news-item border-l-emerald-800"><a href="${n.u}" target="_blank" class="text-[11px] font-medium block text-slate-300 hover:text-emerald-400"><span class="text-emerald-600 mr-1">▶</span> ${n.t}</a></div>`).join('');
         }
 
-        // --- LIVE UPDATES ---
         async function fetchIDR() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -433,18 +442,11 @@
 
         function runLive() {
             setInterval(() => {
-                // Update Time
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-                
-                // Simulate MOPS Movement (Investing Live Style)
                 const vol = (Math.random() - 0.5) * 0.15;
                 window.marketData.mops = parseFloat((window.marketData.mops + vol).toFixed(2));
                 document.getElementById('live-mops').innerText = window.marketData.mops.toFixed(2);
-                
-                // Update History (Current index is live)
                 sgbc1History[0] = window.marketData.mops;
-                
-                // Auto Sync UI if "Live" or "Means" is selected
                 const syncMode = document.getElementById('market-sync').value;
                 if(syncMode === "mops") {
                     document.getElementById('input-mops').value = window.marketData.mops.toFixed(2);
@@ -454,26 +456,13 @@
                     document.getElementById('input-mops').value = avg.toFixed(2);
                     window.calculateSolar();
                 }
-
-                // Update UI Table & Chart
                 updateMopsHistoryUI();
-                
             }, 3000);
-            
-            setInterval(fetchIDR, 60000); // Update kurs every minute
+            setInterval(fetchIDR, 60000);
         }
 
-        // --- INITIALIZATION ---
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-        
-        fetchIDR(); 
-        renderNews(); 
-        updateMopsHistoryUI(); 
-        runLive(); 
-        window.calculateSolar();
-
+        fetchIDR(); renderNews(); updateMopsHistoryUI(); runLive(); window.calculateSolar();
     </script>
 </body> 
 </html>
-
-
