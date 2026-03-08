@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KSE BBM Dashboard</title>
+<title>KSE Energy Market Terminal</title>
 
 <style>
 
 body{
-font-family:Arial;
 background:#0f172a;
+font-family:Arial;
 color:white;
 margin:0;
 padding:20px;
@@ -20,9 +20,9 @@ text-align:center;
 margin-bottom:30px;
 }
 
-.grid{
+.market{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
 gap:15px;
 margin-bottom:30px;
 }
@@ -32,25 +32,29 @@ background:#1e293b;
 padding:20px;
 border-radius:10px;
 text-align:center;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
 
-.card h2{
-margin:0;
-font-size:16px;
+.label{
 color:#94a3b8;
+font-size:14px;
 }
 
 .value{
-font-size:24px;
-margin-top:10px;
+font-size:26px;
 font-weight:bold;
+margin-top:5px;
 }
 
-.calculator{
+.section{
+margin-top:40px;
+}
+
+.calc{
 background:#1e293b;
 padding:20px;
 border-radius:10px;
-max-width:400px;
+max-width:420px;
 margin:auto;
 }
 
@@ -74,15 +78,15 @@ cursor:pointer;
 }
 
 .result{
-text-align:center;
 font-size:24px;
-margin-top:20px;
+text-align:center;
+margin-top:15px;
 font-weight:bold;
 }
 
-.status{
+.footer{
 text-align:center;
-margin-top:20px;
+margin-top:30px;
 color:#94a3b8;
 }
 
@@ -91,43 +95,62 @@ color:#94a3b8;
 
 <body>
 
-<h1>KSE BBM Dashboard</h1>
+<h1>KSE ENERGY MARKET TERMINAL</h1>
 
-<div class="grid">
-
-<div class="card">
-<h2>WTI</h2>
-<div class="value" id="wti">--</div>
-</div>
+<div class="market">
 
 <div class="card">
-<h2>Brent</h2>
-<div class="value" id="brent">--</div>
+<div class="label">WTI</div>
+<input id="wti" value="86">
 </div>
 
 <div class="card">
-<h2>Murban</h2>
-<div class="value" id="murban">--</div>
+<div class="label">BRENT</div>
+<input id="brent" value="89">
 </div>
 
 <div class="card">
-<h2>MOPS (Estimasi)</h2>
-<div class="value" id="mops">--</div>
+<div class="label">MURBAN</div>
+<input id="murban" value="90">
 </div>
 
 <div class="card">
-<h2>USD/IDR</h2>
-<div class="value" id="usd">--</div>
+<div class="label">SGX GASOIL</div>
+<input id="gasoil" value="812">
 </div>
 
 <div class="card">
-<h2>DXY</h2>
-<div class="value" id="dxy">--</div>
+<div class="label">USD / IDR</div>
+<input id="usd" value="16900">
+</div>
+
+<div class="card">
+<div class="label">DXY</div>
+<input id="dxy" value="104">
 </div>
 
 </div>
 
-<div class="calculator">
+<div class="section">
+
+<div class="calc">
+
+<h2>Estimasi MOPS</h2>
+
+<label>Differential (20-35)</label>
+<input id="diff" value="25">
+
+<button onclick="hitungMops()">Hitung MOPS</button>
+
+<div class="result" id="mops">--</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="calc">
 
 <h2>Kalkulator Solar Industri</h2>
 
@@ -140,73 +163,49 @@ color:#94a3b8;
 <label>PPh (%)</label>
 <input id="pph" value="0.3">
 
-<button onclick="hitung()">Hitung</button>
+<button onclick="hitungSolar()">Hitung Harga</button>
 
-<div class="result" id="hasil">Rp -</div>
+<div class="result" id="solar">Rp -</div>
 
 </div>
 
-<div class="status" id="status">
-API Status : LOADING
+</div>
+
+<div class="footer">
+KSE Energy Monitoring System
 </div>
 
 <script>
 
-async function loadData(){
+function hitungMops(){
 
-try{
+let gasoil=parseFloat(document.getElementById("gasoil").value)
+let diff=parseFloat(document.getElementById("diff").value)
 
-let oil=await fetch("https://api.twelvedata.com/price?symbol=CL1!,BZ1!&apikey=demo")
-let data=await oil.json()
+let mops=gasoil-diff
 
-let wti=Math.random()*10+80
-let brent=wti+3
-let murban=brent+1
-
-let usd=16900
-let dxy=104
-
-let mops=brent-25
-
-document.getElementById("wti").innerText=wti.toFixed(2)
-document.getElementById("brent").innerText=brent.toFixed(2)
-document.getElementById("murban").innerText=murban.toFixed(2)
-document.getElementById("mops").innerText=mops.toFixed(2)
-
-document.getElementById("usd").innerText=usd
-document.getElementById("dxy").innerText=dxy
-
-document.getElementById("status").innerText="API Status : CONNECTED"
+document.getElementById("mops").innerText=mops.toFixed(2)+" USD/BBL"
 
 window.mopsValue=mops
-window.kursValue=usd
-
-}catch{
-
-document.getElementById("status").innerText="API Status : ERROR"
 
 }
 
-}
+function hitungSolar(){
 
-function hitung(){
-
-let mops=window.mopsValue||100
-let kurs=window.kursValue||16900
+let mops=window.mopsValue || 780
+let kurs=parseFloat(document.getElementById("usd").value)
 
 let ppn=document.getElementById("ppn").value/100
 let pbbkb=document.getElementById("pbbkb").value/100
 let pph=document.getElementById("pph").value/100
 
-let harga=(mops*kurs)/159
+let liter=(mops*kurs)/159
 
-harga=harga+(harga*ppn)+(harga*pbbkb)+(harga*pph)
+let harga=liter+(liter*ppn)+(liter*pbbkb)+(liter*pph)
 
-document.getElementById("hasil").innerText="Rp "+Math.round(harga)
+document.getElementById("solar").innerText="Rp "+Math.round(harga)+"/L"
 
 }
-
-loadData()
 
 </script>
 
