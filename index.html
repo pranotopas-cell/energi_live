@@ -31,7 +31,6 @@
             outline: none;
             height: 42px;
         }
-        .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
         .tax-checkbox { appearance: none; width: 14px; height: 14px; border: 1px solid #475569; border-radius: 2px; background: #0f172a; cursor: pointer; position: relative; }
         .tax-checkbox:checked { background: var(--accent-blue); border-color: var(--accent-blue); }
         .tax-checkbox:checked::after { content: '✓'; position: absolute; color: #000; font-size: 10px; font-weight: bold; left: 2px; top: -1px; }
@@ -55,27 +54,27 @@
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 w-full lg:w-auto">
         <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-yellow-500">
             <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">LIVE MOPS (SG)</p>
-            <div class="flex justify-between items-center px-1"><span id="live-mops" class="mono text-yellow-400 font-bold text-lg">139.02</span></div>
+            <div class="flex justify-center items-center px-1"><span id="live-mops" class="mono text-yellow-400 font-bold text-lg">139.02</span></div>
         </div>
         <div class="glass-panel p-2 rounded min-w-[120px] text-center">
             <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">WTI CRUDE OIL</p>
-            <div class="flex justify-between items-center px-1"><span id="live-wti" class="mono text-blue-400 font-bold text-lg">---</span></div>
+            <div class="flex justify-center items-center px-1"><span id="live-wti" class="mono text-blue-400 font-bold text-lg">---</span></div>
         </div>
         <div class="glass-panel p-2 rounded min-w-[120px] text-center">
             <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">BRENT CRUDE</p>
-            <div class="flex justify-between items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-lg">---</span></div>
+            <div class="flex justify-center items-center px-1"><span id="live-brent" class="mono text-orange-400 font-bold text-lg">---</span></div>
         </div>
         <div class="glass-panel p-2 rounded min-w-[120px] text-center border-b-2 border-b-emerald-500">
             <p class="text-[9px] text-emerald-400 font-bold uppercase mb-1">MURBAN CRUDE</p>
-            <div class="flex justify-between items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-lg">91.45</span></div>
+            <div class="flex justify-center items-center px-1"><span id="live-murban" class="mono text-emerald-400 font-bold text-lg">91.45</span></div>
         </div>
         <div class="glass-panel p-2 rounded min-w-[120px] text-center">
             <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">DXY INDEX</p>
-            <div class="flex justify-between items-center px-1"><span id="dxy-top" class="mono text-amber-500 font-bold text-lg">103.85</span></div>
+            <div class="flex justify-center items-center px-1"><span id="dxy-top" class="mono text-amber-500 font-bold text-lg">103.85</span></div>
         </div>
         <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[120px] text-center">
             <p class="text-[9px] text-cyan-400 font-bold uppercase mb-1">USD / IDR</p>
-            <div class="flex justify-between items-center px-1"><span id="kurs-top" class="mono text-white font-bold text-lg">---</span></div>
+            <div class="flex justify-center items-center px-1"><span id="kurs-top" class="mono text-white font-bold text-lg">---</span></div>
         </div>
     </div>
 </header>
@@ -139,7 +138,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // API Key Anda
+    // API Key dari screenshot Anda
     const FINNHUB_KEY = 'd6mlu41r01qi0ajmolsgd6mlu41r01qi0ajmolt0'; 
 
     const firebaseConfig = {
@@ -165,7 +164,6 @@
     });
 
     async function fetchLiveMarket() {
-        // Fetch Kurs IDR
         try {
             const res = await fetch('https://open.er-api.com/v6/latest/USD');
             const data = await res.json();
@@ -173,29 +171,28 @@
             document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
         } catch (e) { console.error("Kurs Error"); }
 
-        // Fetch Finnhub API v1
         try {
-            // WTI Crude Oil
+            // Fetch WTI
             const resWti = await fetch(`https://finnhub.io/api/v1/quote?symbol=CL&token=${FINNHUB_KEY}`);
             const dataWti = await resWti.json();
-            if(dataWti.c > 20) { // Validasi jika harga masuk akal
+            if(dataWti.c) {
                 window.marketData.wti = dataWti.c;
                 document.getElementById('live-wti').innerText = dataWti.c.toFixed(2);
             }
 
-            // Brent Crude Oil - Menggunakan Simbol BZ (UK Oil)
-            const resBrent = await fetch(`https://finnhub.io/api/v1/quote?symbol=BZ&token=${FINNHUB_KEY}`);
-            const dataBrent = await resBrent.json();
-            if(dataBrent.c > 20) {
-                window.marketData.brent = dataBrent.c;
-                document.getElementById('live-brent').innerText = dataBrent.c.toFixed(2);
-            } else {
-                // Cadangan jika BZ return 0 atau 15, coba ambil LCO (Global Brent)
-                const resAlt = await fetch(`https://finnhub.io/api/v1/quote?symbol=LCO&token=${FINNHUB_KEY}`);
-                const dataAlt = await resAlt.json();
-                if(dataAlt.c > 20) {
-                    window.marketData.brent = dataAlt.c;
-                    document.getElementById('live-brent').innerText = dataAlt.c.toFixed(2);
+            // PRIORITAS BRENT: Mencoba simbol yang paling mungkin memberikan harga real-time ($70-$90)
+            const symbols = ['LCO', 'BZ', 'EB=F'];
+            let brentFound = false;
+
+            for (let sym of symbols) {
+                if(brentFound) break;
+                const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`);
+                const data = await res.json();
+                // Jika harga di atas 40, berarti data valid (bukan angka 26 atau 15)
+                if(data.c > 40) {
+                    window.marketData.brent = data.c;
+                    document.getElementById('live-brent').innerText = data.c.toFixed(2);
+                    brentFound = true;
                 }
             }
 
@@ -229,9 +226,8 @@
 
     setInterval(() => { document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB'); }, 1000);
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-    
     fetchLiveMarket();
-    setInterval(fetchLiveMarket, 300000); // Sinkronisasi setiap 5 menit
+    setInterval(fetchLiveMarket, 300000);
     window.calculateSolar();
 </script>
 </body>
