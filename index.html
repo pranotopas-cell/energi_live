@@ -3,18 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD MONITORING | KSE STRATEGIC</title>
+    <title>HSD TERMINAL MONITORING | KSE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --terminal-bg: #0a0e14; --panel-bg: #111827; --accent-blue: #38bdf8; }
-        body { background-color: var(--terminal-bg); color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        :root { 
+            --terminal-bg: #0a0e14; 
+            --panel-bg: #111827;
+            --accent-blue: #38bdf8;
+            --border-color: #1e293b;
+        }
+        body { 
+            background-color: var(--terminal-bg); 
+            color: #f1f5f9; 
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.01em;
+        }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; }
-        .widget-box { cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
-        .widget-box:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
-        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 6px; border-radius: 4px; outline: none; }
+        .glass-panel { 
+            background: var(--panel-bg); 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+        .widget-box { cursor: pointer; transition: all 0.2s; }
+        .widget-box:hover { border-color: var(--accent-blue); background: #1e293b; }
+        .input-dark {
+            background: #020617;
+            border: 1px solid #334155;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+        .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
+        .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
@@ -28,42 +52,64 @@
                     <span class="block text-[8px] text-slate-500 tracking-[0.3em] font-light">PT KHATULISTIWA SINAR ENERGI</span>
                 </h1>
             </div>
-            <div class="border-l border-slate-700 pl-4">
+            <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
                 <span id="current-time" class="mono text-cyan-400 text-xl font-bold leading-none">00:00:00</span>
-                <span id="current-date" class="block text-[10px] text-slate-500 uppercase mt-1">08 MAR 2026</span>
+                <span id="current-date" class="text-[11px] text-slate-500 uppercase tracking-widest mt-1">08 MAR 2026</span>
             </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full lg:w-auto">
             <div onclick="window.open('https://www.tradingview.com/symbols/NYMEX-CL1!/', '_blank')" class="glass-panel p-2 rounded min-w-[130px] text-center widget-box">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">WTI CRUDE</p>
-                <span id="live-wti" class="mono text-blue-400 font-bold text-xl leading-none">88.96</span>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE OIL</p>
+                <div class="flex flex-col items-center">
+                    <span id="live-wti" class="mono text-blue-400 font-bold text-xl leading-none">88.96</span>
+                    <span id="trend-wti" class="trend-up mt-1">▲ 0.00</span>
+                </div>
             </div>
             <div onclick="window.open('https://www.tradingview.com/symbols/ICEEUR-BRN1!/', '_blank')" class="glass-panel p-2 rounded min-w-[130px] text-center widget-box">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">BRENT CRUDE</p>
-                <span id="live-brent" class="mono text-orange-400 font-bold text-xl leading-none">90.82</span>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE OIL</p>
+                <div class="flex flex-col items-center">
+                    <span id="live-brent" class="mono text-orange-400 font-bold text-xl leading-none">90.82</span>
+                    <span id="trend-brent" class="trend-down mt-1">▼ 0.00</span>
+                </div>
             </div>
             <div class="bg-white p-2 rounded min-w-[130px] text-center shadow-lg">
-                <p class="text-[9px] text-slate-900 font-black uppercase">PERTAMINA PUB. (W2)</p>
-                <span id="live-pertamina" class="mono text-black font-black text-xl leading-none">21.250</span>
+                <p class="text-[9px] text-slate-900 font-black uppercase mb-1">PERTAMINA PUB. (W2)</p>
+                <div class="flex flex-col items-center">
+                    <span id="live-pertamina" class="mono text-black font-black text-xl leading-none">21.250</span>
+                    <span class="text-[7px] text-slate-500 font-bold mt-1 uppercase">Price/Ltr</span>
+                </div>
             </div>
             <div onclick="window.open('https://www.marketwatch.com/investing/future/sgbc1', '_blank')" class="glass-panel p-2 rounded min-w-[130px] text-center widget-box">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">NYMEX SGBC1</p>
-                <span id="live-mops" class="mono text-emerald-400 font-bold text-xl leading-none">139.02</span>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">NYMEX SGBC1</p>
+                <div class="flex flex-col items-center">
+                    <span id="live-mops" class="mono text-emerald-400 font-bold text-xl leading-none">139.02</span>
+                    <span id="trend-mops" class="trend-up mt-1">▲ 0.00</span>
+                </div>
             </div>
             <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[130px] text-center">
-                <p class="text-[9px] text-slate-500 font-bold uppercase">USD / IDR (LIVE)</p>
-                <span id="kurs-top" class="mono text-white font-bold text-xl leading-none">15.850</span>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">USD / IDR (LIVE)</p>
+                <div class="flex flex-col items-center">
+                    <span id="kurs-top" class="mono text-white font-bold text-xl leading-none">15.850</span>
+                    <span class="text-[7px] text-slate-600 mt-1 uppercase">Spot Rate</span>
+                </div>
             </div>
         </div>
     </header>
 
+    <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
+        <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
+            • UPDATE PERTAMINA PUBLISH RP 21.250 • LIVE MARKET SYNC: ACTIVE • MONITORING PERUBAHAN HARGA TANGGAL 1 & 15 • PT KHATULISTIWA SINAR ENERGI •
+        </marquee>
+    </div>
+
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
         <div class="lg:col-span-9 space-y-6">
             
-            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500 bg-slate-900/20">
+            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500">
                 <div class="flex flex-wrap items-end gap-6">
-                    <div class="flex-1 min-w-[200px]">
+                    <div class="flex-1 min-w-[180px]">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Base Reference</label>
                         <div class="flex gap-2">
                             <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
@@ -73,22 +119,24 @@
                             <input type="number" id="input-mops" value="21250" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
                         </div>
                     </div>
+
                     <div class="w-32">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium</label>
                         <select id="input-alpha" onchange="calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
                             <option value="2.0">2.00</option><option value="3.0">3.00</option><option value="4.5" selected>4.50</option><option value="6.0">6.00</option><option value="8.0">8.00</option>
                         </select>
                     </div>
+
                     <div class="flex-1 text-right border-l border-slate-800 pl-6">
-                        <p class="text-[9px] text-slate-500 uppercase font-black">Franco Quote (Rp/Ltr)</p>
-                        <div id="final-price" class="text-3xl font-black text-white mono">Rp 0</div>
+                        <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Franco Quote (Rp/Ltr)</p>
+                        <div id="final-price" class="text-3xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-panel p-5 rounded-lg border-l-4 border-amber-500 bg-slate-900/40 relative overflow-hidden">
+            <div class="glass-panel p-5 rounded-lg border-l-4 border-amber-500 bg-slate-900/40 relative">
                 <div class="absolute top-0 right-0 p-2">
-                    <span id="days-to-update" class="text-[9px] bg-amber-500 text-black font-bold px-2 py-1 rounded">Sisa 7 Hari Lagi</span>
+                    <span id="days-to-update" class="text-[9px] bg-amber-500 text-black font-bold px-2 py-1 rounded">Counting...</span>
                 </div>
                 <h3 class="header-font text-xs font-bold text-amber-500 uppercase mb-4 tracking-widest italic">
                     Forecast Perubahan Harga (Siklus 1 & 15 Per Bulan)
@@ -96,35 +144,54 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="p-3 bg-black/30 rounded border border-slate-800">
-                        <p class="text-[9px] text-slate-500 font-bold uppercase">Estimasi 15 Maret (Turun)</p>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase mb-2">Estimasi Penurunan</p>
                         <p id="pred-down" class="mono text-xl font-bold text-green-500">Rp 0</p>
-                        <p class="text-[8px] text-slate-600 mt-1 uppercase">Berdasarkan Trend Crude Oil ↓</p>
+                        <p class="text-[8px] text-slate-600 mt-1">Berdasarkan Trend Crude Oil ↓</p>
                     </div>
                     <div class="p-3 bg-black/30 rounded border border-slate-800">
-                        <p class="text-[9px] text-slate-500 font-bold uppercase">Proyeksi Flat (Tetap)</p>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase mb-2">Harga Saat Ini</p>
                         <p class="mono text-xl font-bold text-white">Rp 21.250</p>
-                        <p class="text-[8px] text-slate-600 mt-1 uppercase">Harga Saat Ini</p>
+                        <p class="text-[8px] text-slate-600 mt-1 uppercase">Stabil / Flat</p>
                     </div>
                     <div class="p-3 bg-black/30 rounded border border-slate-800">
-                        <p class="text-[9px] text-slate-500 font-bold uppercase">Estimasi 15 Maret (Naik)</p>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase mb-2">Estimasi Kenaikan</p>
                         <p id="pred-up" class="mono text-xl font-bold text-red-500">Rp 0</p>
-                        <p class="text-[8px] text-slate-600 mt-1 uppercase">Berdasarkan Trend Crude Oil ↑</p>
+                        <p class="text-[8px] text-slate-600 mt-1">Berdasarkan Trend Crude Oil ↑</p>
                     </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-panel p-4 rounded">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Tax Component</h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-500 uppercase">PPN (11%)</span><span id="tax-ppn" class="mono">Rp 0</span></div>
+                        <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-500 uppercase">PBBKB (7.5%)</span><span id="tax-pbbkb" class="mono">Rp 0</span></div>
+                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Total Franco</span><span id="tax-total" class="mono text-cyan-400 font-bold">Rp 0</span></div>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 rounded flex flex-col justify-center bg-gradient-to-r from-slate-900/50 to-transparent">
+                    <p class="text-[10px] text-slate-500 font-bold mb-1 uppercase tracking-widest">Market Sentiment</p>
+                    <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex mb-3">
+                        <div class="h-full bg-green-500" style="width: 65%"></div>
+                        <div class="h-full bg-red-500" style="width: 35%"></div>
+                    </div>
+                    <p class="text-[11px] text-slate-300 italic">"Gunakan harga prediksi sebagai referensi PO sebelum tanggal perubahan (1 & 15)."</p>
                 </div>
             </div>
         </div>
 
         <div class="lg:col-span-3 space-y-4">
-            <div class="glass-panel p-4 rounded-lg bg-gradient-to-b from-slate-900 to-black">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-3 italic">Terminal Info</h4>
-                <div class="space-y-2 text-[11px]">
-                    <div class="flex justify-between"><span>Region</span><span class="text-white font-bold">Wilayah 2</span></div>
-                    <div class="flex justify-between"><span>Tax Status</span><span class="text-cyan-500 font-bold italic">Include All</span></div>
-                    <div class="flex justify-between"><span>Currency</span><span id="live-kurs-val" class="text-blue-400 mono">15.850</span></div>
+            <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest">Terminal Info</h4>
+                <div class="space-y-3 text-[11px]">
+                    <div class="flex justify-between items-center"><span>Market Sync</span><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></span></div>
+                    <div class="flex justify-between items-center"><span>Region</span><span class="text-white font-bold">Wilayah 2</span></div>
+                    <div class="flex justify-between items-center"><span>API Sync</span><span id="live-kurs-val" class="mono text-blue-400 font-bold">15.850</span></div>
                 </div>
             </div>
-            <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-400 text-black font-black py-4 rounded text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                UPDATE DASHBOARD
+            <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-4 rounded text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                EXECUTE CALCULATION
             </button>
         </div>
     </div>
@@ -140,7 +207,7 @@
                 document.getElementById('kurs-top').innerText = Math.round(STATE.kurs).toLocaleString('id-ID');
                 document.getElementById('live-kurs-val').innerText = Math.round(STATE.kurs).toLocaleString('id-ID');
                 calculateSolar();
-            } catch (e) { console.log("Kurs fallback active"); }
+            } catch (e) { console.log("Offline Mode"); }
         }
 
         function calculateSolar() {
@@ -150,12 +217,17 @@
             
             let baseL = (syncType === 'pertamina') ? inputVal : ((inputVal + alpha) / 158.98) * STATE.kurs;
             
-            const taxTotal = baseL * (0.11 + 0.075 + 0.003); // PPN + PBBKB + PPh
-            const finalP = baseL + taxTotal;
+            const ppn = baseL * 0.11;
+            const pbbkb = baseL * 0.075;
+            const pph = baseL * 0.003;
+            const finalP = baseL + ppn + pbbkb + pph;
             
+            document.getElementById('tax-ppn').innerText = "Rp " + Math.round(ppn).toLocaleString('id-ID');
+            document.getElementById('tax-pbbkb').innerText = "Rp " + Math.round(pbbkb).toLocaleString('id-ID');
+            document.getElementById('tax-total').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
-            
-            // Prediction Logic (1.5% and 2.5% variation)
+
+            // Prediksi
             document.getElementById('pred-down').innerText = "Rp " + Math.round(inputVal * 0.985).toLocaleString('id-ID');
             document.getElementById('pred-up').innerText = "Rp " + Math.round(inputVal * 1.025).toLocaleString('id-ID');
         }
@@ -163,7 +235,6 @@
         function updateCountdown() {
             const now = new Date();
             const day = now.getDate();
-            let target = (day < 15) ? 15 : 1; // Jika tgl 1-14 target ke 15, jika 15-akhir target ke tgl 1 bulan depan
             let diff = (day < 15) ? (15 - day) : (new Date(now.getFullYear(), now.getMonth() + 1, 1) - now) / (1000 * 60 * 60 * 24);
             document.getElementById('days-to-update').innerText = `Sisa ${Math.ceil(diff)} Hari Hingga Perubahan Harga`;
             document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
@@ -177,6 +248,12 @@
                     STATE[key] = parseFloat((STATE[key] + change).toFixed(2));
                     const el = document.getElementById(`live-${key}`);
                     if(el) el.innerText = STATE[key].toFixed(2);
+                    
+                    const trendEl = document.getElementById(`trend-${key}`);
+                    if(trendEl) {
+                        trendEl.innerText = (change >= 0 ? '▲ ' : '▼ ') + Math.abs(change).toFixed(2);
+                        trendEl.className = change >= 0 ? 'trend-up' : 'trend-down';
+                    }
                 });
             }, 3000);
         }
