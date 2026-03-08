@@ -15,9 +15,10 @@
         .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; position: relative; overflow: hidden; }
         .glow-cyan { box-shadow: 0 0 15px rgba(56, 189, 248, 0.05); }
         .input-dark { background: #020617; border: 1px solid #334155; color: white; border-radius: 4px; outline: none; transition: all 0.2s; }
-        .input-dark:focus { border-color: #06b6d4; box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
         .price-up { color: #ef4444; }
         .price-down { color: #22c55e; }
+        .alert-blink { animation: blinker 0.8s linear infinite; color: #ef4444; font-weight: 800; }
+        @keyframes blinker { 50% { opacity: 0; } }
         .scanner::after {
             content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.05), transparent);
@@ -44,42 +45,42 @@
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE</p>
                 <div class="mono text-blue-400 font-bold text-md leading-none">$<span id="live-wti">88.96</span></div>
-                <div id="trend-wti" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-wti" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE</p>
                 <div class="mono text-orange-400 font-bold text-md leading-none">$<span id="live-brent">90.82</span></div>
-                <div id="trend-brent" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-brent" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">MURBAN</p>
                 <div class="mono text-cyan-400 font-bold text-md leading-none">$<span id="live-murban">91.45</span></div>
-                <div id="trend-murban" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-murban" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">DME OMAN</p>
                 <div class="mono text-yellow-400 font-bold text-md leading-none">$<span id="live-oman">90.12</span></div>
-                <div id="trend-oman" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-oman" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">DUBAI</p>
                 <div class="mono text-purple-400 font-bold text-md leading-none">$<span id="live-dubai">89.75</span></div>
-                <div id="trend-dubai" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-dubai" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg border border-cyan-500/50 bg-slate-900/50">
                 <p class="text-[8px] text-cyan-500 font-bold uppercase mb-1 italic">PUB. PERTAMINA</p>
-                <div class="mono text-white font-bold text-md leading-none"><span id="top-display-price">21.250</span></div>
+                <div class="mono text-white font-bold text-md leading-none">Rp <span id="top-display-price">23.000</span></div>
                 <div class="text-[8px] text-slate-400 mt-1 mono">$<span id="usd-pertamina">0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">NYMEX SGBC1</p>
                 <div class="mono text-emerald-400 font-bold text-md leading-none">$<span id="live-mops">139.02</span></div>
-                <div id="trend-mops" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-mops" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg border-r-4 border-r-cyan-500 bg-slate-900">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">USD / IDR</p>
                 <span id="kurs-top" class="mono text-white font-bold text-md">15.850</span>
-                <div id="trend-kurs" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+                <div id="trend-kurs" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
             </div>
         </div>
     </header>
@@ -96,39 +97,44 @@
                     <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Turun</p>
                     <p id="pred-down" class="mono text-xl font-bold text-green-500">Rp 0</p>
                     <div class="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                        <div id="bar-down" class="h-full bg-green-500 transition-all duration-1000" style="width: 0%"></div>
+                        <div id="bar-down" class="h-full bg-green-500 transition-all duration-1000"></div>
                     </div>
                 </div>
                 <div class="glass-panel p-4 rounded-lg border-b-2 border-slate-700 text-center flex flex-col justify-center">
                     <p class="text-[9px] text-slate-500 font-bold uppercase">Base Acuan</p>
                     <p id="active-price-center" class="mono text-xl font-bold text-white">Rp 23.000</p>
-                    <p class="text-[8px] text-slate-500 mono mt-1 tracking-tighter uppercase">Integrated to Controller</p>
+                    <p class="text-[8px] text-slate-500 mono mt-1 uppercase tracking-tighter italic">Synced to Controller</p>
                 </div>
                 <div class="glass-panel p-4 rounded-lg border-b-2 border-red-500 bg-red-500/5 text-center">
                     <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Naik</p>
                     <p id="pred-up" class="mono text-xl font-bold text-red-500">Rp 0</p>
                     <div class="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                        <div id="bar-up" class="h-full bg-red-500 transition-all duration-1000" style="width: 0%"></div>
+                        <div id="bar-up" class="h-full bg-red-500 transition-all duration-1000"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="lg:col-span-4 flex flex-col gap-4">
-            <div class="glass-panel p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 h-[120px]">
-                <h3 class="header-font text-[10px] font-bold text-amber-500 uppercase mb-2">Decision Intelligence</h3>
-                <div id="decision-box" class="text-[12px] italic leading-snug text-slate-300">Syncing market data...</div>
+            <div id="decision-panel" class="glass-panel p-4 rounded-xl border border-slate-800 transition-colors duration-500 min-h-[130px]">
+                <h3 class="header-font text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
+                    Decision Intelligence 
+                    <span id="status-tag" class="text-[8px] px-2 py-0.5 rounded bg-slate-800">MONITORING</span>
+                </h3>
+                <div id="decision-box" class="text-[13px] leading-relaxed mono">Menganalisis pergerakan market...</div>
+                <div id="action-btn" class="mt-3 hidden">
+                    <div class="w-full bg-red-600 text-white text-[10px] font-black py-2 rounded text-center uppercase tracking-tighter">Eksekusi PO Sekarang!</div>
+                </div>
             </div>
 
             <div class="space-y-3">
                 <div class="glass-panel p-4 rounded-xl border-l-4 border-l-cyan-500">
                     <h3 class="text-[10px] font-bold text-cyan-400 uppercase mb-3 tracking-widest">Price Controller</h3>
                     <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 mono text-sm">Rp</span>
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 mono text-sm font-bold">Rp</span>
                         <input type="number" id="input-base" value="23000" oninput="masterCalculate()" 
                                class="input-dark w-full pl-10 pr-4 py-2 mono text-xl text-white font-bold">
                     </div>
-                    <p class="text-[8px] text-slate-500 mt-2 uppercase italic font-bold">Manual override base price</p>
                 </div>
 
                 <div class="glass-panel px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/50 flex justify-between items-center">
@@ -150,60 +156,83 @@
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
-                const oldKurs = STATE.kurs;
                 STATE.kurs = data.rates.IDR;
                 document.getElementById('kurs-top').innerText = Math.round(STATE.kurs).toLocaleString('id-ID');
-                updateTrendVisual('kurs', STATE.kurs - oldKurs, 0);
                 masterCalculate();
             } catch (e) { masterCalculate(); }
         }
 
         function masterCalculate() {
             const userPrice = parseFloat(document.getElementById('input-base').value) || 0;
-
-            // Update UI
             document.getElementById('top-display-price').innerText = userPrice.toLocaleString('id-ID');
             document.getElementById('active-price-center').innerText = "Rp " + userPrice.toLocaleString('id-ID');
             document.getElementById('usd-pertamina').innerText = (userPrice / STATE.kurs).toFixed(2);
-
-            // Franco
+            
             const finalP = userPrice * 1.188;
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
 
-            // Skenario
             const brentRatio = STATE.brent / INITIAL_BRENT;
             const factorDown = 0.02 * (1 / brentRatio);
             const factorUp = 0.035 * brentRatio;
 
-            const priceDown = userPrice * (1 - factorDown);
-            const priceUp = userPrice * (1 + factorUp);
-
-            document.getElementById('pred-down').innerText = "Rp " + Math.round(priceDown).toLocaleString('id-ID');
-            document.getElementById('pred-up').innerText = "Rp " + Math.round(priceUp).toLocaleString('id-ID');
+            document.getElementById('pred-down').innerText = "Rp " + Math.round(userPrice * (1 - factorDown)).toLocaleString('id-ID');
+            document.getElementById('pred-up').innerText = "Rp " + Math.round(userPrice * (1 + factorUp)).toLocaleString('id-ID');
+            
             document.getElementById('bar-down').style.width = Math.min(Math.max(factorDown * 1500, 5), 95) + "%";
             document.getElementById('bar-up').style.width = Math.min(Math.max(factorUp * 1500, 5), 95) + "%";
 
-            updateDecision(userPrice);
+            updateDecisionLogic(userPrice);
         }
 
-        function updateTrendVisual(id, diff, precision = 2) {
+        function updateDecisionLogic(currentBase) {
+            const panel = document.getElementById('decision-panel');
+            const box = document.getElementById('decision-box');
+            const tag = document.getElementById('status-tag');
+            const btn = document.getElementById('action-btn');
+            const diff = STATE.brent - INITIAL_BRENT;
+
+            // RESET STATE
+            panel.classList.remove('border-red-500', 'bg-red-500/10', 'border-green-500', 'bg-green-500/10');
+            tag.classList.remove('bg-red-600', 'bg-green-600');
+            btn.classList.add('hidden');
+
+            if(diff > 0.5) {
+                // STRONG BUY ALERT
+                panel.classList.add('border-red-500', 'bg-red-500/10');
+                tag.innerText = "CRITICAL ALERT";
+                tag.classList.add('bg-red-600');
+                btn.classList.remove('hidden');
+                box.innerHTML = `
+                    <span class="alert-blink">⚠️ BRENT NAIK KE $${STATE.brent.toFixed(2)}</span><br>
+                    <span class="text-white">Harga acuan Rp ${currentBase.toLocaleString('id-ID')} berada dalam zona risiko tinggi. Estimasi kenaikan mencapai Rp ${Math.round(currentBase * 1.035).toLocaleString('id-ID')}.</span>
+                `;
+            } else if (diff < -0.5) {
+                // OPPORTUNITY
+                panel.classList.add('border-green-500', 'bg-green-500/10');
+                tag.innerText = "OPPORTUNITY";
+                tag.classList.add('bg-green-600');
+                box.innerHTML = `
+                    <span class="text-green-500 font-bold">▼ BRENT MELEMAH ($${STATE.brent.toFixed(2)})</span><br>
+                    <span class="text-white">Pasar sedang koreksi. Anda punya ruang tunggu. Potensi harga turun ke Rp ${Math.round(currentBase * 0.98).toLocaleString('id-ID')}.</span>
+                `;
+            } else {
+                tag.innerText = "STABLE";
+                box.innerHTML = `Market bergerak sideways di $${STATE.brent.toFixed(2)}. Harga Rp ${currentBase.toLocaleString('id-ID')} masih kompetitif untuk pengadaan rutin.`;
+            }
+        }
+
+        function updateTrendVisual(id, diff) {
             const el = document.getElementById(`trend-${id}`);
             if(!el) return;
             el.style.opacity = "1";
-            const val = Math.abs(diff).toFixed(precision);
-            if(diff > 0) {
-                el.innerHTML = `<span class="price-up">▲ ${val}</span>`;
-            } else if(diff < 0) {
-                el.innerHTML = `<span class="price-down">▼ ${val}</span>`;
-            } else {
-                el.innerHTML = `<span class="text-slate-600">- 0.00</span>`;
-            }
+            const val = Math.abs(diff).toFixed(2);
+            el.innerHTML = diff > 0 ? `<span class="price-up">▲ ${val}</span>` : `<span class="price-down">▼ ${val}</span>`;
         }
 
         function livePriceMovement() {
             setInterval(() => {
                 ['wti', 'brent', 'mops', 'murban', 'oman', 'dubai'].forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.15;
+                    const change = (Math.random() - 0.5) * 0.18; // Variasi sedikit lebih besar
                     STATE[key] = parseFloat((STATE[key] + change).toFixed(2));
                     const priceEl = document.getElementById(`live-${key}`);
                     if(priceEl) priceEl.innerText = STATE[key].toFixed(2);
@@ -213,14 +242,6 @@
             }, 3000);
         }
 
-        function updateDecision(currentBase) {
-            const box = document.getElementById('decision-box');
-            const diff = STATE.brent - INITIAL_BRENT;
-            if(diff > 1) box.innerHTML = `<span class="text-red-500 font-bold uppercase">High Risk!</span><br>Brent di $${STATE.brent.toFixed(2)}. Tekanan harga naik kuat pada basis Rp ${currentBase.toLocaleString('id-ID')}.`;
-            else if (diff < -1) box.innerHTML = `<span class="text-green-500 font-bold uppercase">Optimal!</span><br>Brent melemah ke $${STATE.brent.toFixed(2)}. Ada ruang negosiasi di bawah Rp ${currentBase.toLocaleString('id-ID')}.`;
-            else box.innerHTML = `<span class="text-cyan-500 font-bold uppercase">Stable.</span><br>Market bergerak landai. Harga Rp ${currentBase.toLocaleString('id-ID')} masih cukup stabil.`;
-        }
-
         function initChart() {
             const ctx = document.getElementById('predictionChart').getContext('2d');
             new Chart(ctx, {
@@ -228,7 +249,7 @@
                 data: {
                     labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'],
                     datasets: [{
-                        data: [22750, 22900, 23000, 23050, 23200, 23400],
+                        data: [22800, 22950, 23000, 23100, 23300, 23450],
                         borderColor: '#06b6d4',
                         backgroundColor: 'rgba(6, 182, 212, 0.05)',
                         fill: true, tension: 0.4, pointRadius: 0
@@ -247,4 +268,3 @@
     </script>
 </body>
 </html>
-
