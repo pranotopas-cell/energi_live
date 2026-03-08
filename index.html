@@ -3,207 +3,238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KSE Energy Market Terminal</title>
+
+<title>Crude Oil Monitoring</title>
 
 <style>
 
 body{
-background:#0f172a;
+background:#050b1a;
 font-family:Arial;
 color:white;
 margin:0;
 padding:20px;
 }
 
-h1{
-text-align:center;
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
 margin-bottom:30px;
 }
 
-.market{
+.title{
+font-size:28px;
+font-weight:bold;
+}
+
+.title span{
+color:#00d4ff;
+}
+
+.time{
+text-align:right;
+color:#9ca3af;
+}
+
+.grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+grid-template-columns:repeat(2,1fr);
 gap:15px;
-margin-bottom:30px;
 }
 
 .card{
-background:#1e293b;
+background:#0f1b33;
 padding:20px;
-border-radius:10px;
-text-align:center;
-box-shadow:0 0 10px rgba(0,0,0,0.3);
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
 }
 
 .label{
-color:#94a3b8;
-font-size:14px;
+color:#9ca3af;
+font-size:13px;
+margin-bottom:5px;
 }
 
 .value{
-font-size:26px;
+font-size:28px;
 font-weight:bold;
-margin-top:5px;
+}
+
+.up{
+color:#22c55e;
+}
+
+.down{
+color:#ef4444;
 }
 
 .section{
-margin-top:40px;
-}
-
-.calc{
-background:#1e293b;
+margin-top:30px;
+background:#0f1b33;
 padding:20px;
-border-radius:10px;
-max-width:420px;
-margin:auto;
+border-radius:12px;
 }
 
 input{
 width:100%;
-padding:8px;
-margin-top:5px;
+padding:10px;
+margin-top:8px;
 margin-bottom:15px;
-border-radius:5px;
+border-radius:6px;
 border:none;
+background:#081225;
+color:white;
 }
 
 button{
 width:100%;
-padding:10px;
-background:#22c55e;
+padding:12px;
+background:#00c853;
 border:none;
-border-radius:5px;
+border-radius:8px;
 font-size:16px;
 cursor:pointer;
 }
 
 .result{
-font-size:24px;
 text-align:center;
+font-size:26px;
 margin-top:15px;
 font-weight:bold;
-}
-
-.footer{
-text-align:center;
-margin-top:30px;
-color:#94a3b8;
+color:#00e5ff;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<h1>KSE ENERGY MARKET TERMINAL</h1>
+<div class="header">
 
-<div class="market">
+<div class="title">
+CRUDE OIL <span>MONITORING</span><br>
+<small style="color:#9ca3af;font-size:14px">
+KHATULISTIWA SINAR ENERGI TERMINAL
+</small>
+</div>
+
+<div class="time" id="clock">
+--
+</div>
+
+</div>
+
+<div class="grid">
 
 <div class="card">
-<div class="label">WTI</div>
-<input id="wti" value="86">
+<div class="label">LIVE MOPS (SG)</div>
+<div class="value" id="mops">139.02</div>
 </div>
 
 <div class="card">
-<div class="label">BRENT</div>
-<input id="brent" value="89">
+<div class="label">WTI CRUDE OIL</div>
+<div class="value up">93.56 ▲</div>
 </div>
 
 <div class="card">
-<div class="label">MURBAN</div>
-<input id="murban" value="90">
+<div class="label">BRENT CRUDE</div>
+<div class="value down">90.14 ▼</div>
 </div>
 
 <div class="card">
-<div class="label">SGX GASOIL</div>
-<input id="gasoil" value="812">
+<div class="label">MURBAN CRUDE</div>
+<div class="value up">91.02 ▲</div>
+</div>
+
+<div class="card">
+<div class="label">DXY INDEX</div>
+<div class="value">103.85</div>
 </div>
 
 <div class="card">
 <div class="label">USD / IDR</div>
-<input id="usd" value="16900">
-</div>
-
-<div class="card">
-<div class="label">DXY</div>
-<input id="dxy" value="104">
+<div class="value">16,938</div>
 </div>
 
 </div>
 
 <div class="section">
 
-<div class="calc">
+<h3>MARKET REFERENCE</h3>
 
-<h2>Estimasi MOPS</h2>
+<label>Live SG Gasoil</label>
+<input id="gasoil" value="812">
 
-<label>Differential (20-35)</label>
+<label>Differential</label>
 <input id="diff" value="25">
 
-<button onclick="hitungMops()">Hitung MOPS</button>
+<button onclick="calcMops()">Hitung MOPS</button>
 
-<div class="result" id="mops">--</div>
-
-</div>
+<div class="result" id="mopsResult">--</div>
 
 </div>
 
 <div class="section">
 
-<div class="calc">
+<h3>ALPHA PREMIUM</h3>
 
-<h2>Kalkulator Solar Industri</h2>
-
-<label>PPN (%)</label>
-<input id="ppn" value="11">
-
-<label>PBBKB (%)</label>
-<input id="pbbkb" value="5">
-
-<label>PPh (%)</label>
-<input id="pph" value="0.3">
-
-<button onclick="hitungSolar()">Hitung Harga</button>
-
-<div class="result" id="solar">Rp -</div>
+<input id="alpha" value="2.5">
 
 </div>
 
-</div>
+<div class="section">
 
-<div class="footer">
-KSE Energy Monitoring System
+<h3>FRANCO QUOTE (RP/LTR)</h3>
+
+<label>Kurs USD</label>
+<input id="kurs" value="16900">
+
+<button onclick="hitungHarga()">Hitung Harga</button>
+
+<div class="result" id="harga">Rp -</div>
+
 </div>
 
 <script>
 
-function hitungMops(){
+function updateClock(){
+
+let now=new Date()
+
+document.getElementById("clock").innerHTML=
+now.toLocaleTimeString()+"<br>"+now.toDateString()
+
+}
+
+setInterval(updateClock,1000)
+
+function calcMops(){
 
 let gasoil=parseFloat(document.getElementById("gasoil").value)
+
 let diff=parseFloat(document.getElementById("diff").value)
 
 let mops=gasoil-diff
 
-document.getElementById("mops").innerText=mops.toFixed(2)+" USD/BBL"
+document.getElementById("mopsResult").innerText=
+mops.toFixed(2)
 
-window.mopsValue=mops
+window.mops=mops
 
 }
 
-function hitungSolar(){
+function hitungHarga(){
 
-let mops=window.mopsValue || 780
-let kurs=parseFloat(document.getElementById("usd").value)
+let mops=window.mops||780
 
-let ppn=document.getElementById("ppn").value/100
-let pbbkb=document.getElementById("pbbkb").value/100
-let pph=document.getElementById("pph").value/100
+let kurs=parseFloat(document.getElementById("kurs").value)
 
-let liter=(mops*kurs)/159
+let harga=(mops*kurs)/159
 
-let harga=liter+(liter*ppn)+(liter*pbbkb)+(liter*pph)
-
-document.getElementById("solar").innerText="Rp "+Math.round(harga)+"/L"
+document.getElementById("harga").innerText=
+"Rp "+Math.round(harga)
 
 }
 
