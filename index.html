@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD DYNAMIC DASHBOARD | KSE</title>
+    <title>HSD STRATEGIC DASHBOARD | KSE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,9 +14,16 @@
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; position: relative; overflow: hidden; }
         .glow-cyan { box-shadow: 0 0 15px rgba(56, 189, 248, 0.05); }
-        .input-dark { background: #020617; border: 1px solid #334155; color: white; padding: 4px 8px; border-radius: 4px; font-size: 14px; outline: none; width: 100%; border-left: 3px solid #06b6d4; }
-        .price-up { color: #ef4444 !important; }
-        .price-down { color: #22c55e !important; }
+        .input-dark { background: #020617; border: 1px solid #334155; color: white; border-radius: 4px; outline: none; transition: all 0.2s; }
+        .input-dark:focus { border-color: #06b6d4; box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+        .price-up { color: #ef4444; }
+        .price-down { color: #22c55e; }
+        .scanner::after {
+            content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.05), transparent);
+            animation: scan 4s infinite linear;
+        }
+        @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
     </style>
 </head>
 <body class="p-4">
@@ -24,128 +31,147 @@
     <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6 border-b border-slate-800 pb-4">
         <div class="flex items-center gap-6">
             <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
-                HSD<span class="text-cyan-500 animate-pulse">LIVE</span>
-                <span class="block text-[8px] text-slate-500 tracking-[0.3em] font-light uppercase">KSE Strategy Unit</span>
+                HSD<span class="text-cyan-500 animate-pulse">MONITORING</span>
+                <span class="block text-[8px] text-slate-500 tracking-[0.3em] font-light">PT KHATULISTIWA SINAR ENERGI</span>
             </h1>
             <div class="border-l border-slate-700 pl-4">
                 <span id="current-time" class="mono text-cyan-400 text-xl font-bold">00:00:00</span>
-                <span id="current-date" class="block text-[10px] text-slate-500 uppercase mt-1">09 MAR 2026</span>
+                <span id="current-date" class="block text-[10px] text-slate-500 uppercase mt-1">-- --- 2026</span>
             </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 w-full lg:w-auto text-center">
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE</p>
-                <div class="mono text-blue-400 font-bold text-md">$<span id="live-wti">88.96</span></div>
-                <div id="trend-wti" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
+                <div class="mono text-blue-400 font-bold text-md leading-none">$<span id="live-wti">88.96</span></div>
+                <div id="trend-wti" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE</p>
-                <div class="mono text-orange-400 font-bold text-md">$<span id="live-brent">90.82</span></div>
-                <div id="trend-brent" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
+                <div class="mono text-orange-400 font-bold text-md leading-none">$<span id="live-brent">90.82</span></div>
+                <div id="trend-brent" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+            </div>
+            <div class="glass-panel p-2 rounded-lg glow-cyan">
+                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">MURBAN</p>
+                <div class="mono text-cyan-400 font-bold text-md leading-none">$<span id="live-murban">91.45</span></div>
+                <div id="trend-murban" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+            </div>
+            <div class="glass-panel p-2 rounded-lg glow-cyan">
+                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">DME OMAN</p>
+                <div class="mono text-yellow-400 font-bold text-md leading-none">$<span id="live-oman">90.12</span></div>
+                <div id="trend-oman" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
+            </div>
+            <div class="glass-panel p-2 rounded-lg glow-cyan">
+                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">DUBAI</p>
+                <div class="mono text-purple-400 font-bold text-md leading-none">$<span id="live-dubai">89.75</span></div>
+                <div id="trend-dubai" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg border border-cyan-500/50 bg-slate-900/50">
-                <p class="text-[8px] text-cyan-500 font-bold uppercase mb-1 italic">LIVE PUB. PRICE</p>
+                <p class="text-[8px] text-cyan-500 font-bold uppercase mb-1 italic">PUB. PERTAMINA</p>
                 <div class="mono text-white font-bold text-md leading-none">Rp <span id="top-display-price">23.000</span></div>
                 <div class="text-[8px] text-slate-400 mt-1 mono">$<span id="usd-pertamina">0.00</span></div>
             </div>
             <div class="glass-panel p-2 rounded-lg glow-cyan">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">NYMEX SGBC1</p>
-                <div class="mono text-emerald-400 font-bold text-md">$<span id="live-mops">139.02</span></div>
-                <div id="trend-mops" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
+                <div class="mono text-emerald-400 font-bold text-md leading-none">$<span id="live-mops">139.02</span></div>
+                <div id="trend-mops" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
             </div>
             <div class="glass-panel p-2 rounded-lg border-r-4 border-r-cyan-500 bg-slate-900">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">USD / IDR</p>
                 <span id="kurs-top" class="mono text-white font-bold text-md">15.850</span>
-                <div id="trend-kurs" class="text-[9px] font-bold mt-1 mono opacity-0">--</div>
+                <div id="trend-kurs" class="text-[9px] font-bold mt-1 mono opacity-0 italic">--</div>
             </div>
         </div>
     </header>
 
-    <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-8 space-y-6">
-            <div class="glass-panel p-5 rounded-xl h-[285px]">
-                <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase mb-4 italic">Analisis Pergerakan Harga</h3>
+            <div class="glass-panel p-5 rounded-xl scanner h-[285px]">
+                <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase mb-4 italic tracking-widest">Market Analysis Chart</h3>
                 <div class="h-[210px]"><canvas id="predictionChart"></canvas></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded-lg border-b-2 border-green-500 bg-green-500/5 text-center">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Turun (Optimis)</p>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Turun</p>
                     <p id="pred-down" class="mono text-xl font-bold text-green-500">Rp 0</p>
                     <div class="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                        <div id="bar-down" class="h-full bg-green-500 transition-all duration-1000"></div>
+                        <div id="bar-down" class="h-full bg-green-500 transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
-                <div class="glass-panel p-4 rounded-lg border-b-2 border-slate-700 text-center flex flex-col justify-center bg-cyan-500/5">
-                    <p class="text-[9px] text-cyan-500 font-bold uppercase">Harga Acuan Aktif</p>
+                <div class="glass-panel p-4 rounded-lg border-b-2 border-slate-700 text-center flex flex-col justify-center">
+                    <p class="text-[9px] text-slate-500 font-bold uppercase">Base Acuan</p>
                     <p id="active-price-center" class="mono text-xl font-bold text-white">Rp 23.000</p>
-                    <p class="text-[8px] text-slate-500 mono mt-1">SYNCED WITH CONTROLLER</p>
+                    <p class="text-[8px] text-slate-500 mono mt-1 tracking-tighter uppercase">Integrated to Controller</p>
                 </div>
                 <div class="glass-panel p-4 rounded-lg border-b-2 border-red-500 bg-red-500/5 text-center">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Naik (Risiko)</p>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase">Skenario Naik</p>
                     <p id="pred-up" class="mono text-xl font-bold text-red-500">Rp 0</p>
                     <div class="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                        <div id="bar-up" class="h-full bg-red-500 transition-all duration-1000"></div>
+                        <div id="bar-up" class="h-full bg-red-500 transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="lg:col-span-4 flex flex-col gap-4">
-            <div class="glass-panel p-4 rounded-xl border border-amber-500/30 bg-amber-500/5">
-                <h3 class="header-font text-[10px] font-bold text-amber-500 uppercase mb-3">Master Decision</h3>
-                <div id="decision-box" class="p-3 bg-black/60 rounded border border-amber-500/20 text-[12px] italic leading-snug">Memproses...</div>
+            <div class="glass-panel p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 h-[120px]">
+                <h3 class="header-font text-[10px] font-bold text-amber-500 uppercase mb-2">Decision Intelligence</h3>
+                <div id="decision-box" class="text-[12px] italic leading-snug text-slate-300">Syncing market data...</div>
             </div>
 
-            <div class="glass-panel p-4 rounded-xl border-t-4 border-cyan-500">
-                <h3 class="text-[10px] font-bold text-cyan-400 uppercase mb-3 tracking-widest">Price Controller</h3>
-                <div class="space-y-4">
+            <div class="space-y-3">
+                <div class="glass-panel p-4 rounded-xl border-l-4 border-l-cyan-500">
+                    <h3 class="text-[10px] font-bold text-cyan-400 uppercase mb-3 tracking-widest">Price Controller</h3>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 mono text-sm">Rp</span>
+                        <input type="number" id="input-base" value="23000" oninput="masterCalculate()" 
+                               class="input-dark w-full pl-10 pr-4 py-2 mono text-xl text-white font-bold">
+                    </div>
+                    <p class="text-[8px] text-slate-500 mt-2 uppercase italic font-bold">Manual override base price</p>
+                </div>
+
+                <div class="glass-panel px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/50 flex justify-between items-center">
                     <div>
-                        <label class="text-[10px] text-slate-400 uppercase font-bold">Input Harga Sekarang (Rp):</label>
-                        <input type="number" id="input-base" value="23000" oninput="masterCalculate()" class="input-dark mt-1 mono text-xl text-cyan-400 py-2">
-                        <p class="text-[8px] text-slate-500 mt-1 italic">*Ubah angka ini untuk update seluruh dashboard</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase leading-none">Estimasi Franco</p>
+                        <p class="text-[8px] text-slate-600 mt-1 uppercase italic">(Base x 1.188)</p>
                     </div>
-                    <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-                        <p class="text-[10px] text-slate-400 uppercase font-bold">Estimasi Franco</p>
-                        <div id="final-price" class="text-xl font-black text-white mono">Rp 0</div>
-                    </div>
+                    <div id="final-price" class="text-xl font-black text-cyan-400 mono tracking-tighter">Rp 0</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const STATE = { brent: 90.82, wti: 88.96, mops: 139.02, kurs: 15850 };
+        const STATE = { brent: 90.82, wti: 88.96, mops: 139.02, murban: 91.45, oman: 90.12, dubai: 89.75, kurs: 15850 };
         const INITIAL_BRENT = 90.82;
 
         async function updateKurs() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
+                const oldKurs = STATE.kurs;
                 STATE.kurs = data.rates.IDR;
                 document.getElementById('kurs-top').innerText = Math.round(STATE.kurs).toLocaleString('id-ID');
+                updateTrendVisual('kurs', STATE.kurs - oldKurs, 0);
                 masterCalculate();
             } catch (e) { masterCalculate(); }
         }
 
         function masterCalculate() {
-            // 1. Ambil Nilai dari Input
             const userPrice = parseFloat(document.getElementById('input-base').value) || 0;
 
-            // 2. Update Panel Atas & Tengah secara Real-time
+            // Update UI
             document.getElementById('top-display-price').innerText = userPrice.toLocaleString('id-ID');
             document.getElementById('active-price-center').innerText = "Rp " + userPrice.toLocaleString('id-ID');
             document.getElementById('usd-pertamina').innerText = (userPrice / STATE.kurs).toFixed(2);
 
-            // 3. Hitung Franco (Rumus: Base * 1.188)
+            // Franco
             const finalP = userPrice * 1.188;
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
 
-            // 4. Hitung Skenario Berdasarkan Pergerakan Brent Sekarang
+            // Skenario
             const brentRatio = STATE.brent / INITIAL_BRENT;
-            
-            // Logika: Jika Brent naik, risiko naik lebih tinggi dari basis userPrice
             const factorDown = 0.02 * (1 / brentRatio);
             const factorUp = 0.035 * brentRatio;
 
@@ -154,67 +180,67 @@
 
             document.getElementById('pred-down').innerText = "Rp " + Math.round(priceDown).toLocaleString('id-ID');
             document.getElementById('pred-up').innerText = "Rp " + Math.round(priceUp).toLocaleString('id-ID');
-
-            // Update Progress Bar Visual
-            document.getElementById('bar-down').style.width = (factorDown * 1500) + "%";
-            document.getElementById('bar-up').style.width = (factorUp * 1500) + "%";
+            document.getElementById('bar-down').style.width = Math.min(Math.max(factorDown * 1500, 5), 95) + "%";
+            document.getElementById('bar-up').style.width = Math.min(Math.max(factorUp * 1500, 5), 95) + "%";
 
             updateDecision(userPrice);
         }
 
-        function updateTrendVisual(id, diff) {
+        function updateTrendVisual(id, diff, precision = 2) {
             const el = document.getElementById(`trend-${id}`);
             if(!el) return;
             el.style.opacity = "1";
-            if(diff > 0) el.innerHTML = `<span class="price-up">▲ NAIK</span>`;
-            else if(diff < 0) el.innerHTML = `<span class="price-down">▼ TURUN</span>`;
+            const val = Math.abs(diff).toFixed(precision);
+            if(diff > 0) {
+                el.innerHTML = `<span class="price-up">▲ ${val}</span>`;
+            } else if(diff < 0) {
+                el.innerHTML = `<span class="price-down">▼ ${val}</span>`;
+            } else {
+                el.innerHTML = `<span class="text-slate-600">- 0.00</span>`;
+            }
         }
 
         function livePriceMovement() {
             setInterval(() => {
-                ['wti', 'brent', 'mops'].forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.12;
+                ['wti', 'brent', 'mops', 'murban', 'oman', 'dubai'].forEach(key => {
+                    const change = (Math.random() - 0.5) * 0.15;
                     STATE[key] = parseFloat((STATE[key] + change).toFixed(2));
                     const priceEl = document.getElementById(`live-${key}`);
                     if(priceEl) priceEl.innerText = STATE[key].toFixed(2);
                     updateTrendVisual(key, change);
                 });
-                masterCalculate(); // Hitung ulang skenario setiap ada gerak market
+                masterCalculate();
             }, 3000);
         }
 
         function updateDecision(currentBase) {
             const box = document.getElementById('decision-box');
             const diff = STATE.brent - INITIAL_BRENT;
-            
-            if(diff > 1) {
-                box.innerHTML = `⚠️ <span class="text-red-500 font-bold uppercase">WASPADA!</span><br>Minyak Dunia naik signifikan. Harga Rp ${currentBase.toLocaleString('id-ID')} kemungkinan besar akan segera naik. Amankan stok!`;
-            } else if (diff < -1) {
-                box.innerHTML = `✅ <span class="text-green-500 font-bold uppercase">PELUANG!</span><br>Market sedang turun. Tekanan pada harga Rp ${currentBase.toLocaleString('id-ID')} berkurang. Bisa coba negosiasi atau tunda PO singkat.`;
-            } else {
-                box.innerHTML = `⚖️ <span class="text-cyan-500 font-bold uppercase">STABIL.</span><br>Harga Rp ${currentBase.toLocaleString('id-ID')} saat ini aman mengikuti pergerakan market yang sideways.`;
-            }
+            if(diff > 1) box.innerHTML = `<span class="text-red-500 font-bold uppercase">High Risk!</span><br>Brent di $${STATE.brent.toFixed(2)}. Tekanan harga naik kuat pada basis Rp ${currentBase.toLocaleString('id-ID')}.`;
+            else if (diff < -1) box.innerHTML = `<span class="text-green-500 font-bold uppercase">Optimal!</span><br>Brent melemah ke $${STATE.brent.toFixed(2)}. Ada ruang negosiasi di bawah Rp ${currentBase.toLocaleString('id-ID')}.`;
+            else box.innerHTML = `<span class="text-cyan-500 font-bold uppercase">Stable.</span><br>Market bergerak landai. Harga Rp ${currentBase.toLocaleString('id-ID')} masih cukup stabil.`;
         }
 
         function initChart() {
             const ctx = document.getElementById('predictionChart').getContext('2d');
-            window.myChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Sesi 1', 'Sesi 2', 'Sesi 3', 'Sesi 4', 'Sesi 5'],
+                    labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'],
                     datasets: [{
-                        data: [22800, 22900, 23000, 23150, 23400],
+                        data: [22750, 22900, 23000, 23050, 23200, 23400],
                         borderColor: '#06b6d4',
                         backgroundColor: 'rgba(6, 182, 212, 0.05)',
-                        fill: true, tension: 0.4
+                        fill: true, tension: 0.4, pointRadius: 0
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1e293b' }, ticks: { font:{size:10}, color: '#64748b' } }, x: { grid: { display: false }, ticks: { font:{size:10}, color: '#64748b' } } } }
             });
         }
 
         setInterval(() => {
             document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
         }, 1000);
 
         window.onload = () => { updateKurs(); initChart(); livePriceMovement(); };
