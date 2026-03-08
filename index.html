@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL MONITORING | KSE</title>
+    <title>HSD TERMINAL MONITORING | KSE PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -26,8 +26,6 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
-        .table-mini { font-size: 11px; width: 100%; }
-        .table-mini td { padding: 6px 4px; border-bottom: 1px solid #1e293b; }
         .input-dark {
             background: #020617;
             border: 1px solid #334155;
@@ -65,13 +63,6 @@
 
         <div class="grid grid-cols-2 md:grid-cols-6 gap-2 w-full lg:w-auto">
             <div class="glass-panel p-2 rounded min-w-[120px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">PERTAMINA PUB.</p>
-                <div class="flex justify-between items-center">
-                    <span id="live-pertamina" class="mono text-cyan-400 font-bold text-xl">128.50</span>
-                    <span class="text-[7px] text-cyan-800 font-bold">Ltr</span>
-                </div>
-            </div>
-            <div class="glass-panel p-2 rounded min-w-[120px]">
                 <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE</p>
                 <div class="flex justify-between items-center">
                     <span id="live-wti" class="mono text-blue-400 font-bold text-xl">88.96</span>
@@ -85,11 +76,20 @@
                     <span id="trend-brent" class="trend-down">▼ 0.00</span>
                 </div>
             </div>
-            <div class="glass-panel p-2 rounded min-w-[120px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">MURBAN</p>
+            
+            <div class="bg-white p-2 rounded min-w-[130px] shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                <p class="text-[9px] text-slate-900 font-black uppercase mb-1">PERTAMINA PUBLISH</p>
                 <div class="flex justify-between items-center">
-                    <span id="live-murban" class="mono text-emerald-400 font-bold text-xl">91.45</span>
-                    <span id="trend-murban" class="trend-up">▲ 0.00</span>
+                    <span id="live-pertamina" class="mono text-black font-black text-xl">128.50</span>
+                    <span class="text-[8px] text-slate-500 font-bold">BASE</span>
+                </div>
+            </div>
+
+            <div class="glass-panel p-2 rounded min-w-[120px]">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">NYMEX SGBC1</p>
+                <div class="flex justify-between items-center">
+                    <span id="live-mops" class="mono text-emerald-400 font-bold text-xl">139.02</span>
+                    <span id="trend-mops" class="trend-up">▲ 0.00</span>
                 </div>
             </div>
             <div class="glass-panel p-2 rounded min-w-[120px]">
@@ -111,7 +111,7 @@
 
     <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
         <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • LIVE MARKET SYNC: ACTIVE • MOPS SINGAPORE GASOIL 10PPM TRENDING NEUTRAL • PERTAMINA PUBLISH SYNCED WITH FIREBASE • PT KHATULISTIWA SINAR ENERGI MONITORING •
+            • LIVE MARKET SYNC: ACTIVE • NYMEX MOPS SINGAPORE SGBC1 MONITORING • PERTAMINA PUBLISH SYNCED • PT KHATULISTIWA SINAR ENERGI •
         </marquee>
     </div>
 
@@ -121,10 +121,11 @@
             <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500">
                 <div class="flex flex-wrap items-end gap-6">
                     <div class="flex-1 min-w-[180px]">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block italic">Market Reference Source</label>
                         <div class="flex gap-2">
-                            <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
+                            <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold w-1/2">
                                 <option value="pertamina">Pertamina Publish</option>
+                                <option value="mops">Nymex MOPS SGBC1</option>
                                 <option value="brent">Brent Crude Oil</option>
                                 <option value="wti">WTI Crude Oil</option>
                                 <option value="manual">Manual</option>
@@ -133,15 +134,29 @@
                         </div>
                     </div>
 
-                    <div class="w-28">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium</label>
-                        <input type="number" id="input-alpha" value="4.50" step="0.01" oninput="calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
+                    <div class="w-32">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block italic">Alpha Premium</label>
+                        <select id="input-alpha" onchange="calculateSolar()" class="input-dark w-full font-bold text-lg mono text-green-500">
+                            <option value="2.0">2.00</option>
+                            <option value="2.5">2.50</option>
+                            <option value="3.0">3.00</option>
+                            <option value="3.5">3.50</option>
+                            <option value="4.0">4.00</option>
+                            <option value="4.5" selected>4.50</option>
+                            <option value="5.0">5.00</option>
+                            <option value="5.5">5.50</option>
+                            <option value="6.0">6.00</option>
+                            <option value="6.5">6.50</option>
+                            <option value="7.0">7.00</option>
+                            <option value="7.5">7.50</option>
+                            <option value="8.0">8.00</option>
+                        </select>
                     </div>
 
                     <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="calculateSolar()"><label class="text-[9px] font-bold uppercase">PPN</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()"><label class="text-[9px] font-bold uppercase">PBBKB</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="calculateSolar()"><label class="text-[9px] font-bold uppercase">PPh</label></div>
+                        <div class="flex flex-col items-center gap-1"><input type="checkbox" id="check-ppn" checked onchange="calculateSolar()"><label class="text-[8px] font-bold uppercase text-slate-500">PPN</label></div>
+                        <div class="flex flex-col items-center gap-1"><input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()"><label class="text-[8px] font-bold uppercase text-slate-500">PBBKB</label></div>
+                        <div class="flex flex-col items-center gap-1"><input type="checkbox" id="check-pph" checked onchange="calculateSolar()"><label class="text-[8px] font-bold uppercase text-slate-500">PPh</label></div>
                     </div>
 
                     <div class="flex-1 text-right border-l border-slate-800 pl-6">
@@ -154,12 +169,12 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>LIVE REFERENCE</span>
-                        <span class="text-cyan-500 animate-pulse">● Active</span>
+                        <span>PRICE TRACKER</span>
+                        <span class="text-cyan-500 animate-pulse">● Live</span>
                     </h3>
-                    <div class="text-2xl font-bold mono mb-4" id="mops-live">139.02</div>
-                    <table class="table-mini text-slate-400 mono" id="history-table">
-                        <tbody>
+                    <div class="text-2xl font-bold mono mb-4" id="mops-live-main">139.02</div>
+                    <table class="table-mini text-slate-400 mono">
+                        <tbody id="history-rows">
                             <tr><td>22:00</td><td class="text-right">139.05</td><td class="text-right text-green-500">▲</td></tr>
                             <tr><td>21:00</td><td class="text-right">138.98</td><td class="text-right text-red-500">▼</td></tr>
                         </tbody>
@@ -168,7 +183,7 @@
                 <div class="glass-panel p-4 rounded">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Price Breakdown</h3>
                     <div class="space-y-3 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Basic Ex-Work</span><span id="basic-price" class="mono font-bold">Rp 0</span></div>
+                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Basic Ex-Work</span><span id="basic-price" class="mono font-bold text-white">Rp 0</span></div>
                         <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Tax Component</span><span id="tax-only" class="mono text-cyan-600 font-bold">Rp 0</span></div>
                     </div>
                 </div>
@@ -199,7 +214,7 @@
 
         <div class="lg:col-span-3 space-y-4">
             <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest">Terminal Status</h4>
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest italic">Terminal Status</h4>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center text-[11px]">
                         <span>Feed Connection</span>
@@ -215,18 +230,18 @@
                     </div>
                 </div>
             </div>
-            <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-3 rounded text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                Refresh Quote
+            <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-400 text-black font-black py-4 rounded-sm text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                EXECUTE CALCULATION
             </button>
         </div>
     </div>
 
     <script>
         // DATA STATE
-        const BASELINE = { pertamina: 128.50, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45, kursIdr: 15850 };
+        const BASELINE = { pertamina: 128.50, brent: 90.82, wti: 88.96, dxy: 103.85, mops: 139.02, kursIdr: 15850 };
         window.marketData = { ...BASELINE };
 
-        // NEWS DATA WITH LINKS
+        // NEWS DATA
         const news = {
             global: [
                 { t: "Gasoil crack spreads widen in Asian markets.", u: "https://www.reuters.com/business/energy/" },
@@ -235,13 +250,12 @@
             ],
             domestic: [
                 { t: "Pertamina HSD B35 supply remains stable.", u: "https://www.pertamina.com/id/news-room" },
-                { t: "New distribution hub opened in Kalimantan.", u: "https://www.esdm.go.id/" },
                 { t: "B40 implementation update for industrial sector.", u: "https://ebtke.esdm.go.id/" }
             ]
         };
 
         function renderNews() {
-            const mapper = n => `<div class="news-item" onclick="window.open('${n.u}', '_blank')"><div class="text-[11px] font-medium text-slate-300">${n.t}</div></div>`;
+            const mapper = n => `<div class="news-item" onclick="window.open('${n.u}', '_blank')"><div class="text-[11px] font-medium text-slate-300 leading-tight">${n.t}</div></div>`;
             document.getElementById('global-news').innerHTML = news.global.map(mapper).join('');
             document.getElementById('domestic-news').innerHTML = news.domestic.map(mapper).join('');
         }
@@ -260,12 +274,11 @@
             setInterval(() => {
                 document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
                 
-                // Simulate fluctuation
-                ['brent', 'wti', 'murban', 'dxy', 'pertamina'].forEach(key => {
+                ['brent', 'wti', 'mops', 'dxy', 'pertamina'].forEach(key => {
                     const change = (Math.random() - 0.5) * 0.1;
                     window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
                     
-                    const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-live`);
+                    const el = document.getElementById(`live-${key}`);
                     if(el) el.innerText = window.marketData[key].toFixed(2);
 
                     const trendEl = document.getElementById(`trend-${key}`);
@@ -284,12 +297,12 @@
         }
 
         function calculateSolar() {
-            const mops = parseFloat(document.getElementById('input-mops').value) || 0;
+            const baseVal = parseFloat(document.getElementById('input-mops').value) || 0;
             const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
             const kurs = window.marketData.kursIdr;
             
             // Per Liter Base
-            const baseL = ((mops + alpha) / 158.98) * kurs;
+            const baseL = ((baseVal + alpha) / 158.98) * kurs;
             
             let taxM = 0;
             if (document.getElementById('check-ppn').checked) taxM += 0.11;
@@ -302,10 +315,9 @@
             document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
             document.getElementById('tax-only').innerText = "Rp " + Math.round(taxT).toLocaleString('id-ID');
             document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
-            document.getElementById('mops-live').innerText = mops.toFixed(2);
+            document.getElementById('mops-live-main').innerText = baseVal.toFixed(2);
         }
 
-        // INITIALIZE
         fetchIDR(); renderNews(); runLive(); calculateSolar();
     </script>
 </body>
