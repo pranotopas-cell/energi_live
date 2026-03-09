@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD STRATEGIC DASHBOARD | KSE UPDATED 2026</title>
+    <title>HSD STRATEGIC DASHBOARD | KSE TAX CONTROL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --terminal-bg: #020617; --panel-bg: #0f172a; --accent: #38bdf8; }
+        :root { --terminal-bg: #020617; --panel-bg: #0f172a; }
         body { background-color: var(--terminal-bg); color: #f1f5f9; font-family: 'Inter', sans-serif; }
         .header-font { font-family: 'Orbitron', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass-panel { background: var(--panel-bg); border: 1px solid #1e293b; position: relative; }
         .input-dark { background: #020617; border: 1px solid #334155; color: white; border-radius: 4px; outline: none; transition: all 0.2s; }
         .input-dark:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
-        .price-up { color: #ef4444; }
-        .price-down { color: #22c55e; }
-        .alert-blink { animation: blinker 0.8s linear infinite; color: #ef4444; font-weight: 800; }
-        @keyframes blinker { 50% { opacity: 0; } }
+        
+        /* Checkbox Styling */
+        .custom-check { width: 18px; height: 18px; cursor: pointer; accent-color: #38bdf8; }
     </style>
 </head>
 <body class="p-4">
@@ -31,230 +29,173 @@
             </h1>
             <div class="border-l border-slate-700 pl-4">
                 <span id="current-time" class="mono text-cyan-400 text-xl font-bold">00:00:00</span>
-                <span id="current-date" class="block text-[10px] text-slate-500 uppercase mt-1">-- --- 2026</span>
+                <span class="block text-[10px] text-slate-500 uppercase mt-1">TAX CONTROL ACTIVATED</span>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 w-full lg:w-auto text-center">
-            <div class="glass-panel p-2 rounded-lg">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE</p>
-                <div class="mono text-blue-400 font-bold text-md leading-none">$<span id="live-wti">--</span></div>
-                <div id="trend-wti" class="text-[9px] font-bold mt-1 mono">--</div>
-            </div>
-            <div class="glass-panel p-2 rounded-lg">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 text-center">
+            <div class="glass-panel p-2 rounded-lg min-w-[100px]">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE</p>
-                <div class="mono text-orange-400 font-bold text-md leading-none">$<span id="live-brent">--</span></div>
-                <div id="trend-brent" class="text-[9px] font-bold mt-1 mono">--</div>
+                <div class="mono text-orange-400 font-bold text-md leading-none">$<span id="live-brent">116.86</span></div>
             </div>
-            <div class="glass-panel p-2 rounded-lg">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">MURBAN</p>
-                <div class="mono text-cyan-400 font-bold text-md leading-none">$<span id="live-murban">--</span></div>
-                <div id="trend-murban" class="text-[9px] font-bold mt-1 mono">--</div>
+            <div class="glass-panel p-2 rounded-lg min-w-[100px]">
+                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">MOPS</p>
+                <div class="mono text-emerald-400 font-bold text-md leading-none">$<span id="live-mops">138.20</span></div>
             </div>
-            <div class="glass-panel p-2 rounded-lg">
-                <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">MOPS (NYMEX)</p>
-                <div class="mono text-emerald-400 font-bold text-md leading-none">$<span id="live-mops">--</span></div>
-                <div id="trend-mops" class="text-[9px] font-bold mt-1 mono">--</div>
-            </div>
-            <div class="glass-panel p-2 rounded-lg border-r-4 border-r-cyan-500">
+            <div class="glass-panel p-2 rounded-lg border-r-4 border-r-cyan-500 min-w-[120px]">
                 <p class="text-[8px] text-slate-500 font-bold uppercase mb-1">USD / IDR</p>
-                <span id="kurs-top" class="mono text-white font-bold text-md">--</span>
-                <div id="trend-kurs" class="text-[9px] font-bold mt-1 mono text-green-500">REALTIME</div>
+                <span id="kurs-top" class="mono text-white font-bold text-md">15.850</span>
             </div>
         </div>
     </header>
 
-    <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <div class="lg:col-span-5 space-y-4">
-            <div class="glass-panel p-6 rounded-xl border-l-4 border-l-cyan-500">
-                <h3 class="header-font text-xs font-bold text-cyan-400 uppercase mb-4 tracking-widest">Advanced Price Controller</h3>
+        <div class="space-y-4">
+            <div class="glass-panel p-6 rounded-xl border-t-4 border-t-cyan-500">
+                <h3 class="header-font text-xs font-bold text-cyan-400 uppercase mb-6 tracking-widest flex justify-between">
+                    Tax Configuration <span>(Select to Apply)</span>
+                </h3>
                 
                 <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] text-slate-400 uppercase font-bold mb-1 block">Harga Dasar (HH) per Liter</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 mono text-sm font-bold">Rp</span>
-                            <input type="number" id="input-base" value="18500" oninput="calculateFromBase()" 
-                                   class="input-dark w-full pl-10 pr-4 py-3 mono text-2xl text-white font-bold">
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800">
+                        <div class="flex items-center gap-4">
+                            <input type="checkbox" id="check-ppn" class="custom-check" checked onchange="masterCalc()">
+                            <div>
+                                <p class="text-sm font-bold text-white leading-none">PPN</p>
+                                <p class="text-[10px] text-slate-500 mt-1 uppercase">Pajak Pertambahan Nilai (11%)</p>
+                            </div>
                         </div>
+                        <span id="val-ppn" class="mono text-sm text-cyan-400">Rp 0</span>
                     </div>
 
-                    <div class="flex items-center justify-center py-2">
-                        <div class="h-[1px] bg-slate-800 flex-grow"></div>
-                        <span class="px-4 text-[10px] text-slate-600 font-black">OR / SYNC</span>
-                        <div class="h-[1px] bg-slate-800 flex-grow"></div>
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800">
+                        <div class="flex items-center gap-4">
+                            <input type="checkbox" id="check-pbbkb" class="custom-check" checked onchange="masterCalc()">
+                            <div>
+                                <p class="text-sm font-bold text-white leading-none">PBBKB</p>
+                                <p class="text-[10px] text-slate-500 mt-1 uppercase">Pajak Bahan Bakar (7.5%)</p>
+                            </div>
+                        </div>
+                        <span id="val-pbbkb" class="mono text-sm text-cyan-400">Rp 0</span>
                     </div>
 
-                    <div>
-                        <label class="text-[10px] text-orange-400 uppercase font-bold mb-1 block">Harga Franco (Total incl. Pajak)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 mono text-sm font-bold">Rp</span>
-                            <input type="number" id="input-franco" oninput="calculateFromFranco()" 
-                                   class="input-dark w-full pl-10 pr-4 py-3 mono text-2xl text-orange-400 font-bold border-orange-900/50">
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800">
+                        <div class="flex items-center gap-4">
+                            <input type="checkbox" id="check-pph" class="custom-check" checked onchange="masterCalc()">
+                            <div>
+                                <p class="text-sm font-bold text-white leading-none">PPh 22</p>
+                                <p class="text-[10px] text-slate-500 mt-1 uppercase">Pajak Penghasilan (0.3%)</p>
+                            </div>
                         </div>
+                        <span id="val-pph" class="mono text-sm text-cyan-400">Rp 0</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="glass-panel p-4 rounded-xl bg-slate-900/30">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-3 border-b border-slate-800 pb-2">Komponen Pajak & Biaya</h4>
-                <div class="grid grid-cols-1 gap-2 mono text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">PPN (11%)</span>
-                        <span id="tax-ppn" class="text-white">Rp 0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">PBBKB (7.5%)</span>
-                        <span id="tax-pbbkb" class="text-white">Rp 0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">PPh 22 (0.3%)</span>
-                        <span id="tax-pph" class="text-white">Rp 0</span>
-                    </div>
-                    <div class="border-t border-slate-800 mt-2 pt-2 flex justify-between font-bold">
-                        <span class="text-cyan-500 text-xs">TOTAL MULTIPLIER</span>
-                        <span class="text-cyan-500">1.188x</span>
-                    </div>
+                <div class="mt-6 pt-4 border-t border-slate-800 flex justify-between items-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">Current Multiplier:</span>
+                    <span id="display-multiplier" class="mono text-lg font-bold text-white">1.188x</span>
                 </div>
             </div>
         </div>
 
-        <div class="lg:col-span-7 space-y-6">
-            <div class="glass-panel p-5 rounded-xl h-[300px]">
-                <h3 class="header-font text-[11px] font-bold text-slate-400 uppercase mb-4 italic tracking-widest">Global Market Trend ( Brent Crude )</h3>
-                <div class="h-[220px]"><canvas id="predictionChart"></canvas></div>
+        <div class="space-y-4">
+            <div class="glass-panel p-6 rounded-xl border-l-4 border-l-orange-500">
+                <h3 class="header-font text-xs font-bold text-orange-400 uppercase mb-6 tracking-widest">Price Entry</h3>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[10px] text-slate-500 uppercase font-bold mb-2 block">Harga Dasar (HH)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 mono font-bold">Rp</span>
+                            <input type="number" id="price-hh" value="18500" oninput="fromHH()" 
+                                   class="input-dark w-full pl-12 pr-4 py-4 mono text-2xl font-black">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="h-[1px] bg-slate-800 flex-grow"></div>
+                        <div class="p-2 bg-slate-800 rounded-full">
+                            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                        </div>
+                        <div class="h-[1px] bg-slate-800 flex-grow"></div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-cyan-500 uppercase font-bold mb-2 block tracking-widest">Harga Franco (Total)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 mono font-bold">Rp</span>
+                            <input type="number" id="price-franco" oninput="fromFranco()" 
+                                   class="input-dark w-full pl-12 pr-4 py-4 mono text-2xl font-black border-cyan-900/50 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="decision-panel" class="glass-panel p-5 rounded-xl border border-slate-800 min-h-[140px]">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="header-font text-[10px] font-bold text-slate-400 uppercase">Intelligence Report</h3>
-                    <span id="status-tag" class="text-[9px] px-3 py-1 rounded-full bg-slate-800 font-bold">ANALYZING</span>
-                </div>
-                <div id="decision-box" class="text-sm leading-relaxed mono text-slate-300">
-                    Menghubungkan ke satelit market...
-                </div>
+            <div class="glass-panel p-4 rounded-xl bg-orange-500/5 border border-orange-500/20">
+                <p class="text-[10px] text-orange-300 uppercase font-bold mb-1">Catatan Strategis:</p>
+                <p class="text-[11px] text-slate-400 italic">"Gunakan checkbox di sebelah kiri untuk menyesuaikan penawaran berdasarkan lokasi atau kebijakan perpajakan klien."</p>
             </div>
         </div>
+
     </div>
 
     <script>
-        // DATA STATE 2026
-        const MULTIPLIER = 1.188; // Total akumulasi pajak (1 + 0.11 + 0.075 + 0.003)
-        const STATE = { 
-            brent: 116.86, 
-            wti: 114.50, 
-            mops: 138.20, 
-            murban: 120.15, 
-            kurs: 15850,
-            lastBrent: 112.00
-        };
+        const TAX_RATES = { ppn: 0.11, pbbkb: 0.075, pph: 0.003 };
+        let lastChanged = 'hh'; // Track input mana yang terakhir diisi user
 
-        // 1. Fungsi Simulasi Data Live (Mirip Investing.com)
-        function updateMarketData() {
-            const keys = ['brent', 'wti', 'mops', 'murban'];
-            keys.forEach(key => {
-                const volatility = (Math.random() - 0.48) * 0.5; // Fluktuasi kecil
-                const prev = STATE[key];
-                STATE[key] = parseFloat((STATE[key] + volatility).toFixed(2));
-                
-                const el = document.getElementById(`live-${key}`);
-                const trendEl = document.getElementById(`trend-${key}`);
-                
-                el.innerText = STATE[key].toLocaleString();
-                
-                if (volatility > 0) {
-                    trendEl.innerHTML = `<span class="price-up">▲ +${volatility.toFixed(2)}</span>`;
-                } else {
-                    trendEl.innerHTML = `<span class="price-down">▼ ${volatility.toFixed(2)}</span>`;
-                }
-            });
-            updateDecisionLogic();
+        function getActiveMultiplier() {
+            let m = 1.0;
+            if (document.getElementById('check-ppn').checked) m += TAX_RATES.ppn;
+            if (document.getElementById('check-pbbkb').checked) m += TAX_RATES.pbbkb;
+            if (document.getElementById('check-pph').checked) m += TAX_RATES.pph;
+            return m;
         }
 
-        // 2. Logika Kalkulasi (Input HH -> Franco)
-        function calculateFromBase() {
-            const hh = parseFloat(document.getElementById('input-base').value) || 0;
-            const franco = hh * MULTIPLIER;
-            
-            document.getElementById('input-franco').value = Math.round(franco);
-            updateTaxBreakdown(hh);
+        function updateTaxDisplays(hh) {
+            const ppn = document.getElementById('check-ppn').checked ? hh * TAX_RATES.ppn : 0;
+            const pbbkb = document.getElementById('check-pbbkb').checked ? hh * TAX_RATES.pbbkb : 0;
+            const pph = document.getElementById('check-pph').checked ? hh * TAX_RATES.pph : 0;
+
+            document.getElementById('val-ppn').innerText = "Rp " + Math.round(ppn).toLocaleString('id-ID');
+            document.getElementById('val-pbbkb').innerText = "Rp " + Math.round(pbbkb).toLocaleString('id-ID');
+            document.getElementById('val-pph').innerText = "Rp " + Math.round(pph).toLocaleString('id-ID');
+            document.getElementById('display-multiplier').innerText = getActiveMultiplier().toFixed(3) + "x";
         }
 
-        // 3. Logika Kalkulasi (Input Franco -> HH)
-        function calculateFromFranco() {
-            const franco = parseFloat(document.getElementById('input-franco').value) || 0;
-            const hh = franco / MULTIPLIER;
-            
-            document.getElementById('input-base').value = Math.round(hh);
-            updateTaxBreakdown(hh);
+        function fromHH() {
+            lastChanged = 'hh';
+            const hh = parseFloat(document.getElementById('price-hh').value) || 0;
+            const mult = getActiveMultiplier();
+            document.getElementById('price-franco').value = Math.round(hh * mult);
+            updateTaxDisplays(hh);
         }
 
-        function updateTaxBreakdown(hh) {
-            document.getElementById('tax-ppn').innerText = "Rp " + Math.round(hh * 0.11).toLocaleString('id-ID');
-            document.getElementById('tax-pbbkb').innerText = "Rp " + Math.round(hh * 0.075).toLocaleString('id-ID');
-            document.getElementById('tax-pph').innerText = "Rp " + Math.round(hh * 0.003).toLocaleString('id-ID');
+        function fromFranco() {
+            lastChanged = 'franco';
+            const franco = parseFloat(document.getElementById('price-franco').value) || 0;
+            const mult = getActiveMultiplier();
+            const hh = franco / mult;
+            document.getElementById('price-hh').value = Math.round(hh);
+            updateTaxDisplays(hh);
         }
 
-        function updateDecisionLogic() {
-            const box = document.getElementById('decision-box');
-            const tag = document.getElementById('status-tag');
-            const diff = STATE.brent - STATE.lastBrent;
-
-            if (STATE.brent > 115) {
-                tag.className = "text-[9px] px-3 py-1 rounded-full bg-red-600 font-bold animate-pulse";
-                tag.innerText = "CRITICAL ALERT";
-                box.innerHTML = `⚠️ <span class="text-white font-bold underline">MARKET OVERHEAT:</span> Brent menyentuh $${STATE.brent}. Segera amankan stok sebelum Pertamina melakukan adjustment harga publisitas.`;
+        // Fungsi Master ketika Checkbox diklik
+        function masterCalc() {
+            if (lastChanged === 'hh') {
+                fromHH();
             } else {
-                tag.className = "text-[9px] px-3 py-1 rounded-full bg-green-600 font-bold";
-                tag.innerText = "STABLE MARKET";
-                box.innerHTML = `Market terpantau kondusif. Selisih fluktuasi harian berkisar $${Math.abs(diff).toFixed(2)}. Penyesuaian harga franco dapat dilakukan secara bertahap.`;
+                fromFranco();
             }
         }
 
-        async function getRealKurs() {
-            try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await res.json();
-                STATE.kurs = data.rates.IDR;
-                document.getElementById('kurs-top').innerText = Math.round(STATE.kurs).toLocaleString('id-ID');
-            } catch (e) {
-                document.getElementById('kurs-top').innerText = "15.850";
-            }
-        }
-
-        function initChart() {
-            const ctx = document.getElementById('predictionChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['08:00', '10:00', '12:00', '14:00', 'Now'],
-                    datasets: [{
-                        label: 'Brent Price',
-                        data: [112, 114.5, 113.8, 115.2, 116.86],
-                        borderColor: '#f97316',
-                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
-                        fill: true, tension: 0.4
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
-
-        // Timers
+        // Clock
         setInterval(() => {
             document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
         }, 1000);
 
-        setInterval(updateMarketData, 3000); // Update market every 3 seconds
-
-        window.onload = () => {
-            getRealKurs();
-            initChart();
-            calculateFromBase();
-            updateMarketData();
-        };
+        // Init
+        window.onload = fromHH;
     </script>
 </body>
 </html>
