@@ -1,307 +1,772 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSD TERMINAL MONITORING</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { 
-            --terminal-bg: #0a0e14; 
-            --panel-bg: #111827;
-            --accent-blue: #38bdf8;
-            --border-color: #1e293b;
-        }
-        body { 
-            background-color: var(--terminal-bg); 
-            color: #f1f5f9; 
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.01em;
-        }
-        .header-font { font-family: 'Orbitron', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { 
-            background: var(--panel-bg); 
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        }
-        .table-mini { font-size: 11px; width: 100%; }
-        .table-mini td { padding: 6px 4px; border-bottom: 1px solid #1e293b; }
-        .input-dark {
-            background: #020617;
-            border: 1px solid #334155;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-dark:focus { border-color: var(--accent-blue); }
-        .trend-up { color: #22c55e; font-size: 10px; font-weight: bold; }
-        .trend-down { color: #ef4444; font-size: 10px; font-weight: bold; }
-        .news-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 12px; transition: all 0.2s; }
-        .news-item:hover { border-left-color: var(--accent-blue); background: #1e293b; }
-        
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Corporate Face Attendance System</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    :root {
+      --primary: #0f172a;
+      --primary-accent: #1e293b;
+      --accent-blue: #0284c7;
+      --accent-hover: #0369a1;
+      --bg-body: #090d16;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      height: 100vh;
+      color: var(--text-main);
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 380px;
+      max-height: 98vh;
+      padding: 16px 18px;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: #e0f2fe;
+      color: var(--accent-blue);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border-radius: 20px;
+      margin-bottom: 4px;
+    }
+
+    .brand-header h2 {
+      color: var(--primary);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-header p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="text"], input[type="tel"] {
+      width: 100%;
+      padding: 9px 12px;
+      background-color: #f8fafc;
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      -webkit-appearance: none;
+    }
+
+    input:focus {
+      outline: none;
+      background-color: #fff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+      background-color: var(--accent-hover);
+    }
+
+    .btn:disabled {
+      background-color: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ID CARD STYLE SAMA PERSIS SEPERTI GAMBAR */
+    .id-card-wrapper {
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .id-card-header {
+      background: #0b192c;
+      color: #fff;
+      padding: 10px 12px 35px 12px;
+      text-align: center;
+      position: relative;
+    }
+
+    .id-card-header::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: #0b192c;
+      clip-path: ellipse(60% 50% at 50% 0%);
+    }
+
+    .id-company-name {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .id-company-address {
+      font-size: 8px;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .id-avatar-container {
+      position: relative;
+      margin-top: -30px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .id-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 3px solid #00a6f4;
+      background: #ffffff;
+      object-fit: cover;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    }
+
+    .id-card-body {
+      padding: 6px 14px 10px 14px;
+      text-align: center;
+    }
+
+    .id-emp-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0b192c;
+      text-transform: uppercase;
+    }
+
+    .id-emp-role {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .id-details-table {
+      width: 100%;
+      font-size: 9.5px;
+      color: #1e293b;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .id-details-table td {
+      padding: 1px 0;
+    }
+
+    .id-details-table td.label {
+      font-weight: 700;
+      color: #475569;
+      width: 45px;
+    }
+
+    .id-details-table td.separator {
+      width: 10px;
+      text-align: center;
+    }
+
+    .id-card-footer {
+      background: #0b192c;
+      padding: 6px;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .barcode-lines {
+      height: 14px;
+      background: repeating-linear-gradient(
+        90deg,
+        #fff 0, #fff 2px,
+        transparent 2px, transparent 4px,
+        #fff 4px, #fff 7px
+      );
+      width: 70%;
+      margin: 0 auto;
+    }
+
+    .btn-logout-small {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 5;
+    }
+
+    /* Camera Container Fit Layout */
+    .camera-box {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      background-color: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      border: 2px solid var(--border-color);
+    }
+
+    video, canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .face-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 130px;
+      border: 2px dashed rgba(255, 255, 255, 0.85);
+      border-radius: 50%;
+      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65);
+      pointer-events: none;
+    }
+
+    .status-badge {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+      display: none;
+      line-height: 1.3;
+    }
+
+    .status-badge.error { background-color: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+    .status-badge.success { background-color: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
+    .status-badge.info { background-color: #eff6ff; color: var(--accent-blue); border: 1px solid #bfdbfe; }
+
+    .result-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .result-card img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2.5px solid var(--accent-blue);
+      margin-bottom: 6px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed var(--border-color);
+      font-size: 10.5px;
+    }
+
+    .result-row:last-child { border-bottom: none; }
+    .result-row span.label { color: var(--text-muted); }
+    .result-row span.val { font-weight: 600; text-align: right; }
+
+    .tag-late { color: var(--danger); font-weight: 700; }
+    .tag-ontime { color: var(--success); font-weight: 700; }
+    .hidden { display: none !important; }
+  </style>
 </head>
-<body class="p-4">
+<body>
 
-    <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 border-b border-slate-800 pb-4">
-        <div class="flex items-center gap-6">
-            <div>
-                <h1 class="header-font text-2xl font-black text-white tracking-tighter uppercase">
-                    CRUDE OIL<span class="text-cyan-500">MONITORING</span>
-                    <span class="block text-[8px] text-slate-500 tracking-[0.3em] font-light">SEARCH ENGINE KHATULISTIWA SINAR ENERGI</span>
-                </h1>
-            </div>
-            <div class="border-l border-slate-700 pl-4 flex flex-col justify-center">
-                <span id="current-time" class="mono text-cyan-400 text-xl font-bold leading-none">00:00:00</span>
-                <span id="current-date" class="text-[11px] text-slate-500 uppercase tracking-widest mt-1">07 MAR 2026</span>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 w-full lg:w-auto">
-            <div class="glass-panel p-2 rounded min-w-[130px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">WTI CRUDE OIL</p>
-                <div class="flex justify-between items-center">
-                    <span id="live-wti" class="mono text-blue-400 font-bold text-xl">88.96</span>
-                    <span id="trend-wti" class="trend-up">▲ 0.00</span>
-                </div>
-            </div>
-            <div class="glass-panel p-2 rounded min-w-[130px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">BRENT CRUDE OILl</p>
-                <div class="flex justify-between items-center">
-                    <span id="live-brent" class="mono text-orange-400 font-bold text-xl">90.82</span>
-                    <span id="trend-brent" class="trend-down">▼ 0.00</span>
-                </div>
-            </div>
-            <div class="glass-panel p-2 rounded min-w-[130px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">MURBAN CRUDE OIL</p>
-                <div class="flex justify-between items-center">
-                    <span id="live-murban" class="mono text-emerald-400 font-bold text-xl">91.45</span>
-                    <span id="trend-murban" class="trend-up">▲ 0.00</span>
-                </div>
-            </div>
-            <div class="glass-panel p-2 rounded min-w-[130px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">DXY INDEX</p>
-                <div class="flex justify-between items-center">
-                    <span id="dxy-top" class="mono text-amber-500 font-bold text-xl">103.85</span>
-                    <span id="trend-dxy" class="trend-up">▲ 0.00</span>
-                </div>
-            </div>
-            <div class="glass-panel p-2 rounded border-r-2 border-r-cyan-600 min-w-[130px]">
-                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">USD / IDR</p>
-                <div class="flex justify-between items-baseline">
-                    <span id="kurs-top" class="mono text-white font-bold text-xl">15.850</span>
-                    <span class="text-[7px] text-slate-600">SPOT</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="mb-4 bg-black/40 border-y border-slate-800 py-1 shadow-sm">
-        <marquee scrollamount="5" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">
-            • LIVE MARKET SYNC: ACTIVE • MOPS SINGAPORE GASOIL 10PPM TRENDING NEUTRAL • B40 DOMESTIC INVENTORY STATUS: OPTIMAL • MONITORING GLOBAL CRUDE VOLATILITY • ANALYST: WATCH RESISTANCE AT $91.50 FOR BRENT • 
-        </marquee>
+<div class="container">
+  <div>
+    <div class="brand-header">
+      <div class="brand-badge">Enterprise Portal</div>
+      <h2>Attendance Portal</h2>
+      <p id="portalSubText">Verifikasi Presensi Karyawan</p>
     </div>
 
-    <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <div class="lg:col-span-9 space-y-6">
-            
-            <div class="glass-panel p-4 rounded-lg border-t-2 border-cyan-500">
-                <div class="flex flex-wrap items-end gap-6">
-                    <div class="flex-1 min-w-[180px]">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Market Link / Base</label>
-                        <div class="flex gap-2">
-                            <select id="market-sync" onchange="calculateSolar()" class="input-dark bg-slate-800 border-none text-[11px] font-bold">
-                                <option value="mops">Mops Singapore</option>
-                                <option value="brent">Brent crude Oil</option>
-                                <option value="wti">WTI Crude Oil</option>
-                                <option value="manual">Manual</option>
-                            </select>
-                            <input type="number" id="input-mops" value="139.02" step="0.01" class="input-dark flex-1 font-bold text-lg mono text-cyan-400">
-                        </div>
-                    </div>
+    <div id="statusMessage" class="status-badge"></div>
 
-                    <div class="w-28">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Alpha Premium</label>
-                        <input type="number" id="input-alpha" value="4.50" step="0.01" class="input-dark w-full font-bold text-lg mono text-green-500">
-                    </div>
-
-                    <div class="flex items-center gap-4 py-2 px-4 bg-slate-900/50 rounded border border-slate-800">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-ppn" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PPN</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pbbkb" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PBBKB</label></div>
-                        <div class="flex items-center gap-2"><input type="checkbox" id="check-pph" checked onchange="calculateSolar()"><label class="text-[9px] font-bold">PPh</label></div>
-                    </div>
-
-                    <div class="flex-1 text-right border-l border-slate-800 pl-6">
-                        <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Franco Quote (Rp/Ltr)</p>
-                        <div id="final-price" class="text-3xl font-black text-white mono tracking-tighter leading-none">Rp 0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="glass-panel p-4 rounded">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 flex justify-between">
-                        <span>MOPS Singapore</span>
-                        <span class="text-cyan-500 animate-pulse">● Live</span>
-                    </h3>
-                    <div class="text-2xl font-bold mono mb-4" id="mops-live">139.02</div>
-                    <table class="table-mini text-slate-400 mono">
-                        <tbody>
-                            <tr><td>18:00</td><td class="text-right">138.95</td><td class="text-right text-green-500">▲</td></tr>
-                            <tr><td>17:00</td><td class="text-right">139.10</td><td class="text-right text-red-500">▼</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="glass-panel p-4 rounded">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 italic">Price Breakdown</h3>
-                    <div class="space-y-3 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Basic Ex-Work</span><span id="basic-price" class="mono font-bold">Rp 0</span></div>
-                        <div class="flex justify-between"><span class="text-slate-500 font-bold uppercase">Tax Component</span><span id="tax-only" class="mono text-cyan-600 font-bold">Rp 0</span></div>
-                    </div>
-                </div>
-                <div class="glass-panel p-4 rounded border-l-2 border-amber-500">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 italic">Market Sentiment</h3>
-                    <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex mb-2">
-                        <div class="h-full bg-green-500 shadow-[0_0_8px_#22c55e]" style="width: 65%"></div>
-                        <div class="h-full bg-red-500" style="width: 35%"></div>
-                    </div>
-                    <div class="flex justify-between text-[9px] mt-1 mono uppercase font-bold">
-                        <span class="text-green-500">Bullish 65%</span>
-                        <span class="text-red-500">Bearish 35%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="text-[11px] font-bold text-cyan-500 mb-4 uppercase tracking-widest border-b border-cyan-900 pb-1">Global Energy Pulse</h4>
-                    <div id="global-news" class="space-y-1"></div>
-                </div>
-                <div>
-                    <h4 class="text-[11px] font-bold text-emerald-500 mb-4 uppercase tracking-widest border-b border-emerald-900 pb-1">Domestic HSD Monitor</h4>
-                    <div id="domestic-news" class="space-y-1"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="lg:col-span-3 space-y-4">
-            <div class="glass-panel p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4">Terminal Status</h4>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center text-[11px]">
-                        <span>Feed Connection</span>
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></span>
-                    </div>
-                    <div class="flex justify-between items-center text-[11px]">
-                        <span>API Latency</span>
-                        <span class="mono text-blue-400 text-[10px]">14ms</span>
-                    </div>
-                </div>
-            </div>
-            <button onclick="calculateSolar()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-black py-3 rounded text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                Refresh Quote
-            </button>
-        </div>
+    <!-- 1. SEKSI LOGIN -->
+    <div id="loginSection">
+      <div class="form-group">
+        <label for="loginUsername">Nama Lengkap (Username)</label>
+        <input type="text" id="loginUsername" placeholder="Contoh: Budi Pratama" required>
+      </div>
+      <div class="form-group">
+        <label for="loginPhone">Nomor HP</label>
+        <input type="tel" id="loginPhone" placeholder="Contoh: 081234567890" required>
+      </div>
+      <button class="btn" onclick="handleLogin()">Login Portal</button>
     </div>
 
-    <script>
-        const BASELINE = { mops: 139.02, brent: 90.82, wti: 88.96, dxy: 103.85, murban: 91.45 };
-        window.marketData = { ...BASELINE };
+    <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
+    <div id="attendanceSection" class="hidden">
+      <!-- MODEL ID CARD SESUAI DESAIN ACUAN -->
+      <div class="id-card-wrapper">
+        <button class="btn-logout-small" onclick="logout()">Keluar</button>
+        <div class="id-card-header">
+          <div class="id-company-name" id="cardCompany">
+            <span>INVESTAMA KALIMANTAN ENERGI</span>
+          </div>
+          <div class="id-company-address">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
+        </div>
 
-        function updateDate() {
-            const options = { day: '2-digit', month: 'short', year: 'numeric' };
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-GB', options).toUpperCase();
-        }
+        <div class="id-avatar-container">
+          <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230b192c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+        </div>
 
-        async function fetchIDR() {
-            try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await res.json();
-                window.kursIdr = data.rates.IDR;
-                document.getElementById('kurs-top').innerText = Math.round(window.kursIdr).toLocaleString('id-ID');
-                calculateSolar();
-            } catch (e) {
-                window.kursIdr = 15850;
-                document.getElementById('kurs-top').innerText = "15.850";
+        <div class="id-card-body">
+          <div class="id-emp-name" id="cardName">-</div>
+          <div class="id-emp-role" id="cardPosition">-</div>
+
+          <table class="id-details-table">
+            <tr>
+              <td class="label">ID</td>
+              <td class="separator">:</td>
+              <td id="cardEmpId">IKE-001</td>
+            </tr>
+            <tr>
+              <td class="label">PHONE</td>
+              <td class="separator">:</td>
+              <td id="cardPhone">-</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="id-card-footer">
+          <div class="barcode-lines"></div>
+        </div>
+      </div>
+
+      <div class="camera-box">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas" class="hidden"></canvas>
+        <div class="face-overlay"></div>
+      </div>
+
+      <button id="scanBtn" class="btn" onclick="processAttendance()">Record Wajah & Absen</button>
+    </div>
+
+    <!-- 3. SEKSI HASIL PRESENSI -->
+    <div id="resultSection" class="hidden">
+      <div class="result-card">
+        <img id="capturedImage" src="" alt="Foto Absen">
+        <div class="result-detail">
+          <div class="result-row">
+            <span class="label">Perusahaan</span>
+            <span class="val" id="resCompany"></span>
+          </div>
+          <div class="result-row">
+            <span class="label">Nama Lengkap</span>
+            <span class="val" id="resName"></span>
+          </div>
+          <div class="result-row">
+            <span class="label">Jabatan</span>
+            <span class="val" id="resPosition"></span>
+          </div>
+          <div class="result-row">
+            <span class="label">Lokasi Presensi</span>
+            <span class="val" id="resLocation"></span>
+          </div>
+          <div class="result-row">
+            <span class="label">Waktu Masuk</span>
+            <span class="val" id="resTime"></span>
+          </div>
+          <div class="result-row">
+            <span class="label">Status Presensi</span>
+            <span class="val" id="resStatus"></span>
+          </div>
+        </div>
+      </div>
+      <button class="btn" style="margin-top: 8px;" onclick="location.reload()">Kembali ke Home</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Supabase Configuration
+  const SB_URL = "https://qnamtickoteyvydayyor.supabase.co";
+  const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
+  const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+
+  // DAFTAR KARYAWAN TERDAFTAR
+  const ALLOWED_EMPLOYEES = [
+    { empId: "IKE-001", name: "Budi Pratama", phone: "081234567890", position: "Staff Operational", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKE-002", name: "Siti Rahma", phone: "082100001111", position: "HRD Specialist", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKE-003", name: "Andi Wijaya", phone: "085711112222", position: "IT Support", company: "PT. Investama Kalimantan Energi" }
+  ];
+
+  // Config Jam Operasional & Lokasi
+  const START_HOUR = 7;   // Jam 07:00
+  const END_HOUR = 16;   // Jam 16:00
+  const LATE_HOUR = 8;    // Batas Tepat Waktu Jam 08:30
+  const LATE_MINUTE = 30;
+
+  const ALLOWED_LOCATIONS = [
+    { name: "Kantor Utama (Pangkalan Bun)", lat: -2.706720, lon: 111.637710 },
+    { name: "Posisi Saat Ini / Cabang", lat: -2.706720, lon: 111.637710 }
+  ];
+  const MAX_RADIUS_METERS = 1000;
+
+  let currentUserData = null;
+  let currentLat = null;
+  let currentLon = null;
+  let matchedLocationName = "";
+  let activeStream = null;
+
+  window.onload = function() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        ALLOWED_LOCATIONS[1].lat = pos.coords.latitude;
+        ALLOWED_LOCATIONS[1].lon = pos.coords.longitude;
+      }, (err) => console.log("GPS update error."));
+    }
+
+    const savedUser = localStorage.getItem('corporate_user_session');
+    if (savedUser) {
+      currentUserData = JSON.parse(savedUser);
+      initAttendanceFlow();
+    }
+  };
+
+  function handleLogin() {
+    const nameInput = document.getElementById('loginUsername').value.trim();
+    const phoneInput = document.getElementById('loginPhone').value.trim();
+
+    if (!nameInput || !phoneInput) {
+      showStatus('Harap masukkan Nama Lengkap dan Nomor HP.', 'error');
+      return;
+    }
+
+    const foundEmployee = ALLOWED_EMPLOYEES.find(emp => 
+      emp.name.toLowerCase() === nameInput.toLowerCase() && emp.phone === phoneInput
+    );
+
+    if (!foundEmployee) {
+      showStatus('Akses Ditolak: Karyawan tidak terdaftar.', 'error');
+      return;
+    }
+
+    currentUserData = foundEmployee;
+    localStorage.setItem('corporate_user_session', JSON.stringify(currentUserData));
+    initAttendanceFlow();
+  }
+
+  // Cek Ke-Supabase Apakah User Sudah Absen Hari Ini
+  async function checkTodayAttendanceFromSupabase(phone) {
+    try {
+      const todayDate = new Date().toISOString().split('T')[0];
+      
+      const { data, error } = await supabaseClient
+        .from('attendances')
+        .select('created_at')
+        .eq('phone', phone)
+        .gte('created_at', `${todayDate}T00:00:00.000Z`)
+        .lte('created_at', `${todayDate}T23:59:59.999Z`);
+
+      if (error) throw error;
+
+      return data && data.length > 0;
+    } catch (err) {
+      console.warn("Pengecekan DB gagal, menggunakan fallback sistem:", err.message);
+      const lastAbsenceDate = localStorage.getItem(`absent_date_${phone}`);
+      return lastAbsenceDate === new Date().toISOString().split('T')[0];
+    }
+  }
+
+  async function initAttendanceFlow() {
+    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('attendanceSection').classList.remove('hidden');
+
+    document.getElementById('cardName').textContent = currentUserData.name;
+    document.getElementById('cardCompany').textContent = currentUserData.company;
+    document.getElementById('cardPosition').textContent = currentUserData.position;
+    document.getElementById('cardPhone').textContent = currentUserData.phone;
+    document.getElementById('cardEmpId').textContent = currentUserData.empId || "IKE-001";
+
+    const now = new Date();
+    const currentHour = now.getHours();
+
+    // 1. Validasi Jam Kerja (07:00 - 16:00)
+    if (currentHour < START_HOUR || currentHour >= END_HOUR) {
+      showStatus(`Absensi ditutup. Jam operasional 07.00 - 16.00 WIB.`, 'error');
+      document.getElementById('scanBtn').disabled = true;
+      return;
+    }
+
+    // 2. Validasi Sudah Absen via Database Supabase
+    showStatus('Memeriksa status presensi hari ini...', 'info');
+    const hasAttendedToday = await checkTodayAttendanceFromSupabase(currentUserData.phone);
+
+    if (hasAttendedToday) {
+      showStatus('Anda sudah melakukan absensi hari ini!', 'info');
+      document.getElementById('scanBtn').disabled = true;
+      return;
+    }
+
+    // 3. Validasi GPS
+    showStatus('Memeriksa posisi GPS Anda...', 'info');
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          currentLat = position.coords.latitude;
+          currentLon = position.coords.longitude;
+
+          let isInRange = false;
+          for (let loc of ALLOWED_LOCATIONS) {
+            const distance = calculateDistance(currentLat, currentLon, loc.lat, loc.lon);
+            if (distance <= MAX_RADIUS_METERS) {
+              isInRange = true;
+              matchedLocationName = loc.name;
+              break;
             }
-        }
+          }
 
-        const news = {
-            global: [
-                { t: "Gasoil crack spreads widen in Asian markets.", u: "#" },
-                { t: "OPEC output cut extended until end of year.", u: "#" },
-                { t: "US SPR sees slight draw as refinery runs increase.", u: "#" }
-            ],
-            domestic: [
-                { t: "Pertamina HSD B35 supply remains stable.", u: "#" },
-                { t: "New distribution hub opened in Kalimantan.", u: "#" }
-            ]
-        };
+          if (isInRange) {
+            showStatus(`Lokasi Valid (${matchedLocationName}). Silakan scan wajah.`, 'success');
+            startCamera('video');
+          } else {
+            showStatus('Gagal Absen: Lokasi Anda di luar radius kantor.', 'error');
+            document.getElementById('scanBtn').disabled = true;
+          }
+        },
+        (error) => {
+          showStatus('Gagal membaca GPS. Aktifkan izin lokasi.', 'error');
+          document.getElementById('scanBtn').disabled = true;
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+  }
 
-        function renderNews() {
-            document.getElementById('global-news').innerHTML = news.global.map(n => `
-                <div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300">${n.t}</a></div>
-            `).join('');
-            document.getElementById('domestic-news').innerHTML = news.domestic.map(n => `
-                <div class="news-item"><a href="${n.u}" class="text-[11px] font-medium block text-slate-300">${n.t}</a></div>
-            `).join('');
-        }
+  async function processAttendance() {
+    const scanBtn = document.getElementById('scanBtn');
+    scanBtn.disabled = true;
+    showStatus('Memverifikasi rekam wajah & menyimpan data...', 'info');
 
-        function runLive() {
-            setInterval(() => {
-                document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB');
-                
-                const keys = ['mops', 'brent', 'wti', 'murban', 'dxy'];
-                keys.forEach(key => {
-                    const change = (Math.random() - 0.5) * 0.12;
-                    window.marketData[key] = parseFloat((window.marketData[key] + change).toFixed(2));
-                    
-                    const el = document.getElementById(`live-${key}`) || document.getElementById(`${key}-top`) || document.getElementById(`${key}-live`);
-                    if(el) el.innerText = window.marketData[key];
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
 
-                    const trendEl = document.getElementById(`trend-${key}`);
-                    if(trendEl) {
-                        const icon = change >= 0 ? '▲' : '▼';
-                        trendEl.innerText = `${icon} ${Math.abs(change).toFixed(2)}`;
-                        trendEl.className = change >= 0 ? 'trend-up' : 'trend-down';
-                    }
-                });
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                const syncType = document.getElementById('market-sync').value;
-                if(syncType !== "manual" && document.activeElement.id !== "input-mops") {
-                    document.getElementById('input-mops').value = window.marketData[syncType];
-                    calculateSolar();
-                }
-            }, 3000);
-        }
+    stopCamera();
 
-        function calculateSolar() {
-            const mops = parseFloat(document.getElementById('input-mops').value) || 0;
-            const alpha = parseFloat(document.getElementById('input-alpha').value) || 0;
-            const kurs = window.kursIdr || 15850;
-            const baseL = ((mops + alpha) / 158.98) * kurs;
-            
-            let taxM = 0;
-            if (document.getElementById('check-ppn').checked) taxM += 0.11;
-            if (document.getElementById('check-pbbkb').checked) taxM += 0.075;
-            if (document.getElementById('check-pph').checked) taxM += 0.003;
-            
-            const taxT = baseL * taxM;
-            const finalP = baseL + taxT;
-            
-            document.getElementById('basic-price').innerText = "Rp " + Math.round(baseL).toLocaleString('id-ID');
-            document.getElementById('tax-only').innerText = "Rp " + Math.round(taxT).toLocaleString('id-ID');
-            document.getElementById('final-price').innerText = "Rp " + Math.round(finalP).toLocaleString('id-ID');
-        }
+    const now = new Date();
+    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+    const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
+    const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
 
-        updateDate(); fetchIDR(); renderNews(); runLive();
-    </script>
+    try {
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
+      const fileName = `attend_${currentUserData.phone}_${Date.now()}.jpg`;
+
+      const { error: storageError } = await supabaseClient
+        .storage
+        .from('attendance_photos')
+        .upload(fileName, blob, { contentType: 'image/jpeg' });
+
+      if (storageError) throw storageError;
+
+      const { data: publicUrlData } = supabaseClient
+        .storage
+        .from('attendance_photos')
+        .getPublicUrl(fileName);
+
+      const { error: dbError } = await supabaseClient
+        .from('attendances')
+        .insert([{
+          company_name: currentUserData.company,
+          user_name: currentUserData.name,
+          position: currentUserData.position,
+          phone: currentUserData.phone,
+          location_name: matchedLocationName,
+          check_in_time: timeString,
+          status: statusText,
+          photo_url: publicUrlData.publicUrl
+        }]);
+
+      if (dbError) throw dbError;
+
+      const todayDate = now.toISOString().split('T')[0];
+      localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
+
+      document.getElementById('attendanceSection').classList.add('hidden');
+      document.getElementById('resultSection').classList.remove('hidden');
+
+      document.getElementById('capturedImage').src = canvas.toDataURL('image/png');
+      document.getElementById('resCompany').textContent = currentUserData.company;
+      document.getElementById('resName').textContent = currentUserData.name;
+      document.getElementById('resPosition').textContent = currentUserData.position;
+      document.getElementById('resLocation').textContent = matchedLocationName;
+      document.getElementById('resTime').textContent = timeString;
+
+      const statusElem = document.getElementById('resStatus');
+      statusElem.textContent = isLate ? "TERLAMBAT (Lewat 08:30)" : "TEPAT WAKTU";
+      statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
+
+      showStatus('Absensi berhasil terverifikasi!', 'success');
+
+    } catch (err) {
+      console.error(err);
+      showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
+      scanBtn.disabled = false;
+    }
+  }
+
+  async function startCamera(videoId) {
+    try {
+      stopCamera();
+      const constraints = { video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, audio: false };
+      activeStream = await navigator.mediaDevices.getUserMedia(constraints);
+      const videoElem = document.getElementById(videoId);
+      videoElem.srcObject = activeStream;
+      await videoElem.play();
+    } catch (err) {
+      console.error(err);
+      showStatus('Gagal membuka kamera perangkat.', 'error');
+    }
+  }
+
+  function stopCamera() {
+    if (activeStream) {
+      activeStream.getTracks().forEach(track => track.stop());
+      activeStream = null;
+    }
+  }
+
+  function logout() {
+    stopCamera();
+    localStorage.removeItem('corporate_user_session');
+    location.reload();
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3;
+    const rad = Math.PI / 180;
+    const dLat = (lat2 - lat1) * rad;
+    const dLon = (lon2 - lon1) * rad;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * rad) * Math.cos(lat2 * rad) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  }
+
+  function showStatus(message, type) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.style.display = 'block';
+    statusDiv.className = `status-badge ${type}`;
+    statusDiv.textContent = message;
+  }
+</script>
 </body>
 </html>
