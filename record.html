@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Absensi - Executive Portal</title>
+  <title>Dashboard Absensi</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS CDN -->
@@ -24,7 +24,7 @@
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </div>
         <h2 class="text-base font-bold text-slate-800">Akses Terkunci</h2>
-        <p class="text-[11px] text-slate-500">Masukkan PIN / Kata Sandi untuk melihat data absensi</p>
+        <p class="text-[11px] text-slate-500"> Kata Sandi untuk melihat data absensi</p>
       </div>
 
       <form id="auth-form" onsubmit="unlockDashboard(event)" class="space-y-3">
@@ -50,17 +50,17 @@
             HR
           </div>
           <div>
-            <h1 class="text-xs font-semibold leading-none text-slate-100">Portal Kehadiran Executive</h1>
+            <h1 class="text-xs font-semibold leading-none text-slate-100">Record Kehadiran</h1>
           </div>
         </div>
         <div class="flex items-center gap-2">
           <a href="index.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium px-2.5 py-1 rounded transition border border-slate-700">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            Home Index
+            Home 
           </a>
           <button id="btn-export" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded transition shadow-sm">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Export CSV
+            Download
           </button>
           <button onclick="lockDashboard()" class="inline-flex items-center gap-1 bg-slate-800 hover:bg-rose-900 text-slate-300 hover:text-rose-200 text-[11px] font-medium px-2 py-1 rounded transition border border-slate-700 ml-2" title="Kunci Kembali">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -116,10 +116,10 @@
             <thead class="bg-slate-800 border-b border-slate-700 uppercase text-[10px] font-bold text-slate-200 tracking-wider">
               <tr>
                 <th scope="col" class="px-3 py-2">Tanggal</th>
-                <th scope="col" class="px-3 py-2">Pegawai & Jabatan</th>
+                <th scope="col" class="px-3 py-2"> Nama & Jabatan</th>
                 <th scope="col" class="px-3 py-2">Perusahaan</th>
                 <th scope="col" class="px-3 py-2">Kontak</th>
-                <th scope="col" class="px-3 py-2">Lokasi</th>
+                <th scope="col" class="px-3 py-2">Lokasi Absen</th>
                 <th scope="col" class="px-3 py-2">Jam Absen</th>
                 <th scope="col" class="px-3 py-2">Status</th>
                 <th scope="col" class="px-3 py-2 text-center">Foto</th>
