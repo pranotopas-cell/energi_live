@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Absensi - Executive Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen text-xs">
+
+  <!-- Modal Password Lock Screen -->
+  <div id="auth-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+      <div class="text-center space-y-1">
+        <div class="inline-flex p-2.5 bg-indigo-50 text-indigo-600 rounded-full mb-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </div>
+        <h2 class="text-base font-bold text-slate-800">Akses Terkunci</h2>
+        <p class="text-[11px] text-slate-500">Masukkan PIN / Kata Sandi untuk melihat data absensi</p>
+      </div>
+
+      <form id="auth-form" onsubmit="unlockDashboard(event)" class="space-y-3">
+        <div>
+          <input type="password" id="auth-password" placeholder="Masukkan Password" required autofocus
+            class="w-full text-center tracking-widest text-sm bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <p id="auth-error" class="text-[10px] text-rose-500 font-medium mt-1 text-center hidden">Password salah! Silakan coba lagi.</p>
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg text-xs transition">
+          Buka Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Main Content (Hidden Until Unlocked) -->
+  <div id="dashboard-content" class="hidden">
+    <!-- Top Header Navigation (Compact) -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 h-12 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="bg-indigo-600 text-white px-2 py-0.5 rounded font-bold text-xs leading-none">
+            HR
+          </div>
+          <div>
+            <h1 class="text-xs font-semibold leading-none text-slate-100">Portal Kehadiran Executive</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="index.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium px-2.5 py-1 rounded transition border border-slate-700">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            Home Index
+          </a>
+          <button id="btn-export" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded transition shadow-sm">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Export CSV
+          </button>
+          <button onclick="lockDashboard()" class="inline-flex items-center gap-1 bg-slate-800 hover:bg-rose-900 text-slate-300 hover:text-rose-200 text-[11px] font-medium px-2 py-1 rounded transition border border-slate-700 ml-2" title="Kunci Kembali">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container (Compact Padding & Elements) -->
+    <main class="max-w-7xl mx-auto px-4 py-4 space-y-3">
+
+      <!-- Control Bar & Filters -->
+      <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- View Mode Switcher -->
+          <div class="flex items-center gap-1.5">
+            <label for="filter-mode" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tipe:</label>
+            <select id="filter-mode" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-1.5 font-medium">
+              <option value="month">Per Bulan</option>
+              <option value="day">Per Hari</option>
+            </select>
+          </div>
+
+          <!-- Month Dropdown -->
+          <div id="month-picker-wrapper" class="flex items-center gap-1.5">
+            <label for="filter-month" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Periode:</label>
+            <select id="filter-month" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-1.5 font-medium">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+
+          <!-- Date Picker (Hidden by Default) -->
+          <div id="date-picker-wrapper" class="hidden flex items-center gap-1.5">
+            <label for="filter-date" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tanggal:</label>
+            <input type="date" id="filter-date" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-1 font-medium">
+          </div>
+        </div>
+
+        <!-- Live Counter Badge -->
+        <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Total:</span>
+          <span id="record-count" class="font-bold text-slate-900 text-xs">0</span>
+        </div>
+
+      </div>
+
+      <!-- Data Table Container (Compact Design) -->
+      <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-[11px] text-slate-600">
+            <thead class="bg-slate-800 border-b border-slate-700 uppercase text-[10px] font-bold text-slate-200 tracking-wider">
+              <tr>
+                <th scope="col" class="px-3 py-2">Tanggal</th>
+                <th scope="col" class="px-3 py-2">Pegawai & Jabatan</th>
+                <th scope="col" class="px-3 py-2">Perusahaan</th>
+                <th scope="col" class="px-3 py-2">Kontak</th>
+                <th scope="col" class="px-3 py-2">Lokasi</th>
+                <th scope="col" class="px-3 py-2">Jam Absen</th>
+                <th scope="col" class="px-3 py-2">Status</th>
+                <th scope="col" class="px-3 py-2 text-center">Foto</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="8" class="px-4 py-8 text-center text-slate-400">
+                  Memuat data dari Supabase...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Image Modal View -->
+  <div id="photo-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-sm w-full p-3 shadow-2xl space-y-2 relative">
+      <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
+        <h3 class="text-xs font-semibold text-slate-800">Bukti Foto Absensi</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-base font-bold">&times;</button>
+      </div>
+      <div class="overflow-hidden rounded bg-slate-100 flex items-center justify-center min-h-[200px]">
+        <img id="modal-img" src="" alt="Bukti Absensi" class="max-h-[60vh] w-auto object-contain">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set Password Dashboard di sini (Default: 123456)
+    const DASHBOARD_PASSWORD = "admin";
+
+    // Supabase Configuration
+    const SB_URL = "https://qnamtickoteyvydayyor.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
+    const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+
+    let currentData = [];
+
+    // Check Authentication state
+    document.addEventListener("DOMContentLoaded", () => {
+      if (sessionStorage.getItem("dashboard_unlocked") === "true") {
+        showDashboard();
+      }
+    });
+
+    function unlockDashboard(e) {
+      e.preventDefault();
+      const inputPass = document.getElementById("auth-password").value;
+      const errorMsg = document.getElementById("auth-error");
+
+      if (inputPass === DASHBOARD_PASSWORD) {
+        sessionStorage.setItem("dashboard_unlocked", "true");
+        errorMsg.classList.add("hidden");
+        showDashboard();
+      } else {
+        errorMsg.classList.remove("hidden");
+      }
+    }
+
+    function lockDashboard() {
+      sessionStorage.removeItem("dashboard_unlocked");
+      document.getElementById("dashboard-content").classList.add("hidden");
+      document.getElementById("auth-modal").classList.remove("hidden");
+      document.getElementById("auth-password").value = "";
+    }
+
+    function showDashboard() {
+      document.getElementById("auth-modal").classList.add("hidden");
+      document.getElementById("dashboard-content").classList.remove("hidden");
+      setupMonthDropdown();
+      setupEventListeners();
+      fetchAttendances();
+    }
+
+    function setupMonthDropdown() {
+      const selectMonth = document.getElementById("filter-month");
+      selectMonth.innerHTML = "";
+
+      const now = new Date();
+      for (let i = 0; i < 3; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const monthName = d.toLocaleString("id-ID", { month: "long" });
+
+        const option = document.createElement("option");
+        option.value = `${year}-${month}`;
+        option.textContent = i === 0 ? `${monthName} ${year} (Bulan Ini)` : `${monthName} ${year}`;
+        selectMonth.appendChild(option);
+      }
+
+      document.getElementById("filter-date").value = now.toISOString().split('T')[0];
+    }
+
+    function setupEventListeners() {
+      const filterMode = document.getElementById("filter-mode");
+      const monthWrapper = document.getElementById("month-picker-wrapper");
+      const dateWrapper = document.getElementById("date-picker-wrapper");
+
+      filterMode.addEventListener("change", (e) => {
+        if (e.target.value === "day") {
+          dateWrapper.classList.remove("hidden");
+          monthWrapper.classList.add("hidden");
+        } else {
+          dateWrapper.classList.add("hidden");
+          monthWrapper.classList.remove("hidden");
+        }
+        fetchAttendances();
+      });
+
+      document.getElementById("filter-month").addEventListener("change", fetchAttendances);
+      document.getElementById("filter-date").addEventListener("change", fetchAttendances);
+      document.getElementById("btn-export").addEventListener("click", exportToCSV);
+    }
+
+    async function fetchAttendances() {
+      const tbody = document.getElementById("table-body");
+      tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
+
+      const mode = document.getElementById("filter-mode").value;
+      let query = supabaseClient.from("attendances").select("*").order("created_at", { ascending: false });
+
+      if (mode === "month") {
+        const monthVal = document.getElementById("filter-month").value;
+        const [year, month] = monthVal.split("-");
+        const startDate = `${year}-${month}-01T00:00:00.000Z`;
+        const lastDay = new Date(year, month, 0).getDate();
+        const endDate = `${year}-${month}-${String(lastDay).padStart(2, '0')}T23:59:59.999Z`;
+
+        query = query.gte("created_at", startDate).lte("created_at", endDate);
+      } else {
+        const dateVal = document.getElementById("filter-date").value;
+        if (dateVal) {
+          query = query.gte("created_at", `${dateVal}T00:00:00.000Z`).lte("created_at", `${dateVal}T23:59:59.999Z`);
+        }
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error("Supabase Error:", error);
+        tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
+        return;
+      }
+
+      currentData = data || [];
+      renderTable(currentData);
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById("table-body");
+      document.getElementById("record-count").textContent = data.length;
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
+        return;
+      }
+
+      let currentDateGroup = "";
+      let isAltBg = false;
+
+      tbody.innerHTML = data.map((item) => {
+        // Ekstrak Format Tanggal (YYYY-MM-DD)
+        const dateObj = item.created_at ? new Date(item.created_at) : null;
+        const formattedDate = dateObj ? dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+        const rawDateStr = dateObj ? dateObj.toISOString().split('T')[0] : '';
+
+        // Deteksi Pergantian Tanggal untuk Memberikan Pembatas Warna
+        let borderClass = "border-t border-slate-200";
+        if (rawDateStr !== currentDateGroup) {
+          currentDateGroup = rawDateStr;
+          isAltBg = !isAltBg; // Ganti warna latar kelompok tanggal
+          borderClass = "border-t-2 border-indigo-500/50"; // Pembatas tebal antar tanggal
+        }
+
+        const bgClass = isAltBg ? "bg-indigo-50/20" : "bg-white";
+
+        // Status Badge Styling
+        const statusText = (item.status || "HADIR").toUpperCase();
+        let statusBadgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
+          statusBadgeClass = "bg-rose-50 text-rose-700 border-rose-200";
+        } else if (statusText.includes("IZIN") || statusText.includes("SAKIT")) {
+          statusBadgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+        }
+
+        // Photo Link
+        const photoHtml = item.photo_url 
+          ? `<button onclick="openModal('${item.photo_url}')" class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded border border-indigo-200 transition">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+              Foto
+             </button>`
+          : `<span class="text-slate-300 text-[10px]">No Pic</span>`;
+
+        return `
+          <tr class="${bgClass} ${borderClass} hover:bg-slate-100/80 transition">
+            <td class="px-3 py-2 font-semibold text-slate-700 whitespace-nowrap">${formattedDate}</td>
+            <td class="px-3 py-2">
+              <div class="font-bold text-slate-900">${item.user_name || '-'}</div>
+              <div class="text-[10px] text-slate-500 font-normal">${item.position || '-'}</div>
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-medium">${item.company_name || '-'}</td>
+            <td class="px-3 py-2 font-mono text-[10px] text-slate-600">${item.phone || '-'}</td>
+            <td class="px-3 py-2 text-slate-600">${item.location_name || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap font-medium text-slate-800">${item.check_in_time || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border ${statusBadgeClass}">
+                ${statusText}
+              </span>
+            </td>
+            <td class="px-3 py-2 text-center whitespace-nowrap">${photoHtml}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function openModal(url) {
+      document.getElementById("modal-img").src = url;
+      document.getElementById("photo-modal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("photo-modal").classList.add("hidden");
+      document.getElementById("modal-img").src = "";
+    }
+
+    function exportToCSV() {
+      if (!currentData || currentData.length === 0) {
+        alert("Tidak ada data untuk di-export.");
+        return;
+      }
+
+      const headers = ["Nama Pegawai", "Jabatan", "Perusahaan", "No Telepon", "Lokasi", "Waktu Absen", "Tanggal Created", "Status", "URL Foto"];
+      const rows = currentData.map(item => [
+        `"${item.user_name || ''}"`,
+        `"${item.position || ''}"`,
+        `"${item.company_name || ''}"`,
+        `"${item.phone || ''}"`,
+        `"${item.location_name || ''}"`,
+        `"${item.check_in_time || ''}"`,
+        `"${item.created_at || ''}"`,
+        `"${item.status || ''}"`,
+        `"${item.photo_url || ''}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+        + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Report_Absensi_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
