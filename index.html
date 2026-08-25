@@ -551,16 +551,18 @@
   ];
 
   // Config Jam Operasional & Lokasi
-  const START_HOUR = 6;   // Jam 07:00
-  const END_HOUR = 23;   // Jam 16:00
-  const LATE_HOUR = 9;    // Batas Tepat Waktu Jam 08:30
-  const LATE_MINUTE = 00;
+  const START_HOUR = 6;   // Jam 06:00
+  const END_HOUR = 23;    // Jam 23:00
+  const LATE_HOUR = 9;    // Batas Tepat Waktu Jam 09:00
+  const LATE_MINUTE = 30;
 
   const ALLOWED_LOCATIONS = [
-    { name: "Kantor", lat: -2.70671004259296 , lon: 111.637739490514 },
-    { name: "Workshop", lat: -2.713916, lon: 111.640348  }
+    { name: "Kantor ikaen", lat: -2.70671004259296 , lon: 111.637739490514 },
+    { name: "Workshop ikaen", lat: -2.713916, lon: 111.640348  }
   ];
-  const MAX_RADIUS_METERS = 1000;
+  
+  // Radius disesuaikan menjadi 200 meter agar lokasi Kantor dan Workshop tidak saling tumpang-tindih
+  const MAX_RADIUS_METERS = 100;
 
   let currentUserData = null;
   let currentLat = null;
@@ -569,13 +571,6 @@
   let activeStream = null;
 
   window.onload = function() {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        ALLOWED_LOCATIONS[1].lat = pos.coords.latitude;
-        ALLOWED_LOCATIONS[1].lon = pos.coords.longitude;
-      }, (err) => console.log("GPS update error."));
-    }
-
     const savedUser = localStorage.getItem('corporate_user_session');
     if (savedUser) {
       currentUserData = JSON.parse(savedUser);
@@ -641,9 +636,9 @@
     const now = new Date();
     const currentHour = now.getHours();
 
-    // 1. Validasi Jam Kerja (07:00 - 16:00)
+    // 1. Validasi Jam Kerja
     if (currentHour < START_HOUR || currentHour >= END_HOUR) {
-      showStatus(`Absensi ditutup. Jam operasional 07.00 - 16.00 WIB.`, 'error');
+      showStatus(`Absensi ditutup. Jam operasional 06.00 - 23.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
@@ -680,7 +675,7 @@
             showStatus(`Lokasi Valid (${matchedLocationName}). Silakan scan wajah.`, 'success');
             startCamera('video');
           } else {
-            showStatus('Gagal Absen: Lokasi Anda di luar radius kantor.', 'error');
+            showStatus('Gagal Absen: Lokasi Anda di luar radius kantor/workshop.', 'error');
             document.getElementById('scanBtn').disabled = true;
           }
         },
@@ -758,7 +753,7 @@
       document.getElementById('resTime').textContent = timeString;
 
       const statusElem = document.getElementById('resStatus');
-      statusElem.textContent = isLate ? "TERLAMBAT (Lewat 08:30)" : "TEPAT WAKTU";
+      statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:00)" : "TEPAT WAKTU";
       statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
 
       showStatus('Absensi berhasil terverifikasi!', 'success');
