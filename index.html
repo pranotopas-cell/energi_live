@@ -143,6 +143,9 @@
       cursor: pointer;
       box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.25);
       transition: all 0.2s ease;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .btn:active {
@@ -379,6 +382,32 @@
     .tag-late { color: var(--danger); font-weight: 700; }
     .tag-ontime { color: var(--success); font-weight: 700; }
     .hidden { display: none !important; }
+
+    /* TOMBOL TAMBAHAN DI AREA KONTROL */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-secondary-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-record {
+      background-color: var(--accent-blue);
+    }
+
+    .btn-log {
+      background-color: var(--primary-accent);
+      flex: 1;
+    }
+
+    .btn-leave {
+      background-color: var(--warning);
+      flex: 1;
+    }
   </style>
 </head>
 <body>
@@ -451,7 +480,14 @@
         <div class="face-overlay"></div>
       </div>
 
-      <button id="scanBtn" class="btn" onclick="processAttendance()">Record</button>
+      <!-- AREA TOMBOL KONTROL ABSEN, RECORD.HTML, DAN IZIN -->
+      <div class="action-group">
+        <button id="scanBtn" class="btn btn-record" onclick="processAttendance()">Record</button>
+        <div class="btn-secondary-group">
+          <a href="record.html" class="btn btn-log">Record Log</a>
+          <button class="btn btn-leave" onclick="handleLeavePermission()">Izin / Cut</button>
+        </div>
+      </div>
     </div>
 
     <!-- 3. SEKSI HASIL PRESENSI -->
@@ -732,6 +768,43 @@
       console.error(err);
       showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
       scanBtn.disabled = false;
+    }
+  }
+
+  // Fungsi Pengajuan Izin / Tidak Masuk Kerja
+  async function handleLeavePermission() {
+    const reason = prompt("Masukkan alasan tidak masuk (Contoh: Sakit / Izin Acara Keluarga):");
+    if (!reason) return;
+
+    showStatus('Mengirim permohonan izin...', 'info');
+    const now = new Date();
+    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+
+    try {
+      const { error: dbError } = await supabaseClient
+        .from('attendances')
+        .insert([{
+          company_name: currentUserData.company,
+          user_name: currentUserData.name,
+          position: currentUserData.position,
+          phone: currentUserData.phone,
+          location_name: "Luar Kantor",
+          check_in_time: timeString,
+          status: `IZIN: ${reason.toUpperCase()}`,
+          photo_url: null
+        }]);
+
+      if (dbError) throw dbError;
+
+      const todayDate = now.toISOString().split('T')[0];
+      localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
+
+      showStatus('Permohonan izin berhasil tercatat!', 'success');
+      setTimeout(() => location.reload(), 2000);
+
+    } catch (err) {
+      console.error(err);
+      showStatus(`Gagal mengirim izin: ${err.message}`, 'error');
     }
   }
 
