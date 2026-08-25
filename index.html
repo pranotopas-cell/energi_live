@@ -396,7 +396,7 @@
     <!-- 1. SEKSI LOGIN -->
     <div id="loginSection">
       <div class="form-group">
-        <label for="loginUsername">Nama Lengkap (Username)</label>
+        <label for="loginUsername">Nama </label>
         <input type="text" id="loginUsername" placeholder="Contoh: Budi Pratama" required>
       </div>
       <div class="form-group">
@@ -451,7 +451,7 @@
         <div class="face-overlay"></div>
       </div>
 
-      <button id="scanBtn" class="btn" onclick="processAttendance()">Record Wajah & Absen</button>
+      <button id="scanBtn" class="btn" onclick="processAttendance()">Record</button>
     </div>
 
     <!-- 3. SEKSI HASIL PRESENSI -->
@@ -472,7 +472,7 @@
             <span class="val" id="resPosition"></span>
           </div>
           <div class="result-row">
-            <span class="label">Lokasi Presensi</span>
+            <span class="label">Lokasi Absen</span>
             <span class="val" id="resLocation"></span>
           </div>
           <div class="result-row">
@@ -498,20 +498,32 @@
 
   // DAFTAR KARYAWAN TERDAFTAR
   const ALLOWED_EMPLOYEES = [
-    { empId: "IKE-001", name: "Budi Pratama", phone: "081234567890", position: "Staff Operational", company: "PT. Investama Kalimantan Energi" },
-    { empId: "IKE-002", name: "Siti Rahma", phone: "082100001111", position: "HRD Specialist", company: "PT. Investama Kalimantan Energi" },
-    { empId: "IKE-003", name: "Andi Wijaya", phone: "085711112222", position: "IT Support", company: "PT. Investama Kalimantan Energi" }
+    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "DIREKTUR UTAMA", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "082100001111", position: "KOMISARIS", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "085711112222", position: "DRIVER", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKAEN-001-B50", name: "NUR KHOLIS", phone: "085252761578", position: "DRIVER", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKAEN-002-B50", name: "MUHAMMAD MISNAN", phone: "082100001111", position: "DRIVER", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKAEN-003-B50", name: "MAHPUL", phone: "085711112222", position: "OPERASIONAL", company: "PT. Investama Kalimantan Energi" },
+    { empId: "IKAEN-001-B50", name: "NURHAMIDA", phone: "085252761578", position: "DIREKTUR", company: "PT. Indo Dharma Energi" },
+    { empId: "IKAEN-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082100001111", position: "ADM.PERPAJAKAN", company: "PT. Indo Dharma Energi" },
+    { empId: "IKAEN-003-B50", name: "MISRO", phone: "085711112222", position: "STAFF.ADM", company: "PT. Indo dharma Energi" },
+    { empId: "IKAEN-001-B50", name: "ALFIN ", phone: "085252761578", position: "DRIVER", company: "PT. Indo dharma  Energi" },
+    { empId: "IKAEN-002-B50", name: "SUPRIYADI", phone: "082100001111", position: "DRIVER", company: "PT. Indo Dharma Energi" },
+    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "DIREKTUR", company: "PT. KHATULISTIWA SINAR ENERGI" },
+    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "085252761578", position: "STAFF ADM", company: "PT. KHATULISTIWA SINAR ENERGI" },
+    { empId: "KSE-003-B50", name: "KOMARUDIN", phone: "082100001111", position: "OPERASIONAL", company: "PT. KHATULISTIWA SINAR ENERGI" },
+    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "085711112222", position: "DRIVER", company: "PT. KHATULISTIWA SINAR ENERGI" }
   ];
 
   // Config Jam Operasional & Lokasi
-  const START_HOUR = 7;   // Jam 07:00
-  const END_HOUR = 16;   // Jam 16:00
-  const LATE_HOUR = 8;    // Batas Tepat Waktu Jam 08:30
-  const LATE_MINUTE = 30;
+  const START_HOUR = 6;   // Jam 07:00
+  const END_HOUR = 18;   // Jam 16:00
+  const LATE_HOUR = 9;    // Batas Tepat Waktu Jam 08:30
+  const LATE_MINUTE = 00;
 
   const ALLOWED_LOCATIONS = [
-    { name: "Kantor Utama (Pangkalan Bun)", lat: -2.706720, lon: 111.637710 },
-    { name: "Posisi Saat Ini / Cabang", lat: -2.706720, lon: 111.637710 }
+    { name: "Kantor", lat: -2.706720, lon: 111.637710 },
+    { name: "Workshop", lat: -2.706720, lon: 111.637710 }
   ];
   const MAX_RADIUS_METERS = 1000;
 
