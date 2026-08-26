@@ -154,9 +154,9 @@
       transform: none;
     }
 
-    /* ID CARD WRAPPER & HEADER */
+    /* ID CARD STYLE SAMA PERSIS SEPERTI PASFOTO SIM */
     .id-card-wrapper {
-      background: #f1f5f9;
+      background: #ffffff;
       border-radius: 16px;
       overflow: hidden;
       border: 1px solid #cbd5e1;
@@ -238,30 +238,30 @@
     .id-card-top-row {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       padding: 16px 14px 10px 14px;
     }
 
-    /* BINGKAI AVATAR YANG RAPI */
+    /* BINGKAI PASFOTO PERSIS SIM (TANPA BOX BACKGROUND KETERING) */
     .id-avatar-container {
-      width: 95px;
-      height: 110px;
+      width: 105px;
+      height: 125px;
       flex-shrink: 0;
-      background: #e2e8f0;
+      background: #e2e8f0; 
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
       overflow: hidden;
       border-radius: 12px;
-      border: 2px solid #94a3b8;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      border: 2px solid #64748b;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
     .id-avatar {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
+      object-position: center top;
     }
 
     .id-emp-header-text {
@@ -270,7 +270,7 @@
     }
 
     .id-emp-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #0b192c;
       text-transform: uppercase;
@@ -279,7 +279,7 @@
 
     .id-emp-role {
       font-size: 11px;
-      color: #64748b;
+      color: #475569;
       font-weight: 700;
       margin-top: 4px;
       text-transform: uppercase;
@@ -294,7 +294,7 @@
       justify-content: space-between;
       align-items: flex-end;
       gap: 6px;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .id-details-table {
@@ -398,11 +398,11 @@
     }
 
     .result-card img {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 80px;
       object-fit: cover;
-      border-radius: 50%;
-      border: 2.5px solid var(--accent-blue);
+      border-radius: 8px;
+      border: 2px solid var(--accent-blue);
       margin-bottom: 6px;
     }
 
@@ -474,7 +474,7 @@
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- ID CARD -->
+      <!-- ID CARD SEPERTI MODEL SIM -->
       <div class="id-card-wrapper" id="idCardWrapper">
         <div class="id-card-header">
           <div class="id-card-action-btns" data-html2canvas-ignore="true">
@@ -570,6 +570,9 @@
 </div>
 
 <script>
+  // DAFTARKAN NAMA API KEY REMOVE.BG ANDA DI SINI UNTUK FITUR HAPUS BACKGROUND OTOMATIS AI
+  const REMOVE_BG_API_KEY = "ISI_DENGAN_API_KEY_REMOVE_BG_ANDA";
+
   const SB_URL = "https://qnamtickoteyvydayyor.supabase.co";
   const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
   const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
@@ -731,6 +734,33 @@
     });
   }
 
+  // FUNGSI REMOVE BACKGROUND PRESISI MENGGUNAKAN API AI REMOVE.BG
+  async function removeBgWithAI(imageBlob) {
+    if (!REMOVE_BG_API_KEY || REMOVE_BG_API_KEY === "ISI_DENGAN_API_KEY_REMOVE_BG_ANDA") {
+      console.warn("Remove.bg API Key belum diisi, foto disimpan tanpa hapus background AI.");
+      return imageBlob; // Fallback jika API key belum diisi
+    }
+
+    const formData = new FormData();
+    formData.append("image_file", imageBlob);
+    formData.append("size", "auto");
+
+    const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+      method: "POST",
+      headers: {
+        "X-Api-Key": REMOVE_BG_API_KEY
+      },
+      body: formData
+    });
+
+    if (response.ok) {
+      return await response.blob();
+    } else {
+      console.error("Gagal Hapus BG AI:", await response.text());
+      return imageBlob;
+    }
+  }
+
   async function initAttendanceFlow() {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
@@ -812,7 +842,7 @@
   async function processAttendance() {
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
-    showStatus('Memproses rekam foto presensi...', 'info');
+    showStatus('Memproses pemotongan pasfoto bersih via AI...', 'info');
 
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -822,13 +852,16 @@
     canvas.height = video.videoHeight || 480;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // MENGAMBIL FOTO BERSIH DENGAN WARNA ALAMI
-    const photoDataUrl = canvas.toDataURL('image/jpeg', 0.9);
-
-    document.getElementById('cardAvatar').src = photoDataUrl;
-    localStorage.setItem(`last_avatar_${currentUserData.phone}`, photoDataUrl);
-
     stopCamera();
+
+    const rawBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    
+    // INTEGRASI AI HAPUS BACKGROUND BERSIH PRESISI KECUALI POTONGAN SUBJEK (PASFOTO SIM)
+    const processedBlob = await removeBgWithAI(rawBlob);
+
+    const cutoutPhotoUrl = URL.createObjectURL(processedBlob);
+
+    document.getElementById('cardAvatar').src = cutoutPhotoUrl;
 
     const now = new Date();
     const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
@@ -837,14 +870,12 @@
     const companyName = currentUserData.pt || currentUserData.company;
 
     try {
-      const response = await fetch(photoDataUrl);
-      const blob = await response.blob();
-      const fileName = `attend_${currentUserData.phone}_${Date.now()}.jpg`;
+      const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
 
       const { error: storageError } = await supabaseClient
         .storage
         .from('attendance_photos')
-        .upload(fileName, blob, { contentType: 'image/jpeg' });
+        .upload(fileName, processedBlob, { contentType: 'image/png' });
 
       if (storageError) throw storageError;
 
@@ -852,6 +883,8 @@
         .storage
         .from('attendance_photos')
         .getPublicUrl(fileName);
+
+      localStorage.setItem(`last_avatar_${currentUserData.phone}`, publicUrlData.publicUrl);
 
       const { error: dbError } = await supabaseClient
         .from('attendances')
@@ -874,7 +907,7 @@
       document.getElementById('attendanceSection').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
 
-      document.getElementById('capturedImage').src = photoDataUrl;
+      document.getElementById('capturedImage').src = publicUrlData.publicUrl;
       document.getElementById('resCompany').textContent = companyName;
       document.getElementById('resName').textContent = currentUserData.name;
       document.getElementById('resPosition').textContent = currentUserData.position;
