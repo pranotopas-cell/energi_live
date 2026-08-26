@@ -154,7 +154,7 @@
       transform: none;
     }
 
-    /* ID CARD STYLE PRESISI REFERENSI */
+    /* ID CARD WRAPPER & HEADER */
     .id-card-wrapper {
       background: #f1f5f9;
       border-radius: 16px;
@@ -242,26 +242,26 @@
       padding: 16px 14px 10px 14px;
     }
 
-    /* AVATAR DENGAN BACKGROUND PASFOTO SIM SOLID */
+    /* BINGKAI AVATAR YANG RAPI */
     .id-avatar-container {
-      width: 100px;
+      width: 95px;
       height: 110px;
       flex-shrink: 0;
-      background: #2563eb; /* Background Pasfoto Polos Warna Biru SIM */
+      background: #e2e8f0;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       border-radius: 12px;
-      border: 1.5px solid #94a3b8;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      border: 2px solid #94a3b8;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
     .id-avatar {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center top;
+      object-position: center;
     }
 
     .id-emp-header-text {
@@ -404,7 +404,6 @@
       border-radius: 50%;
       border: 2.5px solid var(--accent-blue);
       margin-bottom: 6px;
-      background-color: #2563eb;
     }
 
     .result-row {
@@ -475,7 +474,7 @@
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- ID CARD DENGAN FOTO SIM / PASFOTO -->
+      <!-- ID CARD -->
       <div class="id-card-wrapper" id="idCardWrapper">
         <div class="id-card-header">
           <div class="id-card-action-btns" data-html2canvas-ignore="true">
@@ -490,7 +489,7 @@
 
         <div class="id-card-top-row">
           <div class="id-avatar-container">
-            <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+            <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
           </div>
           <div class="id-emp-header-text">
             <div class="id-emp-name" id="cardName">KARYAWAN</div>
@@ -732,57 +731,6 @@
     });
   }
 
-  // ALGORITMA PENGHAPUSAN BACKGROUND (EFEK PASFOTO SIM)
-  function removeBackgroundToCutout(sourceCanvas) {
-    const width = sourceCanvas.width;
-    const height = sourceCanvas.height;
-    const ctx = sourceCanvas.getContext('2d');
-    const imgData = ctx.getImageData(0, 0, width, height);
-    const data = imgData.data;
-
-    // Ambil sampel warna background di 4 sudut gambar
-    const corners = [
-      0,
-      (width - 1) * 4,
-      ((height - 1) * width) * 4,
-      ((height - 1) * width + (width - 1)) * 4
-    ];
-
-    let bgR = 0, bgG = 0, bgB = 0;
-    corners.forEach(idx => {
-      bgR += data[idx];
-      bgG += data[idx + 1];
-      bgB += data[idx + 2];
-    });
-    bgR /= 4; bgG /= 4; bgB /= 4;
-
-    const threshold = 65; // Toleransi penghapusan warna background
-
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      const distance = Math.sqrt(
-        Math.pow(r - bgR, 2) +
-        Math.pow(g - bgG, 2) +
-        Math.pow(b - bgB, 2)
-      );
-
-      if (distance < threshold) {
-        data[i + 3] = 0; // Ubah Alpha menjadi transparan (0)
-      }
-    }
-
-    const outputCanvas = document.createElement('canvas');
-    outputCanvas.width = width;
-    outputCanvas.height = height;
-    const outCtx = outputCanvas.getContext('2d');
-    outCtx.putImageData(imgData, 0, 0);
-
-    return outputCanvas.toDataURL('image/png');
-  }
-
   async function initAttendanceFlow() {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
@@ -797,7 +745,6 @@
     document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
 
-    // FETCH FOTO TERBARU DARI DATABASE SUPABASE
     const latestPhoto = await fetchLatestPhotoFromSupabase(currentUserData.phone);
     if (latestPhoto) {
       document.getElementById('cardAvatar').src = latestPhoto;
@@ -865,7 +812,7 @@
   async function processAttendance() {
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
-    showStatus('Memverifikasi rekam wajah & menghapus background...', 'info');
+    showStatus('Memproses rekam foto presensi...', 'info');
 
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -875,11 +822,11 @@
     canvas.height = video.videoHeight || 480;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // MENGHASILKAN DATA URL DENGAN BACKGROUND TRANSPARAN
-    const cutoutPhotoUrl = removeBackgroundToCutout(canvas);
+    // MENGAMBIL FOTO BERSIH DENGAN WARNA ALAMI
+    const photoDataUrl = canvas.toDataURL('image/jpeg', 0.9);
 
-    document.getElementById('cardAvatar').src = cutoutPhotoUrl;
-    localStorage.setItem(`last_avatar_${currentUserData.phone}`, cutoutPhotoUrl);
+    document.getElementById('cardAvatar').src = photoDataUrl;
+    localStorage.setItem(`last_avatar_${currentUserData.phone}`, photoDataUrl);
 
     stopCamera();
 
@@ -890,15 +837,14 @@
     const companyName = currentUserData.pt || currentUserData.company;
 
     try {
-      // PERBAIKAN: UPLOAD BLOB PNG DENGAN BACKGROUND TRANSPARAN KE SUPABASE
-      const response = await fetch(cutoutPhotoUrl);
+      const response = await fetch(photoDataUrl);
       const blob = await response.blob();
-      const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
+      const fileName = `attend_${currentUserData.phone}_${Date.now()}.jpg`;
 
       const { error: storageError } = await supabaseClient
         .storage
         .from('attendance_photos')
-        .upload(fileName, blob, { contentType: 'image/png' });
+        .upload(fileName, blob, { contentType: 'image/jpeg' });
 
       if (storageError) throw storageError;
 
@@ -928,7 +874,7 @@
       document.getElementById('attendanceSection').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
 
-      document.getElementById('capturedImage').src = cutoutPhotoUrl;
+      document.getElementById('capturedImage').src = photoDataUrl;
       document.getElementById('resCompany').textContent = companyName;
       document.getElementById('resName').textContent = currentUserData.name;
       document.getElementById('resPosition').textContent = currentUserData.position;
