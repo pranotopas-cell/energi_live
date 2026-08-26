@@ -676,6 +676,12 @@
     document.getElementById('cardPhone').textContent = currentUserData.phone;
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "IKE-001";
 
+    // MUAT FOTO ABSEN TERAKHIR JIKA TERSEDIA DI STORAGE LOKAL
+    const savedLastPhoto = localStorage.getItem(`last_avatar_${currentUserData.phone}`);
+    if (savedLastPhoto) {
+      document.getElementById('cardAvatar').src = savedLastPhoto;
+    }
+
     // Generate QR Code Dinamis
     generateEmployeeQRCode(currentUserData);
 
@@ -752,6 +758,9 @@
 
     // Update foto di ID Card saat itu juga
     document.getElementById('cardAvatar').src = capturedDataUrl;
+    
+    // SIMPAN FOTO ABSEN TERAKHIR SECARA PERMANEN DI LOCAL STORAGE
+    localStorage.setItem(`last_avatar_${currentUserData.phone}`, capturedDataUrl);
 
     stopCamera();
 
