@@ -11,6 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Library QR Code Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Library html2canvas untuk Download ID Card -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
     :root {
@@ -28,7 +30,6 @@
       --warning: #f59e0b;
     }
 
-    /* CLASS UNTUK WARNA MERAH */
     .teks-merah {
       color: #ef4444;
       font-weight: 700;
@@ -76,21 +77,6 @@
     .brand-header {
       text-align: center;
       margin-bottom: 10px;
-    }
-
-    .brand-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 10px;
-      background: #e0f2fe;
-      color: var(--accent-blue);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      border-radius: 20px;
-      margin-bottom: 4px;
     }
 
     .brand-header h2 {
@@ -168,7 +154,7 @@
       transform: none;
     }
 
-    /* ID CARD STYLE */
+    /* ID CARD STYLE DESAIN BARU */
     .id-card-wrapper {
       background: #ffffff;
       border-radius: 12px;
@@ -182,20 +168,9 @@
     .id-card-header {
       background: #0b192c;
       color: #fff;
-      padding: 10px 12px 35px 12px;
+      padding: 10px 12px 14px 12px;
       text-align: center;
       position: relative;
-    }
-
-    .id-card-header::after {
-      content: "";
-      position: absolute;
-      bottom: -15px;
-      left: 0;
-      width: 100%;
-      height: 30px;
-      background: #0b192c;
-      clip-path: ellipse(60% 50% at 50% 0%);
     }
 
     .id-company-name {
@@ -208,6 +183,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
+      padding-right: 60px; /* beri ruang agar tidak menutupi tombol */
     }
 
     .id-company-address {
@@ -215,28 +191,43 @@
       color: #94a3b8;
       font-weight: 500;
       margin-top: 2px;
+      padding-right: 60px;
+    }
+
+    /* BARIS ATAS ID CARD: FOTO TRANSPARAN + NAMA & JABATAN */
+    .id-card-top-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px 6px 14px;
     }
 
     .id-avatar-container {
-      position: relative;
-      margin-top: -30px;
-      text-align: center;
-      z-index: 2;
+      width: 72px;
+      height: 82px;
+      flex-shrink: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
+    /* MENGHILANGKAN BACKGROUND FOTO AGAR TAMPIL OBJEK SAJA */
     .id-avatar {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      border: 3px solid #00a6f4;
-      background: #ffffff;
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
       object-fit: cover;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+      mix-blend-mode: multiply; /* Menghilangkan latar foto terang */
+      filter: contrast(105%);
     }
 
-    .id-card-body {
-      padding: 6px 14px 10px 14px;
-      text-align: center;
+    .id-emp-header-text {
+      text-align: left;
+      flex: 1;
     }
 
     .id-emp-name {
@@ -244,22 +235,27 @@
       font-weight: 800;
       color: #0b192c;
       text-transform: uppercase;
+      line-height: 1.2;
     }
 
     .id-emp-role {
       font-size: 10px;
       color: #64748b;
-      font-weight: 600;
-      margin-bottom: 8px;
+      font-weight: 700;
+      margin-top: 3px;
+      text-transform: uppercase;
     }
 
-    /* TATA LETAK DETAIL + QR CODE SEJAJAR DI KANAN BAWAH */
+    .id-card-body {
+      padding: 4px 14px 10px 14px;
+    }
+
     .id-info-container {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       gap: 6px;
-      margin-bottom: 4px;
+      margin-top: 4px;
     }
 
     .id-details-table {
@@ -270,7 +266,7 @@
     }
 
     .id-details-table td {
-      padding: 1px 0;
+      padding: 2px 0;
     }
 
     .id-details-table td.label {
@@ -284,7 +280,6 @@
       text-align: center;
     }
 
-    /* QR CODE CONTAINER SEJAJAR ID & PHONE */
     .id-qrcode-wrapper {
       width: 44px;
       height: 44px;
@@ -308,6 +303,7 @@
       text-align: center;
     }
 
+    /* TOMBOL KELUAR & DOWNLOAD */
     .btn-logout-small {
       background: rgba(239, 68, 68, 0.2);
       border: 1px solid rgba(239, 68, 68, 0.4);
@@ -318,12 +314,26 @@
       border-radius: 4px;
       cursor: pointer;
       position: absolute;
-      top: 8px;
+      top: 6px;
       right: 8px;
       z-index: 5;
     }
 
-    /* Camera Container Fit Layout */
+    .btn-download-small {
+      background: rgba(2, 132, 199, 0.2);
+      border: 1px solid rgba(2, 132, 199, 0.4);
+      color: #38bdf8;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      position: absolute;
+      top: 26px;
+      right: 8px;
+      z-index: 5;
+    }
+
     .camera-box {
       position: relative;
       width: 100%;
@@ -402,7 +412,6 @@
     .tag-ontime { color: var(--success); font-weight: 700; }
     .hidden { display: none !important; }
 
-    /* TOMBOL TAMBAHAN DI AREA KONTROL */
     .action-group {
       display: flex;
       flex-direction: column;
@@ -444,41 +453,46 @@
     <div id="loginSection">
       <div class="form-group">
         <label for="loginUsername">Nama </label>
-        <input type="text" id="loginUsername" placeholder="Contoh: Budi Pratama" required>
+        <input type="text" id="loginUsername" placeholder="Contoh: YAYUK WIJAYANTI" required>
       </div>
       <div class="form-group">
         <label for="loginPhone">Nomor HP</label>
-        <input type="tel" id="loginPhone" placeholder="Contoh: 081234567890" required>
+        <input type="tel" id="loginPhone" placeholder="Contoh: 085252761578" required>
       </div>
       <button class="btn" onclick="handleLogin()">Login Portal</button>
     </div>
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- MODEL ID CARD SESUAI DESAIN ACUAN -->
-      <div class="id-card-wrapper">
-        <button class="btn-logout-small" onclick="logout()">Keluar</button>
+      <!-- MODEL ID CARD -->
+      <div class="id-card-wrapper" id="idCardWrapper">
+        <button class="btn-logout-small" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
+        <button class="btn-download-small" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
+        
         <div class="id-card-header">
           <div class="id-company-name" id="cardCompany">
-            <span>INVESTAMA KALIMANTAN ENERGI</span>
+            <span>PT. INVESTAMA KALIMANTAN ENERGI</span>
           </div>
           <div class="id-company-address">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
         </div>
 
-        <div class="id-avatar-container">
-          <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230b192c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+        <div class="id-card-top-row">
+          <div class="id-avatar-container">
+            <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230b192c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+          </div>
+          <div class="id-emp-header-text">
+            <div class="id-emp-name" id="cardName">-</div>
+            <div class="id-emp-role" id="cardPosition">-</div>
+          </div>
         </div>
 
         <div class="id-card-body">
-          <div class="id-emp-name" id="cardName">-</div>
-          <div class="id-emp-role" id="cardPosition">-</div>
-
           <div class="id-info-container">
             <table class="id-details-table">
               <tr>
                 <td class="label">ID</td>
                 <td class="separator">:</td>
-                <td id="cardEmpId">IKAEN-001</td>
+                <td id="cardEmpId">-</td>
               </tr>
               <tr>
                 <td class="label">PHONE</td>
@@ -486,7 +500,6 @@
                 <td id="cardPhone">-</td>
               </tr>
             </table>
-            <!-- QR CODE AUTO-GENERATED DI SEBELAH KANAN TEKS ID/PHONE -->
             <div id="cardQrCode" class="id-qrcode-wrapper"></div>
           </div>
         </div>
@@ -500,7 +513,6 @@
         <div class="face-overlay"></div>
       </div>
 
-      <!-- AREA TOMBOL KONTROL ABSEN, RECORD.HTML, DAN IZIN -->
       <div class="action-group">
         <button id="scanBtn" class="btn btn-record" onclick="processAttendance()">Record</button>
         <div class="btn-secondary-group">
@@ -547,42 +559,39 @@
 </div>
 
 <script>
-  // Supabase Configuration
   const SB_URL = "https://qnamtickoteyvydayyor.supabase.co";
   const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
   const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-  // DAFTAR KARYAWAN TERDAFTAR
+  // DAFTAR KARYAWAN DENGAN PROPERTY UNIFORM (pt, name, phone, position, empId)
   const ALLOWED_EMPLOYEES = [
-    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", company: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", company: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", company: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-001-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", company: "PT. INVESTAMA KALIMANTAN ENERGIi" },
-    { empId: "IKAEN-002-B50", name: "MUHAMMAD MISNAN", phone: "082100001111", position: "DRIVER", company: "PT. INVESTAMA KALIMANTAN ENERGIi" },
-    { empId: "IKAEN-003-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", company: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", company: "PT. INDO DHARMA ENERGI" },
-    { empId: "IKAEN-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", company: "PT. INDO DHARMA ENERGI" },
-    { empId: "IKAEN-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", company: "PT. INDO DHARMA ENERGI" },
-    { empId: "IKAEN-001-B50", name: "ALFIN ", phone: "082253835106", position: "DRIVER", company: "PPT. INDO DHARMA ENERGI" },
-    { empId: "IKAEN-002-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", company: "PT. INDO DHARMA ENERGI" },
-    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", company: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", company: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-003-B50", name: "KOMARUDIN", phone: "082254033320", position: "OPERASIONAL", company: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", company: "PT. KHATULISTIWA SINAR ENERGI" }
+    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
+    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
+    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
+    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
+    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082100001111", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
+    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
+    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", pt: "PT. INDO DHARMA ENERGI" },
+    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", pt: "PT. INDO DHARMA ENERGI" },
+    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", pt: "PT. INDO DHARMA ENERGI" },
+    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI" },
+    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI" },
+    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", pt: "PT. KHATULISTIWA SINAR ENERGI" },
+    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", pt: "PT. KHATULISTIWA SINAR ENERGI" },
+    { empId: "KSE-003-B50", name: "KOMARUDIN", phone: "082254033320", position: "OPERASIONAL", pt: "PT. KHATULISTIWA SINAR ENERGI" },
+    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI" }
   ];
 
-  // Config Jam Operasional & Lokasi
-  const START_HOUR = 6;   // Jam 06:00
-  const END_HOUR = 23;    // Jam 23:00
-  const LATE_HOUR = 9;    // Batas Tepat Waktu Jam 09:00
+  const START_HOUR = 6;
+  const END_HOUR = 23;
+  const LATE_HOUR = 9;
   const LATE_MINUTE = 30;
 
   const ALLOWED_LOCATIONS = [
     { name: "Kantor ikaen", lat: -2.70671004259296 , lon: 111.637739490514 },
-    { name: "Workshop ikaen", lat: -2.713916, lon: 111.640348  }
+    { name: "Workshop ikaen", lat: -2.713916, lon: 111.640348 }
   ];
   
-  // Radius disesuaikan menjadi 100 meter
   const MAX_RADIUS_METERS = 100;
 
   let currentUserData = null;
@@ -622,7 +631,6 @@
     initAttendanceFlow();
   }
 
-  // Cek Ke-Supabase Apakah User Sudah Absen Hari Ini
   async function checkTodayAttendanceFromSupabase(phone) {
     try {
       const todayDate = new Date().toISOString().split('T')[0];
@@ -644,16 +652,15 @@
     }
   }
 
-  // Auto Generate QR Code per Karyawan
   function generateEmployeeQRCode(empData) {
     const qrContainer = document.getElementById('cardQrCode');
-    qrContainer.innerHTML = ''; // Clear QR sebelumnya
+    qrContainer.innerHTML = ''; 
 
     const qrData = JSON.stringify({
       id: empData.empId,
       name: empData.name,
       phone: empData.phone,
-      company: empData.company
+      company: empData.pt || empData.company
     });
 
     new QRCode(qrContainer, {
@@ -666,36 +673,56 @@
     });
   }
 
+  function downloadIDCard() {
+    const cardElem = document.getElementById('idCardWrapper');
+    showStatus('Membuat gambar ID Card...', 'info');
+
+    html2canvas(cardElem, { 
+      scale: 3, 
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff"
+    }).then(canvas => {
+      const link = document.createElement('a');
+      const filename = `ID_CARD_${currentUserData ? currentUserData.name.replace(/\s+/g, '_') : 'KARYAWAN'}.png`;
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showStatus('ID Card berhasil diunduh!', 'success');
+    }).catch(err => {
+      console.error('Gagal mengunduh ID Card:', err);
+      showStatus('Gagal mengunduh ID Card.', 'error');
+    });
+  }
+
   async function initAttendanceFlow() {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
 
-    document.getElementById('cardName').textContent = currentUserData.name;
-    document.getElementById('cardCompany').textContent = currentUserData.company;
-    document.getElementById('cardPosition').textContent = currentUserData.position;
-    document.getElementById('cardPhone').textContent = currentUserData.phone;
-    document.getElementById('cardEmpId').textContent = currentUserData.empId || "IKE-001";
+    // NAMA PT DAN NAMA KARYAWAN TAMPIL LENGKAP
+    const companyName = currentUserData.pt || currentUserData.company || "PT. INVESTAMA KALIMANTAN ENERGI";
+    document.getElementById('cardCompany').innerHTML = `<span>${companyName}</span>`;
+    document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
+    document.getElementById('cardPosition').textContent = currentUserData.position || "-";
+    document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
+    document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
 
-    // MUAT FOTO ABSEN TERAKHIR JIKA TERSEDIA DI STORAGE LOKAL
     const savedLastPhoto = localStorage.getItem(`last_avatar_${currentUserData.phone}`);
     if (savedLastPhoto) {
       document.getElementById('cardAvatar').src = savedLastPhoto;
     }
 
-    // Generate QR Code Dinamis
     generateEmployeeQRCode(currentUserData);
 
     const now = new Date();
     const currentHour = now.getHours();
 
-    // 1. Validasi Jam Kerja
     if (currentHour < START_HOUR || currentHour >= END_HOUR) {
       showStatus(`Absensi ditutup. Jam operasional 06.00 - 23.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
 
-    // 2. Validasi Sudah Absen via Database Supabase
     showStatus('Memeriksa status presensi hari ini...', 'info');
     const hasAttendedToday = await checkTodayAttendanceFromSupabase(currentUserData.phone);
 
@@ -705,7 +732,6 @@
       return;
     }
 
-    // 3. Validasi GPS
     showStatus('Memeriksa posisi GPS Anda...', 'info');
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -753,13 +779,9 @@
     canvas.height = video.videoHeight || 480;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Dapatkan foto hasil capture
     const capturedDataUrl = canvas.toDataURL('image/png');
 
-    // Update foto di ID Card saat itu juga
     document.getElementById('cardAvatar').src = capturedDataUrl;
-    
-    // SIMPAN FOTO ABSEN TERAKHIR SECARA PERMANEN DI LOCAL STORAGE
     localStorage.setItem(`last_avatar_${currentUserData.phone}`, capturedDataUrl);
 
     stopCamera();
@@ -768,6 +790,7 @@
     const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
     const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
     const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
+    const companyName = currentUserData.pt || currentUserData.company;
 
     try {
       const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
@@ -788,7 +811,7 @@
       const { error: dbError } = await supabaseClient
         .from('attendances')
         .insert([{
-          company_name: currentUserData.company,
+          company_name: companyName,
           user_name: currentUserData.name,
           position: currentUserData.position,
           phone: currentUserData.phone,
@@ -807,7 +830,7 @@
       document.getElementById('resultSection').classList.remove('hidden');
 
       document.getElementById('capturedImage').src = capturedDataUrl;
-      document.getElementById('resCompany').textContent = currentUserData.company;
+      document.getElementById('resCompany').textContent = companyName;
       document.getElementById('resName').textContent = currentUserData.name;
       document.getElementById('resPosition').textContent = currentUserData.position;
       document.getElementById('resLocation').textContent = matchedLocationName;
@@ -826,7 +849,6 @@
     }
   }
 
-  // Fungsi Pengajuan Izin / Tidak Masuk Kerja
   async function handleLeavePermission() {
     const reason = prompt("Masukkan alasan tidak masuk (Contoh: Sakit / Izin Acara Keluarga):");
     if (!reason) return;
@@ -834,12 +856,13 @@
     showStatus('Mengirim permohonan izin...', 'info');
     const now = new Date();
     const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+    const companyName = currentUserData.pt || currentUserData.company;
 
     try {
       const { error: dbError } = await supabaseClient
         .from('attendances')
         .insert([{
-          company_name: currentUserData.company,
+          company_name: companyName,
           user_name: currentUserData.name,
           position: currentUserData.position,
           phone: currentUserData.phone,
