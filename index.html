@@ -154,7 +154,7 @@
       transform: none;
     }
 
-    /* ID CARD STYLE DESAIN BARU */
+    /* ID CARD STYLE DESAIN */
     .id-card-wrapper {
       background: #ffffff;
       border-radius: 12px;
@@ -183,7 +183,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      padding-right: 60px; /* beri ruang agar tidak menutupi tombol */
+      padding-right: 60px;
     }
 
     .id-company-address {
@@ -194,26 +194,28 @@
       padding-right: 60px;
     }
 
-    /* BARIS ATAS ID CARD: FOTO TRANSPARAN + NAMA & JABATAN */
+    /* BARIS ATAS ID CARD: FOTO + NAMA & JABATAN */
     .id-card-top-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 14px 6px 14px;
+      gap: 14px;
+      padding: 12px 14px 6px 14px;
     }
 
+    /* KONTAINER FOTO LEBIH BESAR */
     .id-avatar-container {
-      width: 72px;
-      height: 82px;
+      width: 90px;
+      height: 105px;
       flex-shrink: 0;
       background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      border-radius: 8px;
     }
 
-    /* MENGHILANGKAN BACKGROUND FOTO AGAR TAMPIL OBJEK SAJA */
+    /* FOTO DIPERBESAR, DI-ZOOM KE WAJAH, DAN HILANGKAN BACKGROUND */
     .id-avatar {
       width: 100%;
       height: 100%;
@@ -221,8 +223,10 @@
       border: none;
       background: transparent;
       object-fit: cover;
-      mix-blend-mode: multiply; /* Menghilangkan latar foto terang */
-      filter: contrast(105%);
+      object-position: center 20%; /* Fokus pada wajah */
+      transform: scale(1.35);      /* Zoom agar objek manusia lebih mendominasi */
+      mix-blend-mode: multiply;    /* Menghilangkan background latar foto */
+      filter: contrast(110%) brightness(102%);
     }
 
     .id-emp-header-text {
@@ -231,7 +235,7 @@
     }
 
     .id-emp-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
       color: #0b192c;
       text-transform: uppercase;
@@ -239,7 +243,7 @@
     }
 
     .id-emp-role {
-      font-size: 10px;
+      font-size: 10.5px;
       color: #64748b;
       font-weight: 700;
       margin-top: 3px;
@@ -453,11 +457,11 @@
     <div id="loginSection">
       <div class="form-group">
         <label for="loginUsername">Nama </label>
-        <input type="text" id="loginUsername" placeholder="Contoh: YAYUK WIJAYANTI" required>
+        <input type="text" id="loginUsername" placeholder="Contoh: SUPRANOTO" required>
       </div>
       <div class="form-group">
         <label for="loginPhone">Nomor HP</label>
-        <input type="tel" id="loginPhone" placeholder="Contoh: 085252761578" required>
+        <input type="tel" id="loginPhone" placeholder="Contoh: 08114558778" required>
       </div>
       <button class="btn" onclick="handleLogin()">Login Portal</button>
     </div>
@@ -471,7 +475,7 @@
         
         <div class="id-card-header">
           <div class="id-company-name" id="cardCompany">
-            <span>PT. INVESTAMA KALIMANTAN ENERGI</span>
+            <span>PT. KHATULISTIWA SINAR ENERGI</span>
           </div>
           <div class="id-company-address">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
         </div>
@@ -563,7 +567,6 @@
   const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
   const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-  // DAFTAR KARYAWAN DENGAN PROPERTY UNIFORM (pt, name, phone, position, empId)
   const ALLOWED_EMPLOYEES = [
     { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
     { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
@@ -699,8 +702,7 @@
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
 
-    // NAMA PT DAN NAMA KARYAWAN TAMPIL LENGKAP
-    const companyName = currentUserData.pt || currentUserData.company || "PT. INVESTAMA KALIMANTAN ENERGI";
+    const companyName = currentUserData.pt || currentUserData.company || "PT. KHATULISTIWA SINAR ENERGI";
     document.getElementById('cardCompany').innerHTML = `<span>${companyName}</span>`;
     document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
     document.getElementById('cardPosition').textContent = currentUserData.position || "-";
