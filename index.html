@@ -154,7 +154,7 @@
       transform: none;
     }
 
-    /* ID CARD STYLE DESAIN PRESISI REFERENSI */
+    /* ID CARD STYLE PRESISI REFERENSI */
     .id-card-wrapper {
       background: #f1f5f9;
       border-radius: 16px;
@@ -177,7 +177,6 @@
       justify-content: center;
     }
 
-    /* CONTAINER TOMBOL DI KANAN ATAS HEADER */
     .id-card-action-btns {
       position: absolute;
       top: 10px;
@@ -221,7 +220,7 @@
       text-transform: uppercase;
       text-align: center;
       width: 100%;
-      padding-right: 60px; /* Memberi ruang agar teks PT tetap di tengah tanpa tertimpa tombol */
+      padding-right: 60px;
       padding-left: 10px;
     }
 
@@ -236,7 +235,6 @@
       padding-left: 10px;
     }
 
-    /* BARIS ATAS ID CARD: FOTO + NAMA & JABATAN */
     .id-card-top-row {
       display: flex;
       align-items: center;
@@ -244,7 +242,7 @@
       padding: 16px 14px 10px 14px;
     }
 
-    /* KONTAINER FOTO DENGAN EFEK BAYANGAN */
+    /* KONTROL FOTO DENGAN EFEK BAYANGAN KHAS SEPERTI REFERENSI */
     .id-avatar-container {
       width: 100px;
       height: 110px;
@@ -463,7 +461,7 @@
     <!-- 1. SEKSI LOGIN -->
     <div id="loginSection">
       <div class="form-group">
-        <label for="loginUsername">Nama </label>
+        <label for="loginUsername">Nama</label>
         <input type="text" id="loginUsername" placeholder="Contoh: SUPRANOTO" required>
       </div>
       <div class="form-group">
@@ -475,7 +473,7 @@
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- MODEL ID CARD PRESISI REFERENSI -->
+      <!-- ID CARD DENGAN GAYA FOTO SEPERTI REFERENSI -->
       <div class="id-card-wrapper" id="idCardWrapper">
         <div class="id-card-header">
           <div class="id-card-action-btns" data-html2canvas-ignore="true">
@@ -529,7 +527,7 @@
         <button id="scanBtn" class="btn btn-record" onclick="processAttendance()">Record</button>
         <div class="btn-secondary-group">
           <a href="record.html" class="btn btn-log">Record Log</a>
-          <button class="btn btn-leave" onclick="handleLeavePermission()">Izin </button>
+          <button class="btn btn-leave" onclick="handleLeavePermission()">Izin</button>
         </div>
       </div>
     </div>
@@ -599,7 +597,7 @@
   const LATE_MINUTE = 30;
 
   const ALLOWED_LOCATIONS = [
-    { name: "Kantor ikaen", lat: -2.70671004259296 , lon: 111.637739490514 },
+    { name: "Kantor ikaen", lat: -2.70671004259296, lon: 111.637739490514 },
     { name: "Workshop ikaen", lat: -2.713916, lon: 111.640348 }
   ];
   
