@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Library QR Code Generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
   <style>
     :root {
@@ -28,7 +30,7 @@
 
     /* CLASS UNTUK WARNA MERAH */
     .teks-merah {
-      color: #ef4444; /* Menggunakan warna merah sesuai tema UI */
+      color: #ef4444;
       font-weight: 700;
     }
 
@@ -166,7 +168,7 @@
       transform: none;
     }
 
-    /* ID CARD STYLE SAMA PERSIS SEPERTI GAMBAR */
+    /* ID CARD STYLE */
     .id-card-wrapper {
       background: #ffffff;
       border-radius: 12px;
@@ -251,11 +253,19 @@
       margin-bottom: 8px;
     }
 
+    /* TATA LETAK DETAIL + QR CODE SEJAJAR DI KANAN BAWAH */
+    .id-info-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
     .id-details-table {
-      width: 100%;
+      flex: 1;
       font-size: 9.5px;
       color: #1e293b;
-      margin-bottom: 8px;
       text-align: left;
     }
 
@@ -274,25 +284,28 @@
       text-align: center;
     }
 
+    /* QR CODE CONTAINER SEJAJAR ID & PHONE */
+    .id-qrcode-wrapper {
+      width: 44px;
+      height: 44px;
+      background: #ffffff;
+      padding: 2px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .id-qrcode-wrapper img {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
     .id-card-footer {
       background: #0b192c;
       padding: 6px;
       text-align: center;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .barcode-lines {
-      height: 14px;
-      background: repeating-linear-gradient(
-        90deg,
-        #fff 0, #fff 2px,
-        transparent 2px, transparent 4px,
-        #fff 4px, #fff 7px
-      );
-      width: 70%;
-      margin: 0 auto;
     }
 
     .btn-logout-small {
@@ -460,23 +473,25 @@
           <div class="id-emp-name" id="cardName">-</div>
           <div class="id-emp-role" id="cardPosition">-</div>
 
-          <table class="id-details-table">
-            <tr>
-              <td class="label">ID</td>
-              <td class="separator">:</td>
-              <td id="cardEmpId">IKAEN-001</td>
-            </tr>
-            <tr>
-              <td class="label">PHONE</td>
-              <td class="separator">:</td>
-              <td id="cardPhone">-</td>
-            </tr>
-          </table>
+          <div class="id-info-container">
+            <table class="id-details-table">
+              <tr>
+                <td class="label">ID</td>
+                <td class="separator">:</td>
+                <td id="cardEmpId">IKAEN-001</td>
+              </tr>
+              <tr>
+                <td class="label">PHONE</td>
+                <td class="separator">:</td>
+                <td id="cardPhone">-</td>
+              </tr>
+            </table>
+            <!-- QR CODE AUTO-GENERATED DI SEBELAH KANAN TEKS ID/PHONE -->
+            <div id="cardQrCode" class="id-qrcode-wrapper"></div>
+          </div>
         </div>
 
-        <div class="id-card-footer">
-          <div class="barcode-lines"></div>
-        </div>
+        <div class="id-card-footer"></div>
       </div>
 
       <div class="camera-box">
@@ -567,7 +582,7 @@
     { name: "Workshop ikaen", lat: -2.713916, lon: 111.640348  }
   ];
   
-  // Radius disesuaikan menjadi 200 meter agar lokasi Kantor dan Workshop tidak saling tumpang-tindih
+  // Radius disesuaikan menjadi 100 meter
   const MAX_RADIUS_METERS = 100;
 
   let currentUserData = null;
@@ -629,6 +644,28 @@
     }
   }
 
+  // Auto Generate QR Code per Karyawan
+  function generateEmployeeQRCode(empData) {
+    const qrContainer = document.getElementById('cardQrCode');
+    qrContainer.innerHTML = ''; // Clear QR sebelumnya
+
+    const qrData = JSON.stringify({
+      id: empData.empId,
+      name: empData.name,
+      phone: empData.phone,
+      company: empData.company
+    });
+
+    new QRCode(qrContainer, {
+      text: qrData,
+      width: 40,
+      height: 40,
+      colorDark : "#0b192c",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.L
+    });
+  }
+
   async function initAttendanceFlow() {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
@@ -638,6 +675,9 @@
     document.getElementById('cardPosition').textContent = currentUserData.position;
     document.getElementById('cardPhone').textContent = currentUserData.phone;
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "IKE-001";
+
+    // Generate QR Code Dinamis
+    generateEmployeeQRCode(currentUserData);
 
     const now = new Date();
     const currentHour = now.getHours();
@@ -707,6 +747,12 @@
     canvas.height = video.videoHeight || 480;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    // Dapatkan foto hasil capture
+    const capturedDataUrl = canvas.toDataURL('image/png');
+
+    // Update foto di ID Card saat itu juga
+    document.getElementById('cardAvatar').src = capturedDataUrl;
+
     stopCamera();
 
     const now = new Date();
@@ -751,7 +797,7 @@
       document.getElementById('attendanceSection').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
 
-      document.getElementById('capturedImage').src = canvas.toDataURL('image/png');
+      document.getElementById('capturedImage').src = capturedDataUrl;
       document.getElementById('resCompany').textContent = currentUserData.company;
       document.getElementById('resName').textContent = currentUserData.name;
       document.getElementById('resPosition').textContent = currentUserData.position;
@@ -759,7 +805,7 @@
       document.getElementById('resTime').textContent = timeString;
 
       const statusElem = document.getElementById('resStatus');
-      statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:00)" : "TEPAT WAKTU";
+      statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:30)" : "TEPAT WAKTU";
       statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
 
       showStatus('Absensi berhasil terverifikasi!', 'success');
