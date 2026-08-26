@@ -242,17 +242,18 @@
       padding: 16px 14px 10px 14px;
     }
 
-    /* KONTROL FOTO DENGAN EFEK BAYANGAN KHAS SEPERTI REFERENSI */
+    /* AVATAR DENGAN BACKGROUND PASFOTO SIM SOLID */
     .id-avatar-container {
       width: 100px;
       height: 110px;
       flex-shrink: 0;
-      background: #ffffff;
+      background: #2563eb; /* Background Pasfoto Polos Warna Biru SIM */
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       border-radius: 12px;
+      border: 1.5px solid #94a3b8;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
@@ -403,6 +404,7 @@
       border-radius: 50%;
       border: 2.5px solid var(--accent-blue);
       margin-bottom: 6px;
+      background-color: #2563eb;
     }
 
     .result-row {
@@ -473,7 +475,7 @@
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- ID CARD DENGAN GAYA FOTO SEPERTI REFERENSI -->
+      <!-- ID CARD DENGAN FOTO SIM / PASFOTO -->
       <div class="id-card-wrapper" id="idCardWrapper">
         <div class="id-card-header">
           <div class="id-card-action-btns" data-html2canvas-ignore="true">
@@ -483,12 +485,12 @@
           <div class="id-company-name" id="cardCompany">
             <span>PT. KHATULISTIWA SINAR ENERGI</span>
           </div>
-          <div class="id-company-address">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
+          <div class="id-company-address" id="cardCompanyAddress">Jln. HM. Rafii Pangkalan Bun</div>
         </div>
 
         <div class="id-card-top-row">
           <div class="id-avatar-container">
-            <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230b192c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+            <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
           </div>
           <div class="id-emp-header-text">
             <div class="id-emp-name" id="cardName">KARYAWAN</div>
@@ -591,6 +593,12 @@
     { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI" }
   ];
 
+  const COMPANY_ADDRESSES = {
+    "PT. INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Pangkalan Bun",
+    "PT. INDO DHARMA ENERGI": "Jln. Natai Arahan Pangkalan Bun",
+    "PT. KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafii Pangkalan Bun"
+  };
+
   const START_HOUR = 6;
   const END_HOUR = 23;
   const LATE_HOUR = 9;
@@ -638,6 +646,26 @@
     currentUserData = foundEmployee;
     localStorage.setItem('corporate_user_session', JSON.stringify(currentUserData));
     initAttendanceFlow();
+  }
+
+  async function fetchLatestPhotoFromSupabase(phone) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('attendances')
+        .select('photo_url')
+        .eq('phone', phone)
+        .not('photo_url', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+      if (data && data.length > 0 && data[0].photo_url) {
+        return data[0].photo_url;
+      }
+    } catch (err) {
+      console.warn("Gagal mengambil foto dari Supabase:", err.message);
+    }
+    return null;
   }
 
   async function checkTodayAttendanceFromSupabase(phone) {
@@ -704,20 +732,80 @@
     });
   }
 
+  // ALGORITMA PENGHAPUSAN BACKGROUND (EFEK PASFOTO SIM)
+  function removeBackgroundToCutout(sourceCanvas) {
+    const width = sourceCanvas.width;
+    const height = sourceCanvas.height;
+    const ctx = sourceCanvas.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const data = imgData.data;
+
+    // Ambil sampel warna background di 4 sudut gambar
+    const corners = [
+      0,
+      (width - 1) * 4,
+      ((height - 1) * width) * 4,
+      ((height - 1) * width + (width - 1)) * 4
+    ];
+
+    let bgR = 0, bgG = 0, bgB = 0;
+    corners.forEach(idx => {
+      bgR += data[idx];
+      bgG += data[idx + 1];
+      bgB += data[idx + 2];
+    });
+    bgR /= 4; bgG /= 4; bgB /= 4;
+
+    const threshold = 65; // Toleransi penghapusan warna background
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+
+      const distance = Math.sqrt(
+        Math.pow(r - bgR, 2) +
+        Math.pow(g - bgG, 2) +
+        Math.pow(b - bgB, 2)
+      );
+
+      if (distance < threshold) {
+        data[i + 3] = 0; // Ubah Alpha menjadi transparan (0)
+      }
+    }
+
+    const outputCanvas = document.createElement('canvas');
+    outputCanvas.width = width;
+    outputCanvas.height = height;
+    const outCtx = outputCanvas.getContext('2d');
+    outCtx.putImageData(imgData, 0, 0);
+
+    return outputCanvas.toDataURL('image/png');
+  }
+
   async function initAttendanceFlow() {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
 
     const companyName = currentUserData.pt || currentUserData.company || "PT. KHATULISTIWA SINAR ENERGI";
+    const companyAddress = COMPANY_ADDRESSES[companyName] || "Pangkalan Bun";
+
     document.getElementById('cardCompany').innerHTML = `<span>${companyName}</span>`;
+    document.getElementById('cardCompanyAddress').textContent = companyAddress;
     document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
     document.getElementById('cardPosition').textContent = currentUserData.position || "KARYAWAN";
     document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
 
-    const savedLastPhoto = localStorage.getItem(`last_avatar_${currentUserData.phone}`);
-    if (savedLastPhoto) {
-      document.getElementById('cardAvatar').src = savedLastPhoto;
+    // FETCH FOTO TERBARU DARI DATABASE SUPABASE
+    const latestPhoto = await fetchLatestPhotoFromSupabase(currentUserData.phone);
+    if (latestPhoto) {
+      document.getElementById('cardAvatar').src = latestPhoto;
+    } else {
+      const savedLastPhoto = localStorage.getItem(`last_avatar_${currentUserData.phone}`);
+      if (savedLastPhoto) {
+        document.getElementById('cardAvatar').src = savedLastPhoto;
+      }
     }
 
     generateEmployeeQRCode(currentUserData);
@@ -777,7 +865,7 @@
   async function processAttendance() {
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
-    showStatus('Memverifikasi rekam wajah & menyimpan data...', 'info');
+    showStatus('Memverifikasi rekam wajah & menghapus background...', 'info');
 
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -787,10 +875,11 @@
     canvas.height = video.videoHeight || 480;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const capturedDataUrl = canvas.toDataURL('image/png');
+    // MENGHASILKAN DATA URL DENGAN BACKGROUND TRANSPARAN
+    const cutoutPhotoUrl = removeBackgroundToCutout(canvas);
 
-    document.getElementById('cardAvatar').src = capturedDataUrl;
-    localStorage.setItem(`last_avatar_${currentUserData.phone}`, capturedDataUrl);
+    document.getElementById('cardAvatar').src = cutoutPhotoUrl;
+    localStorage.setItem(`last_avatar_${currentUserData.phone}`, cutoutPhotoUrl);
 
     stopCamera();
 
@@ -801,13 +890,15 @@
     const companyName = currentUserData.pt || currentUserData.company;
 
     try {
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
-      const fileName = `attend_${currentUserData.phone}_${Date.now()}.jpg`;
+      // PERBAIKAN: UPLOAD BLOB PNG DENGAN BACKGROUND TRANSPARAN KE SUPABASE
+      const response = await fetch(cutoutPhotoUrl);
+      const blob = await response.blob();
+      const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
 
       const { error: storageError } = await supabaseClient
         .storage
         .from('attendance_photos')
-        .upload(fileName, blob, { contentType: 'image/jpeg' });
+        .upload(fileName, blob, { contentType: 'image/png' });
 
       if (storageError) throw storageError;
 
@@ -837,7 +928,7 @@
       document.getElementById('attendanceSection').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
 
-      document.getElementById('capturedImage').src = capturedDataUrl;
+      document.getElementById('capturedImage').src = cutoutPhotoUrl;
       document.getElementById('resCompany').textContent = companyName;
       document.getElementById('resName').textContent = currentUserData.name;
       document.getElementById('resPosition').textContent = currentUserData.position;
