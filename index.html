@@ -154,7 +154,6 @@
       transform: none;
     }
 
-    /* ID CARD STYLE SAMA PERSIS SEPERTI PASFOTO SIM */
     .id-card-wrapper {
       background: #ffffff;
       border-radius: 16px;
@@ -242,26 +241,29 @@
       padding: 16px 14px 10px 14px;
     }
 
-    /* BINGKAI PASFOTO PERSIS SIM (TANPA BOX BACKGROUND KETERING) */
+    /* KONTANER GAMBAR: DI-ZOOM */
     .id-avatar-container {
-      width: 105px;
-      height: 125px;
+      width: 130px;
+      height: 155px;
       flex-shrink: 0;
-      background: #e2e8f0; 
+      background: transparent; 
       display: flex;
       align-items: flex-end;
       justify-content: center;
       overflow: hidden;
-      border-radius: 12px;
-      border: 2px solid #64748b;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      border: none;
+      box-shadow: none;
     }
 
+    /* GAMBAR DI-ZOOM DENGAN TRANSFORM SCALE & OBJECT-POSITION */
     .id-avatar {
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center top;
+      transform: scale(1.15); 
+      transform-origin: center top;
     }
 
     .id-emp-header-text {
@@ -398,8 +400,8 @@
     }
 
     .result-card img {
-      width: 70px;
-      height: 80px;
+      width: 80px;
+      height: 95px;
       object-fit: cover;
       border-radius: 8px;
       border: 2px solid var(--accent-blue);
@@ -474,7 +476,7 @@
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- ID CARD SEPERTI MODEL SIM -->
+      <!-- ID CARD -->
       <div class="id-card-wrapper" id="idCardWrapper">
         <div class="id-card-header">
           <div class="id-card-action-btns" data-html2canvas-ignore="true">
@@ -570,8 +572,7 @@
 </div>
 
 <script>
-  // DAFTARKAN NAMA API KEY REMOVE.BG ANDA DI SINI UNTUK FITUR HAPUS BACKGROUND OTOMATIS AI
-  const REMOVE_BG_API_KEY = "ISI_DENGAN_API_KEY_REMOVE_BG_ANDA";
+  const REMOVE_BG_API_KEY = "EasnYUN5EGXYJj9Ru7WCeCHm";
 
   const SB_URL = "https://qnamtickoteyvydayyor.supabase.co";
   const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
@@ -618,6 +619,7 @@
   let currentLon = null;
   let matchedLocationName = "";
   let activeStream = null;
+  let existingProfilePhoto = null; // Menyimpan status foto profil remove.bg yang sudah ada
 
   window.onload = function() {
     const savedUser = localStorage.getItem('corporate_user_session');
@@ -685,7 +687,7 @@
 
       return data && data.length > 0;
     } catch (err) {
-      console.warn("Pengecekan DB gagal, menggunakan fallback sistem:", err.message);
+      console.warn("Pengecekan DB gagal:", err.message);
       const lastAbsenceDate = localStorage.getItem(`absent_date_${phone}`);
       return lastAbsenceDate === new Date().toISOString().split('T')[0];
     }
@@ -734,29 +736,29 @@
     });
   }
 
-  // FUNGSI REMOVE BACKGROUND PRESISI MENGGUNAKAN API AI REMOVE.BG
   async function removeBgWithAI(imageBlob) {
-    if (!REMOVE_BG_API_KEY || REMOVE_BG_API_KEY === "ISI_DENGAN_API_KEY_REMOVE_BG_ANDA") {
-      console.warn("Remove.bg API Key belum diisi, foto disimpan tanpa hapus background AI.");
-      return imageBlob; // Fallback jika API key belum diisi
-    }
+    try {
+      const formData = new FormData();
+      formData.append("image_file", imageBlob, "photo.png");
+      formData.append("size", "auto");
 
-    const formData = new FormData();
-    formData.append("image_file", imageBlob);
-    formData.append("size", "auto");
+      const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+        method: "POST",
+        headers: {
+          "X-Api-Key": REMOVE_BG_API_KEY
+        },
+        body: formData
+      });
 
-    const response = await fetch("https://api.remove.bg/v1.0/removebg", {
-      method: "POST",
-      headers: {
-        "X-Api-Key": REMOVE_BG_API_KEY
-      },
-      body: formData
-    });
-
-    if (response.ok) {
-      return await response.blob();
-    } else {
-      console.error("Gagal Hapus BG AI:", await response.text());
+      if (response.ok) {
+        return await response.blob();
+      } else {
+        const errorText = await response.text();
+        console.warn("Remove.bg API Error (Menggunakan foto asli):", errorText);
+        return imageBlob; 
+      }
+    } catch (err) {
+      console.error("Network Exception remove.bg:", err);
       return imageBlob;
     }
   }
@@ -775,12 +777,15 @@
     document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
 
+    // CEK FOTO PROFIL (LOKAL ATAU SUPABASE)
     const latestPhoto = await fetchLatestPhotoFromSupabase(currentUserData.phone);
     if (latestPhoto) {
+      existingProfilePhoto = latestPhoto;
       document.getElementById('cardAvatar').src = latestPhoto;
     } else {
       const savedLastPhoto = localStorage.getItem(`last_avatar_${currentUserData.phone}`);
       if (savedLastPhoto) {
+        existingProfilePhoto = savedLastPhoto;
         document.getElementById('cardAvatar').src = savedLastPhoto;
       }
     }
@@ -842,7 +847,6 @@
   async function processAttendance() {
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
-    showStatus('Memproses pemotongan pasfoto bersih via AI...', 'info');
 
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -854,77 +858,93 @@
 
     stopCamera();
 
-    const rawBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-    
-    // INTEGRASI AI HAPUS BACKGROUND BERSIH PRESISI KECUALI POTONGAN SUBJEK (PASFOTO SIM)
-    const processedBlob = await removeBgWithAI(rawBlob);
+    canvas.toBlob(async (rawBlob) => {
+      if (!rawBlob) {
+        showStatus('Gagal mengambil sampel gambar dari kamera.', 'error');
+        scanBtn.disabled = false;
+        return;
+      }
 
-    const cutoutPhotoUrl = URL.createObjectURL(processedBlob);
+      let uploadBlob = rawBlob;
 
-    document.getElementById('cardAvatar').src = cutoutPhotoUrl;
+      // LOGIKA: JIKA BELUM ADA FOTO PROFIL REMOVE.BG, JALANKAN REMOVE.BG VIA AI
+      if (!existingProfilePhoto) {
+        showStatus('Pertama kali selfie: Menghapus background via AI...', 'info');
+        uploadBlob = await removeBgWithAI(rawBlob);
 
-    const now = new Date();
-    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
-    const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
-    const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
-    const companyName = currentUserData.pt || currentUserData.company;
+        const cutoutPhotoUrl = URL.createObjectURL(uploadBlob);
+        document.getElementById('cardAvatar').src = cutoutPhotoUrl;
+      } else {
+        showStatus('Foto profil sudah ada. Memproses absensi...', 'info');
+      }
 
-    try {
-      const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
+      const now = new Date();
+      const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+      const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
+      const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
+      const companyName = currentUserData.pt || currentUserData.company;
 
-      const { error: storageError } = await supabaseClient
-        .storage
-        .from('attendance_photos')
-        .upload(fileName, processedBlob, { contentType: 'image/png' });
+      try {
+        const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
 
-      if (storageError) throw storageError;
+        const { error: storageError } = await supabaseClient
+          .storage
+          .from('attendance_photos')
+          .upload(fileName, uploadBlob, { contentType: 'image/png' });
 
-      const { data: publicUrlData } = supabaseClient
-        .storage
-        .from('attendance_photos')
-        .getPublicUrl(fileName);
+        if (storageError) throw storageError;
 
-      localStorage.setItem(`last_avatar_${currentUserData.phone}`, publicUrlData.publicUrl);
+        const { data: publicUrlData } = supabaseClient
+          .storage
+          .from('attendance_photos')
+          .getPublicUrl(fileName);
 
-      const { error: dbError } = await supabaseClient
-        .from('attendances')
-        .insert([{
-          company_name: companyName,
-          user_name: currentUserData.name,
-          position: currentUserData.position,
-          phone: currentUserData.phone,
-          location_name: matchedLocationName,
-          check_in_time: timeString,
-          status: statusText,
-          photo_url: publicUrlData.publicUrl
-        }]);
+        // Jika pertama kali, simpan foto ini sebagai foto profil permanen
+        if (!existingProfilePhoto) {
+          existingProfilePhoto = publicUrlData.publicUrl;
+          localStorage.setItem(`last_avatar_${currentUserData.phone}`, publicUrlData.publicUrl);
+        }
 
-      if (dbError) throw dbError;
+        const { error: dbError } = await supabaseClient
+          .from('attendances')
+          .insert([{
+            company_name: companyName,
+            user_name: currentUserData.name,
+            position: currentUserData.position,
+            phone: currentUserData.phone,
+            location_name: matchedLocationName,
+            check_in_time: timeString,
+            status: statusText,
+            photo_url: existingProfilePhoto || publicUrlData.publicUrl
+          }]);
 
-      const todayDate = now.toISOString().split('T')[0];
-      localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
+        if (dbError) throw dbError;
 
-      document.getElementById('attendanceSection').classList.add('hidden');
-      document.getElementById('resultSection').classList.remove('hidden');
+        const todayDate = now.toISOString().split('T')[0];
+        localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
 
-      document.getElementById('capturedImage').src = publicUrlData.publicUrl;
-      document.getElementById('resCompany').textContent = companyName;
-      document.getElementById('resName').textContent = currentUserData.name;
-      document.getElementById('resPosition').textContent = currentUserData.position;
-      document.getElementById('resLocation').textContent = matchedLocationName;
-      document.getElementById('resTime').textContent = timeString;
+        document.getElementById('attendanceSection').classList.add('hidden');
+        document.getElementById('resultSection').classList.remove('hidden');
 
-      const statusElem = document.getElementById('resStatus');
-      statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:30)" : "TEPAT WAKTU";
-      statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
+        document.getElementById('capturedImage').src = publicUrlData.publicUrl;
+        document.getElementById('resCompany').textContent = companyName;
+        document.getElementById('resName').textContent = currentUserData.name;
+        document.getElementById('resPosition').textContent = currentUserData.position;
+        document.getElementById('resLocation').textContent = matchedLocationName;
+        document.getElementById('resTime').textContent = timeString;
 
-      showStatus('Absensi berhasil terverifikasi!', 'success');
+        const statusElem = document.getElementById('resStatus');
+        statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:30)" : "TEPAT WAKTU";
+        statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
 
-    } catch (err) {
-      console.error(err);
-      showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
-      scanBtn.disabled = false;
-    }
+        showStatus('Absensi berhasil terverifikasi!', 'success');
+
+      } catch (err) {
+        console.error(err);
+        showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
+        scanBtn.disabled = false;
+      }
+    }, 'image/png');
   }
 
   async function handleLeavePermission() {
@@ -947,7 +967,7 @@
           location_name: "Luar Kantor",
           check_in_time: timeString,
           status: `IZIN: ${reason.toUpperCase()}`,
-          photo_url: null
+          photo_url: existingProfilePhoto || null
         }]);
 
       if (dbError) throw dbError;
