@@ -154,13 +154,13 @@
       transform: none;
     }
 
-    /* ID CARD STYLE DESAIN */
+    /* ID CARD STYLE DESAIN PRESISI REFERENSI */
     .id-card-wrapper {
-      background: #ffffff;
-      border-radius: 12px;
+      background: #f1f5f9;
+      border-radius: 16px;
       overflow: hidden;
       border: 1px solid #cbd5e1;
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
       margin-bottom: 10px;
       position: relative;
     }
@@ -168,65 +168,101 @@
     .id-card-header {
       background: #0b192c;
       color: #fff;
-      padding: 10px 12px 14px 12px;
+      padding: 16px 12px 14px 12px;
       text-align: center;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* CONTAINER TOMBOL DI KANAN ATAS HEADER */
+    .id-card-action-btns {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+      z-index: 10;
+    }
+
+    .btn-logout-small {
+      background: #dc2626;
+      border: none;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-download-small {
+      background: #0284c7;
+      border: none;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .id-company-name {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       color: #ffffff;
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding-right: 60px;
+      text-align: center;
+      width: 100%;
+      padding-right: 60px; /* Memberi ruang agar teks PT tetap di tengah tanpa tertimpa tombol */
+      padding-left: 10px;
     }
 
     .id-company-address {
-      font-size: 8px;
+      font-size: 8.5px;
       color: #94a3b8;
       font-weight: 500;
       margin-top: 2px;
+      text-align: center;
+      width: 100%;
       padding-right: 60px;
+      padding-left: 10px;
     }
 
     /* BARIS ATAS ID CARD: FOTO + NAMA & JABATAN */
     .id-card-top-row {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 12px 14px 6px 14px;
+      gap: 16px;
+      padding: 16px 14px 10px 14px;
     }
 
-    /* KONTAINER FOTO LEBIH BESAR */
+    /* KONTAINER FOTO DENGAN EFEK BAYANGAN */
     .id-avatar-container {
-      width: 90px;
-      height: 105px;
+      width: 100px;
+      height: 110px;
       flex-shrink: 0;
-      background: transparent;
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      border-radius: 8px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
-    /* FOTO DIPERBESAR, DI-ZOOM KE WAJAH, DAN HILANGKAN BACKGROUND */
     .id-avatar {
       width: 100%;
       height: 100%;
-      border-radius: 6px;
-      border: none;
-      background: transparent;
       object-fit: cover;
-      object-position: center 20%; /* Fokus pada wajah */
-      transform: scale(1.35);      /* Zoom agar objek manusia lebih mendominasi */
-      mix-blend-mode: multiply;    /* Menghilangkan background latar foto */
-      filter: contrast(110%) brightness(102%);
+      object-position: center top;
     }
 
     .id-emp-header-text {
@@ -235,7 +271,7 @@
     }
 
     .id-emp-name {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 800;
       color: #0b192c;
       text-transform: uppercase;
@@ -243,15 +279,15 @@
     }
 
     .id-emp-role {
-      font-size: 10.5px;
+      font-size: 11px;
       color: #64748b;
       font-weight: 700;
-      margin-top: 3px;
+      margin-top: 4px;
       text-transform: uppercase;
     }
 
     .id-card-body {
-      padding: 4px 14px 10px 14px;
+      padding: 4px 14px 14px 14px;
     }
 
     .id-info-container {
@@ -259,12 +295,12 @@
       justify-content: space-between;
       align-items: flex-end;
       gap: 6px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .id-details-table {
       flex: 1;
-      font-size: 9.5px;
+      font-size: 10px;
       color: #1e293b;
       text-align: left;
     }
@@ -274,26 +310,28 @@
     }
 
     .id-details-table td.label {
-      font-weight: 700;
+      font-weight: 800;
       color: #475569;
-      width: 45px;
+      width: 50px;
     }
 
     .id-details-table td.separator {
       width: 10px;
       text-align: center;
+      font-weight: 700;
     }
 
     .id-qrcode-wrapper {
-      width: 44px;
-      height: 44px;
+      width: 50px;
+      height: 50px;
       background: #ffffff;
-      padding: 2px;
+      padding: 3px;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
     .id-qrcode-wrapper img {
@@ -303,39 +341,8 @@
 
     .id-card-footer {
       background: #0b192c;
-      padding: 6px;
+      padding: 7px;
       text-align: center;
-    }
-
-    /* TOMBOL KELUAR & DOWNLOAD */
-    .btn-logout-small {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      z-index: 5;
-    }
-
-    .btn-download-small {
-      background: rgba(2, 132, 199, 0.2);
-      border: 1px solid rgba(2, 132, 199, 0.4);
-      color: #38bdf8;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      position: absolute;
-      top: 26px;
-      right: 8px;
-      z-index: 5;
     }
 
     .camera-box {
@@ -468,12 +475,13 @@
 
     <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- MODEL ID CARD -->
+      <!-- MODEL ID CARD PRESISI REFERENSI -->
       <div class="id-card-wrapper" id="idCardWrapper">
-        <button class="btn-logout-small" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
-        <button class="btn-download-small" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
-        
         <div class="id-card-header">
+          <div class="id-card-action-btns" data-html2canvas-ignore="true">
+            <button class="btn-logout-small" onclick="logout()">Keluar</button>
+            <button class="btn-download-small" onclick="downloadIDCard()">Download</button>
+          </div>
           <div class="id-company-name" id="cardCompany">
             <span>PT. KHATULISTIWA SINAR ENERGI</span>
           </div>
@@ -485,8 +493,8 @@
             <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230b192c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
           </div>
           <div class="id-emp-header-text">
-            <div class="id-emp-name" id="cardName">-</div>
-            <div class="id-emp-role" id="cardPosition">-</div>
+            <div class="id-emp-name" id="cardName">KARYAWAN</div>
+            <div class="id-emp-role" id="cardPosition">KARYAWAN</div>
           </div>
         </div>
 
@@ -668,8 +676,8 @@
 
     new QRCode(qrContainer, {
       text: qrData,
-      width: 40,
-      height: 40,
+      width: 44,
+      height: 44,
       colorDark : "#0b192c",
       colorLight : "#ffffff",
       correctLevel : QRCode.CorrectLevel.L
@@ -705,7 +713,7 @@
     const companyName = currentUserData.pt || currentUserData.company || "PT. KHATULISTIWA SINAR ENERGI";
     document.getElementById('cardCompany').innerHTML = `<span>${companyName}</span>`;
     document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
-    document.getElementById('cardPosition').textContent = currentUserData.position || "-";
+    document.getElementById('cardPosition').textContent = currentUserData.position || "KARYAWAN";
     document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
 
