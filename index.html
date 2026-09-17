@@ -9,10 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Library QR Code Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Library html2canvas untuk Download ID Card -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <!-- Engine AI Hapus Background -->
+  <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.js"></script>
   
   <style>
     :root {
@@ -30,421 +31,141 @@
       --warning: #f59e0b;
     }
 
-    .teks-merah {
-      color: #ef4444;
-      font-weight: 700;
-    }
+    .teks-merah { color: #ef4444; font-weight: 700; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100vh; width: 100vw; overflow: hidden; }
     body {
       background-color: var(--bg-body);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      height: 100vh;
-      color: var(--text-main);
-      padding: 10px;
-      overflow: hidden;
+      background-image: radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
+      display: flex; justify-content: center; align-items: center; color: var(--text-main); padding: 8px;
     }
 
     .container {
-      background: var(--card-bg);
-      width: 100%;
-      max-width: 380px;
-      max-height: 98vh;
-      padding: 16px 18px;
-      border-radius: 20px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-y: auto;
+      background: var(--card-bg); width: 100%; max-width: 380px; padding: 12px 14px; border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative; display: flex; flex-direction: column; justify-content: center; max-height: 98vh; overflow: hidden;
     }
 
-    .brand-header {
-      text-align: center;
-      margin-bottom: 10px;
-    }
+    .brand-header { text-align: center; margin-bottom: 6px; }
+    .brand-header h2 { color: var(--primary); font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+    .brand-header p { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
 
-    .brand-header h2 {
-      color: var(--primary);
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-    }
-
-    .brand-header p {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .form-group {
-      margin-bottom: 10px;
-    }
-
-    label {
-      display: block;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
+    .form-group { margin-bottom: 8px; }
+    label { display: block; font-size: 9px; font-weight: 700; color: var(--primary); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
     input[type="text"], input[type="tel"] {
-      width: 100%;
-      padding: 9px 12px;
-      background-color: #f8fafc;
-      border: 1.5px solid var(--border-color);
-      border-radius: 10px;
-      font-size: 12px;
-      color: var(--text-main);
-      transition: all 0.2s ease;
-      -webkit-appearance: none;
+      width: 100%; padding: 8px 10px; background-color: #f8fafc; border: 1.5px solid var(--border-color); border-radius: 10px; font-size: 11px; color: var(--text-main); transition: all 0.2s ease; -webkit-appearance: none;
     }
-
-    input:focus {
-      outline: none;
-      background-color: #fff;
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
-    }
+    input:focus { outline: none; background-color: #fff; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
 
     .btn {
-      width: 100%;
-      padding: 10px;
-      background-color: var(--accent-blue);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.25);
-      transition: all 0.2s ease;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
+      width: 100%; padding: 8px; background-color: var(--accent-blue); color: #fff; border: none; border-radius: 10px;
+      font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.25); transition: all 0.2s ease; text-align: center; text-decoration: none; display: inline-block;
     }
+    .btn:active { transform: scale(0.98); background-color: var(--accent-hover); }
+    .btn:disabled { background-color: #94a3b8; box-shadow: none; cursor: not-allowed; transform: none; }
 
-    .btn:active {
-      transform: scale(0.98);
-      background-color: var(--accent-hover);
-    }
-
-    .btn:disabled {
-      background-color: #94a3b8;
-      box-shadow: none;
-      cursor: not-allowed;
-      transform: none;
-    }
-
+    /* ID CARD STYLES PRESISI GAMBAR */
     .id-card-wrapper {
-      background: #ffffff;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      margin-bottom: 10px;
-      position: relative;
+      background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #cbd5e1; box-shadow: 0 8px 20px rgba(0,0,0,0.12); margin-bottom: 8px; position: relative;
     }
-
-    .id-card-header {
-      background: #0b192c;
-      color: #fff;
-      padding: 16px 12px 14px 12px;
-      text-align: center;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    .id-card-header { 
+      background: #091322; 
+      color: #fff; 
+      padding: 12px 8px 10px 8px; 
+      text-align: center; 
+      position: relative; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
     }
-
-    .id-card-action-btns {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      align-items: flex-end;
-      z-index: 10;
-    }
-
-    .btn-logout-small {
-      background: #dc2626;
-      border: none;
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-download-small {
-      background: #0284c7;
-      border: none;
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .id-company-name {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      color: #ffffff;
-      text-transform: uppercase;
-      text-align: center;
-      width: 100%;
-      padding-right: 60px;
-      padding-left: 10px;
-    }
-
-    .id-company-address {
-      font-size: 8.5px;
-      color: #94a3b8;
-      font-weight: 500;
-      margin-top: 2px;
-      text-align: center;
-      width: 100%;
-      padding-right: 60px;
-      padding-left: 10px;
-    }
-
-    .id-card-top-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 14px 10px 14px;
-    }
-
-    /* KOTAK KERTAS/BORDER DIHILANGKAN & UKURAN GAMBAR DIPERBESAR */
-    .id-avatar-container {
-      width: 150px;
-      height: 170px;
-      flex-shrink: 0;
-      background: transparent; 
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: hidden;
-      border-radius: 8px;
-      border: none;
-      box-shadow: none;
-    }
-
-    .id-avatar {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-    }
-
-    .id-emp-header-text {
-      text-align: left;
-      flex: 1;
-    }
-
-    .id-emp-name {
-      font-size: 15px;
-      font-weight: 800;
-      color: #0b192c;
-      text-transform: uppercase;
+    .btn-download-top { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.2); border: none; color: #ffffff; font-size: 9px; font-weight: 700; padding: 4px 12px; border-radius: 12px; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); }
+    .btn-logout-top { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: #ffffff; font-size: 9px; font-weight: 700; padding: 4px 12px; border-radius: 12px; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); }
+    
+    .id-company-name { 
+      font-size: 11px; 
+      font-weight: 800; 
+      letter-spacing: 0.2px; 
+      color: #ffffff; 
+      text-transform: uppercase; 
+      text-align: center; 
+      width: 100%; 
+      margin-top: 18px; 
       line-height: 1.2;
     }
-
-    .id-emp-role {
-      font-size: 11px;
-      color: #475569;
-      font-weight: 700;
-      margin-top: 4px;
-      text-transform: uppercase;
+    .id-company-address { 
+      font-size: 8.5px; 
+      color: #94a3b8; 
+      font-weight: 500; 
+      margin-top: 2px; 
+      text-align: center; 
+      width: 100%; 
     }
+    
+    .id-card-top-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 12px 10px 12px; }
 
-    .id-card-body {
-      padding: 4px 14px 14px 14px;
+    .id-avatar-container {
+      width: 105px; height: 130px; flex-shrink: 0; background-color: #f1f5f9; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 10px; border: 1px solid #cbd5e1;
     }
+    .id-avatar { width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 9px; background: transparent; }
 
-    .id-info-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 6px;
-      margin-top: 4px;
+    .id-emp-header-text { text-align: left; flex: 1; padding-top: 15px; }
+    .id-emp-name { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.3px; }
+    .id-emp-role { font-size: 9.5px; color: #0284c7; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .id-emp-email { font-size: 8.5px; color: #0f172a; font-weight: 700; margin-top: 14px; word-break: break-all; }
+    .id-emp-email span { color: #0f172a; font-weight: 500; }
+
+    .id-card-middle-row { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 6px 14px; }
+    .id-company-logo { max-width: 42px; max-height: 28px; object-fit: contain; }
+    .id-blood-type { font-size: 9px; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 3px; }
+    .id-blood-drop { color: #dc2626; font-size: 10px; }
+
+    .id-card-body { padding: 0 12px 12px 12px; }
+    .id-info-container { display: flex; justify-content: space-between; align-items: flex-end; gap: 6px; }
+    
+    .id-details-table { flex: 1; font-size: 9.5px; color: #0f172a; text-align: left; }
+    .id-details-table td { padding: 1px 0; }
+    .id-details-table td.label { font-weight: 800; color: #0f172a; width: 55px; }
+    .id-details-table td.separator { width: 8px; text-align: center; font-weight: 700; color: #0f172a; }
+    .id-details-table td.value { font-weight: 600; color: #334155; }
+
+    .id-right-section { display: flex; align-items: center; gap: 6px; }
+    
+    .id-validity-box {
+      background: #e0f2fe; border-radius: 8px; padding: 4px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
+    .id-validity-title { font-size: 7px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.3px; }
+    .id-validity-value { font-size: 9px; font-weight: 800; color: #0f172a; margin-top: 1px; display: flex; align-items: center; gap: 4px; }
+    .id-validity-icon { width: 10px; height: 10px; opacity: 0.7; }
 
-    .id-details-table {
-      flex: 1;
-      font-size: 10px;
-      color: #1e293b;
-      text-align: left;
-    }
+    .id-qrcode-wrapper { width: 38px; height: 38px; background: #ffffff; padding: 1px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+    .id-qrcode-wrapper img { width: 100% !important; height: 100% !important; }
 
-    .id-details-table td {
-      padding: 2px 0;
-    }
+    .camera-box { position: relative; width: 100%; height: 125px; background-color: #000; border-radius: 10px; overflow: hidden; margin-bottom: 8px; border: 1.5px solid var(--border-color); }
+    video, canvas { width: 100%; height: 100%; object-fit: cover; }
+    .face-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 100px; border: 2px dashed rgba(255, 255, 255, 0.85); border-radius: 50%; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); pointer-events: none; }
 
-    .id-details-table td.label {
-      font-weight: 800;
-      color: #475569;
-      width: 50px;
-    }
-
-    .id-details-table td.separator {
-      width: 10px;
-      text-align: center;
-      font-weight: 700;
-    }
-
-    .id-qrcode-wrapper {
-      width: 50px;
-      height: 50px;
-      background: #ffffff;
-      padding: 3px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    .id-qrcode-wrapper img {
-      width: 100% !important;
-      height: 100% !important;
-    }
-
-    .id-card-footer {
-      background: #0b192c;
-      padding: 7px;
-      text-align: center;
-    }
-
-    .camera-box {
-      position: relative;
-      width: 100%;
-      height: 160px;
-      background-color: #000;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 10px;
-      border: 2px solid var(--border-color);
-    }
-
-    video, canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .face-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100px;
-      height: 130px;
-      border: 2px dashed rgba(255, 255, 255, 0.85);
-      border-radius: 50%;
-      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65);
-      pointer-events: none;
-    }
-
-    .status-badge {
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 10.5px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 8px;
-      display: none;
-      line-height: 1.3;
-    }
-
+    .status-badge { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 600; text-align: center; margin-bottom: 8px; display: none; line-height: 1.3; }
     .status-badge.error { background-color: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
     .status-badge.success { background-color: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
     .status-badge.info { background-color: #eff6ff; color: var(--accent-blue); border: 1px solid #bfdbfe; }
 
-    .result-card {
-      background: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .result-card img {
-      width: 80px;
-      height: 95px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid var(--accent-blue);
-      margin-bottom: 6px;
-    }
-
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-      border-bottom: 1px dashed var(--border-color);
-      font-size: 10.5px;
-    }
-
+    .result-card { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 8px; text-align: center; }
+    .result-card img { width: 90px; height: 115px; object-fit: cover; border-radius: 6px; border: 2px solid var(--accent-blue); margin-bottom: 4px; background: #f1f5f9; }
+    .result-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--border-color); font-size: 9.5px; }
     .result-row:last-child { border-bottom: none; }
     .result-row span.label { color: var(--text-muted); }
     .result-row span.val { font-weight: 600; text-align: right; }
-
     .tag-late { color: var(--danger); font-weight: 700; }
     .tag-ontime { color: var(--success); font-weight: 700; }
     .hidden { display: none !important; }
 
-    .action-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .btn-secondary-group {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-record {
-      background-color: var(--accent-blue);
-    }
-
-    .btn-log {
-      background-color: var(--primary-accent);
-      flex: 1;
-    }
-
-    .btn-leave {
-      background-color: var(--warning);
-      flex: 1;
-    }
+    .action-group { display: flex; flex-direction: column; gap: 6px; }
+    .btn-secondary-group { display: flex; gap: 6px; }
+    .btn-record { background-color: var(--accent-blue); }
+    .btn-log { background-color: var(--primary-accent); flex: 1; }
+    .btn-leave { background-color: var(--warning); flex: 1; }
   </style>
 </head>
 <body>
@@ -458,11 +179,10 @@
 
     <div id="statusMessage" class="status-badge"></div>
 
-    <!-- 1. SEKSI LOGIN -->
     <div id="loginSection">
       <div class="form-group">
         <label for="loginUsername">Nama</label>
-        <input type="text" id="loginUsername" placeholder="Masukkan Nama " required>
+        <input type="text" id="loginUsername" placeholder="Masukkan Nama" required>
       </div>
       <div class="form-group">
         <label for="loginPhone">Nomor HP</label>
@@ -471,19 +191,14 @@
       <button class="btn" onclick="handleLogin()">Login Portal</button>
     </div>
 
-    <!-- 2. SEKSI ABSENSI MASUK/KELUAR -->
     <div id="attendanceSection" class="hidden">
-      <!-- ID CARD -->
+      <!-- ID CARD HASIL REVISI EDIT PERSIS GAMBAR -->
       <div class="id-card-wrapper" id="idCardWrapper">
         <div class="id-card-header">
-          <div class="id-card-action-btns" data-html2canvas-ignore="true">
-            <button class="btn-logout-small" onclick="logout()">Keluar</button>
-            <button class="btn-download-small" onclick="downloadIDCard()">Download</button>
-          </div>
-          <div class="id-company-name" id="cardCompany">
-            <span>PT. KHATULISTIWA SINAR ENERGI</span>
-          </div>
-          <div class="id-company-address" id="cardCompanyAddress">Jln. HM. Rafii Pangkalan Bun</div>
+          <button class="btn-download-top" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
+          <button class="btn-logout-top" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
+          <div class="id-company-name" id="cardCompany">PT. INVESTAMA KALIMANTAN ENERGI</div>
+          <div class="id-company-address" id="cardCompanyAddress">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
         </div>
 
         <div class="id-card-top-row">
@@ -491,30 +206,35 @@
             <img id="cardAvatar" class="id-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
           </div>
           <div class="id-emp-header-text">
-            <div class="id-emp-name" id="cardName">KARYAWAN</div>
-            <div class="id-emp-role" id="cardPosition">KARYAWAN</div>
+            <div class="id-emp-name" id="cardName">YAYUK WIJAYANTI</div>
+            <div class="id-emp-role" id="cardPosition">HEAD MARKETING</div>
+            <div class="id-emp-email">EMAIL : <span id="cardEmail">yayuk@investamakalimantan.com</span></div>
           </div>
+        </div>
+
+        <div class="id-card-middle-row">
+          <img id="cardCompanyLogo" class="id-company-logo" src="" alt="Logo PT" style="display: none;">
+          <div class="id-blood-type">GOL. DARAH: <span id="cardBloodType">A+</span> <span class="id-blood-drop">🩸</span></div>
         </div>
 
         <div class="id-card-body">
           <div class="id-info-container">
             <table class="id-details-table">
-              <tr>
-                <td class="label">ID</td>
-                <td class="separator">:</td>
-                <td id="cardEmpId">-</td>
-              </tr>
-              <tr>
-                <td class="label">PHONE</td>
-                <td class="separator">:</td>
-                <td id="cardPhone">-</td>
-              </tr>
+              <tr><td class="label">ID</td><td class="separator">:</td><td class="value" id="cardEmpId">IKAEN-001-B50</td></tr>
+              <tr><td class="label">PHONE</td><td class="separator">:</td><td class="value" id="cardPhone">085252761578</td></tr>
             </table>
-            <div id="cardQrCode" class="id-qrcode-wrapper"></div>
+            <div class="id-right-section">
+              <div class="id-validity-box">
+                <div class="id-validity-title">MASA BERLAKU:</div>
+                <div class="id-validity-value">
+                  12/28
+                  <svg class="id-validity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+              </div>
+              <div id="cardQrCode" class="id-qrcode-wrapper"></div>
+            </div>
           </div>
         </div>
-
-        <div class="id-card-footer"></div>
       </div>
 
       <div class="camera-box">
@@ -532,72 +252,57 @@
       </div>
     </div>
 
-    <!-- 3. SEKSI HASIL PRESENSI -->
     <div id="resultSection" class="hidden">
       <div class="result-card">
         <img id="capturedImage" src="" alt="Foto Absen">
         <div class="result-detail">
-          <div class="result-row">
-            <span class="label">Perusahaan</span>
-            <span class="val" id="resCompany"></span>
-          </div>
-          <div class="result-row">
-            <span class="label">Nama Lengkap</span>
-            <span class="val" id="resName"></span>
-          </div>
-          <div class="result-row">
-            <span class="label">Jabatan</span>
-            <span class="val" id="resPosition"></span>
-          </div>
-          <div class="result-row">
-            <span class="label">Lokasi Absen</span>
-            <span class="val" id="resLocation"></span>
-          </div>
-          <div class="result-row">
-            <span class="label">Waktu Masuk</span>
-            <span class="val" id="resTime"></span>
-          </div>
-          <div class="result-row">
-            <span class="label">Status Kehadiran</span>
-            <span class="val" id="resStatus"></span>
-          </div>
+          <div class="result-row"><span class="label">Perusahaan</span><span class="val" id="resCompany"></span></div>
+          <div class="result-row"><span class="label">Nama Lengkap</span><span class="val" id="resName"></span></div>
+          <div class="result-row"><span class="label">Jabatan</span><span class="val" id="resPosition"></span></div>
+          <div class="result-row"><span class="label">Lokasi Absen</span><span class="val" id="resLocation"></span></div>
+          <div class="result-row"><span class="label">Waktu Masuk</span><span class="val" id="resTime"></span></div>
+          <div class="result-row"><span class="label">Status Kehadiran</span><span class="val" id="resStatus"></span></div>
         </div>
       </div>
-      <button class="btn" style="margin-top: 8px;" onclick="location.reload()">Home</button>
+      <button class="btn" style="margin-top: 6px;" onclick="location.reload()">Home</button>
     </div>
   </div>
 </div>
 
 <script>
-  const REMOVE_BG_API_KEY = "EasnYUN5EGXYJj9Ru7WCeCHm";
-
   const SB_URL = "https://qnamtickoteyvydayyor.supabase.co";
   const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
   const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
   const ALLOWED_EMPLOYEES = [
-    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082395172027", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", pt: "PT. INVESTAMA KALIMANTAN ENERGI" },
-    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", pt: "PT. INDO DHARMA ENERGI" },
-    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", pt: "PT. INDO DHARMA ENERGI" },
-    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", pt: "PT. INDO DHARMA ENERGI" },
-    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI" },
-    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI" },
-    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", pt: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", pt: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-003-B50", name: "KOMARUDDIN", phone: "082254033320", position: "OPERASIONAL", pt: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI" },
-    { empId: "KSE-005-B50", name: " MISNAN", phone: "082", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI" } 
+    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "01/02/2022", blood: "A+" },
+    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "15/05/2022", blood: "O+" },
+    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "10/08/2021", blood: "B+" },
+    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "01/11/2021", blood: "O+" },
+    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082395172027", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "12/01/2023", blood: "AB+" },
+    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "05/03/2023", blood: "A+" },
+    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", pt: "PT. INDO DHARMA ENERGI", joinDate: "20/06/2022", blood: "O+" },
+    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", pt: "PT. INDO DHARMA ENERGI", joinDate: "01/01/2022", blood: "B+" },
+    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", pt: "PT. INDO DHARMA ENERGI", joinDate: "14/02/2023", blood: "A+" },
+    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI", joinDate: "10/09/2022", blood: "O+" },
+    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI", joinDate: "01/04/2023", blood: "B+" },
+    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "15/07/2021", blood: "O+" },
+    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "01/08/2022", blood: "A+" },
+    { empId: "KSE-003-B50", name: "KOMARUDDIN", phone: "082254033320", position: "OPERASIONAL", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "11/12/2022", blood: "B+" },
+    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "05/01/2023", blood: "O+" },
+    { empId: "KSE-005-B50", name: "MISNAN", phone: "082", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "01/02/2023", blood: "A+" } 
   ];
 
   const COMPANY_ADDRESSES = {
     "PT. INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Pangkalan Bun",
     "PT. INDO DHARMA ENERGI": "Jln. Natai Arahan Pangkalan Bun",
     "PT. KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafii Pangkalan Bun"
+  };
+
+  const COMPANY_LOGOS = {
+    "PT. KHATULISTIWA SINAR ENERGI": "header1.png",
+    "PT. INVESTAMA KALIMANTAN ENERGI": "ikaen.png",
+    "PT. INDO DHARMA ENERGI": "ide1.png"
   };
 
   const START_HOUR = 6;
@@ -672,107 +377,77 @@
   async function checkTodayAttendanceFromSupabase(phone) {
     try {
       const todayDate = new Date().toISOString().split('T')[0];
-      
       const { data, error } = await supabaseClient
         .from('attendances')
-        .select('created_at')
+        .select('created_at, check_in_time')
         .eq('phone', phone)
         .gte('created_at', `${todayDate}T00:00:00.000Z`)
         .lte('created_at', `${todayDate}T23:59:59.999Z`);
 
       if (error) throw error;
-
-      return data && data.length > 0;
+      if (data && data.length > 0) {
+        return { attended: true, time: data[0].check_in_time || '' };
+      }
+      return { attended: false, time: '' };
     } catch (err) {
-      console.warn("Pengecekan DB gagal:", err.message);
       const lastAbsenceDate = localStorage.getItem(`absent_date_${phone}`);
-      return lastAbsenceDate === new Date().toISOString().split('T')[0];
+      const isAttended = lastAbsenceDate === new Date().toISOString().split('T')[0];
+      return { attended: isAttended, time: '' };
     }
   }
 
   function generateEmployeeQRCode(empData) {
     const qrContainer = document.getElementById('cardQrCode');
     qrContainer.innerHTML = ''; 
-
     const qrData = JSON.stringify({
-      id: empData.empId,
-      name: empData.name,
-      phone: empData.phone,
-      company: empData.pt || empData.company
+      id: empData.empId, name: empData.name, phone: empData.phone, company: empData.pt || empData.company
     });
-
     new QRCode(qrContainer, {
-      text: qrData,
-      width: 44,
-      height: 44,
-      colorDark : "#0b192c",
-      colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.L
+      text: qrData, width: 36, height: 36, colorDark : "#0f172a", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L
     });
   }
 
   function downloadIDCard() {
     const cardElem = document.getElementById('idCardWrapper');
     showStatus('Membuat gambar ID Card...', 'info');
-
-    html2canvas(cardElem, { 
-      scale: 3, 
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff"
-    }).then(canvas => {
+    html2canvas(cardElem, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" }).then(canvas => {
       const link = document.createElement('a');
-      const filename = `ID_CARD_${currentUserData ? currentUserData.name.replace(/\s+/g, '_') : 'KARYAWAN'}.png`;
-      link.download = filename;
+      link.download = `ID_CARD_${currentUserData ? currentUserData.name.replace(/\s+/g, '_') : 'KARYAWAN'}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
       showStatus('ID Card berhasil diunduh!', 'success');
     }).catch(err => {
-      console.error('Gagal mengunduh ID Card:', err);
       showStatus('Gagal mengunduh ID Card.', 'error');
     });
-  }
-
-  async function removeBgWithAI(imageBlob) {
-    try {
-      const formData = new FormData();
-      formData.append("image_file", imageBlob, "photo.png");
-      formData.append("size", "auto");
-
-      const response = await fetch("https://api.remove.bg/v1.0/removebg", {
-        method: "POST",
-        headers: {
-          "X-Api-Key": REMOVE_BG_API_KEY
-        },
-        body: formData
-      });
-
-      if (response.ok) {
-        return await response.blob();
-      } else {
-        const errorText = await response.text();
-        console.warn("Remove.bg API Error (Menggunakan foto asli):", errorText);
-        return imageBlob; 
-      }
-    } catch (err) {
-      console.error("Network Exception remove.bg:", err);
-      return imageBlob;
-    }
   }
 
   async function initAttendanceFlow() {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
 
-    const companyName = currentUserData.pt || currentUserData.company || "PT. KHATULISTIWA SINAR ENERGI";
+    const companyName = currentUserData.pt || currentUserData.company || "PT. INVESTAMA KALIMANTAN ENERGI";
     const companyAddress = COMPANY_ADDRESSES[companyName] || "Pangkalan Bun";
 
-    document.getElementById('cardCompany').innerHTML = `<span>${companyName}</span>`;
+    const cleanName = currentUserData.name.toLowerCase().replace(/\s+/g, '.');
+    const domain = companyName.includes("INVESTAMA") ? "investamakalimantan.com" : (companyName.includes("INDO DHARMA") ? "indodharma.com" : "kse-energy.com");
+    const generatedEmail = `${cleanName}@${domain}`;
+
+    document.getElementById('cardCompany').textContent = companyName;
     document.getElementById('cardCompanyAddress').textContent = companyAddress;
     document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
     document.getElementById('cardPosition').textContent = currentUserData.position || "KARYAWAN";
     document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
+    document.getElementById('cardEmail').textContent = generatedEmail;
+    document.getElementById('cardBloodType').textContent = currentUserData.blood || "A+";
+
+    const logoElem = document.getElementById('cardCompanyLogo');
+    if (COMPANY_LOGOS[companyName]) {
+      logoElem.src = COMPANY_LOGOS[companyName];
+      logoElem.style.display = 'block';
+    } else {
+      logoElem.style.display = 'none';
+    }
 
     const latestPhoto = await fetchLatestPhotoFromSupabase(currentUserData.phone);
     if (latestPhoto) {
@@ -796,10 +471,12 @@
     }
 
     showStatus('Memeriksa status presensi hari ini...', 'info');
-    const hasAttendedToday = await checkTodayAttendanceFromSupabase(currentUserData.phone);
+    const attendanceCheck = await checkTodayAttendanceFromSupabase(currentUserData.phone);
 
-    if (hasAttendedToday) {
-      showStatus('Anda sudah melakukan absensi hari ini!', 'info');
+    if (attendanceCheck.attended) {
+      const todayStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const timeInfo = attendanceCheck.time ? ` Jam: ${attendanceCheck.time}` : '';
+      showStatus(`Anda sudah melakukan absensi hari ini! (${todayStr}${timeInfo})`, 'info');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
@@ -841,7 +518,7 @@
   async function processAttendance() {
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
-    showStatus('Memproses pemotongan pasfoto via AI...', 'info');
+    showStatus('Memotong background foto via AI...', 'info');
 
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -853,16 +530,20 @@
 
     stopCamera();
 
-    canvas.toBlob(async (rawBlob) => {
-      if (!rawBlob) {
-        showStatus('Gagal mengambil sampel gambar dari kamera.', 'error');
-        scanBtn.disabled = false;
-        return;
+    canvas.toBlob(async (originalBlob) => {
+      let finalBlob = originalBlob;
+
+      try {
+        if (window.imglyBackgroundRemoval) {
+          finalBlob = await window.imglyBackgroundRemoval.removeBackground(originalBlob, {
+            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal-data@1.4.5/dist/"
+          });
+        }
+      } catch (err) {
+        console.warn("Gagal memotong background, menggunakan foto awal:", err);
       }
 
-      const processedBlob = await removeBgWithAI(rawBlob);
-
-      const cutoutPhotoUrl = URL.createObjectURL(processedBlob);
+      const cutoutPhotoUrl = URL.createObjectURL(finalBlob);
       document.getElementById('cardAvatar').src = cutoutPhotoUrl;
 
       const now = new Date();
@@ -877,7 +558,7 @@
         const { error: storageError } = await supabaseClient
           .storage
           .from('attendance_photos')
-          .upload(fileName, processedBlob, { contentType: 'image/png' });
+          .upload(fileName, finalBlob, { contentType: 'image/png' });
 
         if (storageError) throw storageError;
 
@@ -962,7 +643,6 @@
       setTimeout(() => location.reload(), 2000);
 
     } catch (err) {
-      console.error(err);
       showStatus(`Gagal mengirim izin: ${err.message}`, 'error');
     }
   }
@@ -976,7 +656,6 @@
       videoElem.srcObject = activeStream;
       await videoElem.play();
     } catch (err) {
-      console.error(err);
       showStatus('Gagal membuka kamera perangkat.', 'error');
     }
   }
@@ -999,9 +678,7 @@
     const rad = Math.PI / 180;
     const dLat = (lat2 - lat1) * rad;
     const dLon = (lon2 - lon1) * rad;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * rad) * Math.cos(lat2 * rad) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
   }
 
