@@ -110,11 +110,26 @@
     }
     .id-avatar { width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 9px; background: transparent; }
 
-    .id-emp-header-text { text-align: left; flex: 1; padding-top: 15px; }
+    .id-emp-header-text { text-align: left; flex: 1; padding-top: 10px; }
     .id-emp-name { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.3px; }
     .id-emp-role { font-size: 9.5px; color: #0284c7; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-    .id-emp-email { font-size: 8.5px; color: #0f172a; font-weight: 700; margin-top: 14px; word-break: break-all; }
+    .id-emp-email { font-size: 8.5px; color: #0f172a; font-weight: 700; margin-top: 10px; word-break: break-all; }
     .id-emp-email span { color: #0f172a; font-weight: 500; }
+
+    /* STYLE TEKS BOLD ESTETIK UNTUK KATA BIJAK */
+    .id-emp-quote {
+      font-size: 8px;
+      font-weight: 800;
+      color: #0369a1;
+      background: #f0f9ff;
+      border-left: 2.5px solid #0284c7;
+      padding: 4px 6px;
+      margin-top: 6px;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.3;
+      font-style: italic;
+      letter-spacing: 0.1px;
+    }
 
     .id-card-middle-row { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 6px 14px; }
     .id-company-logo { max-width: 42px; max-height: 28px; object-fit: contain; }
@@ -209,6 +224,8 @@
             <div class="id-emp-name" id="cardName">YAYUK WIJAYANTI</div>
             <div class="id-emp-role" id="cardPosition">HEAD MARKETING</div>
             <div class="id-emp-email">EMAIL : <span id="cardEmail">yayuk@investamakalimantan.com</span></div>
+            <!-- KATA BIJAK & PENYEMANGAT KERJA -->
+            <div class="id-emp-quote" id="cardQuote">"Fokus pada proses, hasil terbaik akan menyusul."</div>
           </div>
         </div>
 
@@ -293,6 +310,25 @@
     { empId: "KSE-005-B50", name: "MISNAN", phone: "082", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "01/02/2023", blood: "A+" } 
   ];
 
+  // KOLEKSI KATA BIJAK & PENYEMANGAT KERJA RANDOM
+  const MOTIVATIONAL_QUOTES = [
+    "\"Fokus pada proses, hasil terbaik akan menyusul.\"",
+    "\"Kerja keras hari ini, investasi untuk masa depan.\"",
+    "\"Tantangan adalah peluang untuk makin tangguh.\"",
+    "\"Disiplin adalah fondasi utama keberhasilan.\"",
+    "\"Setiap usaha kecil membawa hasil yang besar.\"",
+    "\"Utamakan kualitas & integritas dalam bekerja.\"",
+    "\"Sukses berawal dari langkah kecil hari ini.\"",
+    "\"Semangat melayani dengan dedikasi terbaik.\"",
+    "\"Jadikan setiap kendala sebagai pembelajaran.\"",
+    "\"Konsistensi adalah kunci dari keberhasilan.\"",
+    "\"Bekerja cerdas, tuntas, dan penuh integritas.\"",
+    "\"Kerja tim yang solid menciptakan hasil hebat.\"",
+    "\"Lakukan yang terbaik di mana pun kamu berada.\"",
+    "\"Kesuksesan hadir bagi mereka yang pantang menyerah.\"",
+    "\"Komitmen tinggi membawa hasil luar biasa.\""
+  ];
+
   const COMPANY_ADDRESSES = {
     "PT. INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Pangkalan Bun",
     "PT. INDO DHARMA ENERGI": "Jln. Natai Arahan Pangkalan Bun",
@@ -322,6 +358,17 @@
   let currentLon = null;
   let matchedLocationName = "";
   let activeStream = null;
+
+  // Fungsi penentu quote unik per karyawan
+  function getRandomQuoteForUser(identifier) {
+    let hash = 0;
+    const str = String(identifier || "DEFAULT");
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % MOTIVATIONAL_QUOTES.length;
+    return MOTIVATIONAL_QUOTES[index];
+  }
 
   window.onload = function() {
     const savedUser = localStorage.getItem('corporate_user_session');
@@ -440,6 +487,10 @@
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
     document.getElementById('cardEmail').textContent = generatedEmail;
     document.getElementById('cardBloodType').textContent = currentUserData.blood || "A+";
+
+    // Menerapkan kata bijak/penyemangat secara acak tapi konsisten tiap orang
+    const quote = getRandomQuoteForUser(currentUserData.empId || currentUserData.phone);
+    document.getElementById('cardQuote').textContent = quote;
 
     const logoElem = document.getElementById('cardCompanyLogo');
     if (COMPANY_LOGOS[companyName]) {
