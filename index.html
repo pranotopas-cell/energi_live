@@ -286,11 +286,12 @@
     .id-details-table td.separator { width: 6px; text-align: center; font-weight: 800; color: var(--soft-accent-blue); }
     .id-details-table td.value { font-weight: 800; color: var(--soft-text); word-break: break-all; }
 
+    /* Teks Semangat Kerja diganti warnanya menjadi hitam */
     .id-emp-quote {
       font-size: 7px;
       font-style: italic;
-      font-weight: 800; /* Ditambahkan untuk membuat teks bold */
-      color: var(--soft-accent-blue);
+      font-weight: 800;
+      color: #000000;
       background: var(--soft-bg-blue);
       border-left: 2px solid var(--soft-blue);
       padding: 2px 4px;
@@ -310,8 +311,11 @@
       margin-top: auto;
       padding-bottom: 2px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-left: 4px;
+      padding-right: 4px;
     }
 
     .id-qrcode-wrapper {
@@ -320,6 +324,16 @@
       border-radius: 4px;
       border: 1px solid var(--border-color);
       display: inline-block;
+    }
+
+    /* Style teks Join Date di pojok kanan bawah, teks berwarna merah */
+    .id-join-date-box {
+      font-size: 7.5px;
+      font-weight: 800;
+      color: #dc2626;
+      text-align: right;
+      line-height: 1.2;
+      margin-bottom: 2px;
     }
 
     .id-card-bottom-decor {
@@ -489,6 +503,9 @@
 
             <div class="id-card-footer">
               <div id="cardQrCode" class="id-qrcode-wrapper"></div>
+              <div class="id-join-date-box">
+                JOIN DATE:<br><span id="cardJoinDate">01/02/2022</span>
+              </div>
             </div>
           </div>
 
@@ -809,6 +826,7 @@
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
     document.getElementById('cardEmail').textContent = userEmail;
     document.getElementById('cardBloodType').textContent = (currentUserData.blood || "A+") + " 🩸";
+    document.getElementById('cardJoinDate').textContent = currentUserData.joinDate || "-";
 
     const quote = getRandomQuoteForUser(currentUserData.empId || currentUserData.phone);
     document.getElementById('cardQuote').textContent = quote;
