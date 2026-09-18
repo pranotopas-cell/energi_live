@@ -757,23 +757,37 @@
 
   async function checkTodayAttendanceFromSupabase(phone) {
     try {
-      const todayDate = new Date().toISOString().split('T')[0];
+      // Format tanggal lokal (YYYY-MM-DD)
+      const now = new Date();
+      const localYear = now.getFullYear();
+      const localMonth = String(now.getMonth() + 1).padStart(2, '0');
+      const localDay = String(now.getDate()).padStart(2, '0');
+      const todayLocalDate = `${localYear}-${localMonth}-${localDay}`;
+
       const { data, error } = await supabaseClient
         .from('attendances')
         .select('created_at, check_in_time')
         .eq('phone', phone)
-        .gte('created_at', `${todayDate}T00:00:00.000Z`)
-        .lte('created_at', `${todayDate}T23:59:59.999Z`);
+        .order('created_at', { ascending: false })
+        .limit(1);
 
       if (error) throw error;
+
       if (data && data.length > 0) {
-        return { attended: true, time: data[0].check_in_time || '' };
+        const lastRecordDate = new Date(data[0].created_at);
+        const recYear = lastRecordDate.getFullYear();
+        const recMonth = String(lastRecordDate.getMonth() + 1).padStart(2, '0');
+        const recDay = String(lastRecordDate.getDate()).padStart(2, '0');
+        const lastDateStr = `${recYear}-${recMonth}-${recDay}`;
+
+        if (lastDateStr === todayLocalDate) {
+          return { attended: true, time: data[0].check_in_time || '' };
+        }
       }
       return { attended: false, time: '' };
     } catch (err) {
-      const lastAbsenceDate = localStorage.getItem(`absent_date_${phone}`);
-      const isAttended = lastAbsenceDate === new Date().toISOString().split('T')[0];
-      return { attended: isAttended, time: '' };
+      console.warn("Gagal mengecek status absensi:", err);
+      return { attended: false, time: '' };
     }
   }
 
