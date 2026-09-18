@@ -127,6 +127,21 @@
       flex-shrink: 0;
     }
 
+    /* Lubang Gantungan ID Card */
+    .id-card-hole {
+      width: 32px;
+      height: 8px;
+      background: #090d16;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+
     .id-card-top-bg {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 125px;
@@ -150,6 +165,7 @@
       width: 100%;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 5px 6px 0 6px;
     }
 
@@ -265,9 +281,10 @@
     }
 
     .id-details-table td { padding: 1px 0; }
+    /* Label dan Isi Tabel Dibuat Bold (Font Weight 800) */
     .id-details-table td.label { font-weight: 800; color: var(--soft-accent-blue); width: 38px; }
-    .id-details-table td.separator { width: 6px; text-align: center; font-weight: 700; color: var(--soft-accent-blue); }
-    .id-details-table td.value { font-weight: 600; color: var(--soft-text); word-break: break-all; }
+    .id-details-table td.separator { width: 6px; text-align: center; font-weight: 800; color: var(--soft-accent-blue); }
+    .id-details-table td.value { font-weight: 800; color: var(--soft-text); word-break: break-all; }
 
     .id-emp-quote {
       font-size: 8px;
@@ -332,8 +349,8 @@
       position: absolute; 
       top: 50%; left: 50%; 
       transform: translate(-50%, -50%); 
-      width: 80px;
-      height: 100px;
+      width: 90px;
+      height: 120px;
       border: 2px dashed rgba(255, 255, 255, 0.9); 
       border-radius: 50%; 
       box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); 
@@ -418,6 +435,9 @@
         </div>
 
         <div class="id-card-wrapper" id="idCardWrapper">
+          <!-- Lubang Tali Gantungan ID Card -->
+          <div class="id-card-hole"></div>
+
           <div class="id-card-top-bg-secondary"></div>
           <div class="id-card-top-bg"></div>
 
@@ -450,7 +470,7 @@
               <tr>
                 <td class="label">EMAIL</td>
                 <td class="separator">:</td>
-                <td class="value" id="cardEmail">yayuk.dieselindo@gmail.com</td>
+                <td class="value" id="cardEmail">yayuk.wijayanti@investamakalimantan.com</td>
               </tr>
               <tr>
                 <td class="label">PHONE</td>
@@ -460,7 +480,7 @@
               <tr>
                 <td class="label">BLOOD</td>
                 <td class="separator">:</td>
-                <td class="value" id="cardBloodType">O 🩸</td>
+                <td class="value" id="cardBloodType">A+ 🩸</td>
               </tr>
             </table>
 
@@ -512,22 +532,22 @@
   const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
   const ALLOWED_EMPLOYEES = [
-    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "01/02/2022", blood: "A+" },
-    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "15/05/2022", blood: "O+" },
-    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "10/08/2021", blood: "B+" },
-    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "01/11/2021", blood: "O+" },
-    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082395172027", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "12/01/2023", blood: "AB+" },
-    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "05/03/2023", blood: "A+" },
-    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", pt: "INDO DHARMA ENERGI", joinDate: "20/06/2022", blood: "O+" },
-    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", pt: "INDO DHARMA ENERGI", joinDate: "01/01/2022", blood: "B+" },
-    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", pt: "INDO DHARMA ENERGI", joinDate: "14/02/2023", blood: "A+" },
-    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", position: "DRIVER", pt: "INDO DHARMA ENERGI", joinDate: "10/09/2022", blood: "O+" },
-    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", pt: "INDO DHARMA ENERGI", joinDate: "01/04/2023", blood: "B+" },
-    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "15/07/2021", blood: "O+" },
-    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "01/08/2022", blood: "A+" },
-    { empId: "KSE-003-B50", name: "KOMARUDDIN", phone: "082254033320", position: "OPERASIONAL", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "11/12/2022", blood: "B+" },
-    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "05/01/2023", blood: "O+" },
-    { empId: "KSE-005-B50", name: "MISNAN", phone: "082", position: "DRIVER", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "01/02/2023", blood: "A+" } 
+    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", email: "yayuk.dieselindo@gmail.com", position: "HEAD MARKETING", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "01/02/2022", blood: "A+" },
+    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", email: "ela.yuliana@investamakalimantan.com", position: "MARKETING", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "15/05/2022", blood: "O+" },
+    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", email: "agus.wanto@investamakalimantan.com", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "10/08/2021", blood: "B+" },
+    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", email: "nur.kholis@investamakalimantan.com", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "01/11/2021", blood: "O+" },
+    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082395172027", email: "muhammad.misnan@investamakalimantan.com", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "12/01/2023", blood: "AB+" },
+    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", email: "mahpul@investamakalimantan.com", position: "ASST.OPERASIONAL", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "05/03/2023", blood: "A+" },
+    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", email: "nurhamida@indodharma.com", position: "OPERASIONAL", pt: "INDO DHARMA ENERGI", joinDate: "20/06/2022", blood: "O+" },
+    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", email: "andi.kushendrawan@indodharma.com", position: "ADM AND TAX", pt: "INDO DHARMA ENERGI", joinDate: "01/01/2022", blood: "B+" },
+    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", email: "misro@indodharma.com", position: "ADMINISTRASI", pt: "INDO DHARMA ENERGI", joinDate: "14/02/2023", blood: "A+" },
+    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", email: "alfin@indodharma.com", position: "DRIVER", pt: "INDO DHARMA ENERGI", joinDate: "10/09/2022", blood: "O+" },
+    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", email: "supriyadi@indodharma.com", position: "DRIVER", pt: "INDO DHARMA ENERGI", joinDate: "01/04/2023", blood: "B+" },
+    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", email: "pranoto.pas@gmail.com", position: "JUNIOR MARKETING", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "27/07/2022", blood: "O" },
+    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", email: "zulfa.normalika@kse-energy.com", position: "ADMINISTRASI", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "01/08/2022", blood: "A+" },
+    { empId: "KSE-003-B50", name: "KOMARUDDIN", phone: "082254033320", email: "komaruddin@kse-energy.com", position: "OPERASIONAL", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "11/12/2022", blood: "B+" },
+    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", email: "agus.mulyanto@kse-energy.com", position: "DRIVER", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "05/01/2023", blood: "O+" },
+    { empId: "KSE-005-B50", name: "MISNAN", phone: "082", email: "misnan@kse-energy.com", position: "DRIVER", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "01/02/2023", blood: "A+" } 
   ];
 
   const MOTIVATIONAL_QUOTES = [
@@ -549,7 +569,7 @@
   ];
 
   const COMPANY_ADDRESSES = {
-    "INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18  Pangkalan Bun",
+    "INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Madurejo Pangkalan Bun",
     "INDO DHARMA ENERGI": "Jln. Ahmad Yani Km.7 Perum GBP Pangkalan Bun",
     "KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafi'i  Perum BK Pangkalan Bun"
   };
@@ -777,9 +797,7 @@
     applyCompanyTheme(companyName);
 
     const companyAddress = COMPANY_ADDRESSES[companyName] || "Pangkalan Bun";
-    const cleanName = currentUserData.name.toLowerCase().replace(/\s+/g, '.');
-    const domain = companyName.includes("INVESTAMA") ? "investamakalimantan.com" : (companyName.includes("INDO DHARMA") ? "indodharma.com" : "kse-energy.com");
-    const generatedEmail = `${cleanName}@${domain}`;
+    const userEmail = currentUserData.email || `${currentUserData.name.toLowerCase().replace(/\s+/g, '.')}@investamakalimantan.com`;
 
     document.getElementById('portalSubText').textContent = `${companyName}`;
     document.getElementById('cardCompany').textContent = companyName;
@@ -788,8 +806,8 @@
     document.getElementById('cardPosition').textContent = currentUserData.position || "KARYAWAN";
     document.getElementById('cardPhone').textContent = currentUserData.phone || "-";
     document.getElementById('cardEmpId').textContent = currentUserData.empId || "-";
-    document.getElementById('cardEmail').textContent = generatedEmail;
-    document.getElementById('cardBloodType').textContent = currentUserData.blood || "A+";
+    document.getElementById('cardEmail').textContent = userEmail;
+    document.getElementById('cardBloodType').textContent = (currentUserData.blood || "A+") + " 🩸";
 
     const quote = getRandomQuoteForUser(currentUserData.empId || currentUserData.phone);
     document.getElementById('cardQuote').textContent = quote;
