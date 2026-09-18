@@ -15,6 +15,9 @@
   <!-- Engine AI Hapus Background -->
   <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.js"></script>
   
+  <!-- Library Deteksi Wajah Face-API.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  
   <style>
     :root {
       /* Default Theme (IKE) */
@@ -334,16 +337,23 @@
     video, canvas { width: 100%; height: 100%; object-fit: cover; }
     
     .face-overlay { 
-    position: absolute; 
-    top: 50%; left: 50%; 
-    transform: translate(-50%, -50%); 
-    width: 80px;  /* Sesuaikan lebar oval jika perlu */
-    height: 100px; /* Sesuaikan tinggi oval jika perlu */
-    border: 2px dashed rgba(255, 255, 255, 0.9); 
-    border-radius: 50%; 
-    box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); 
-    pointer-events: none; 
-  }
+      position: absolute; 
+      top: 50%; left: 50%; 
+      transform: translate(-50%, -50%); 
+      width: 80px;  /* Sesuaikan lebar oval jika perlu */
+      height: 100px; /* Sesuaikan tinggi oval jika perlu */
+      border: 2px dashed rgba(255, 255, 255, 0.9); 
+      border-radius: 50%; 
+      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); 
+      pointer-events: none; 
+      transition: border-color 0.3s ease, border-style 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Status Garis Hijau Ketika Wajah Pas */
+    .face-overlay.face-valid {
+      border: 3px solid #10b981 !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 0 9999px rgba(15, 23, 42, 0.65) !important;
+    }
 
     .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 8.5px; font-weight: 600; text-align: center; margin-bottom: 4px; display: none; line-height: 1.2; }
     .status-badge.error { background-color: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
@@ -480,7 +490,7 @@
       <div class="camera-box">
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas" class="hidden"></canvas>
-        <div class="face-overlay"></div>
+        <div id="faceOverlay" class="face-overlay"></div>
       </div>
     </div>
 
@@ -599,6 +609,11 @@
   let matchedLocationName = "";
   let activeStream = null;
 
+  /* Variabel Tambahan Deteksi Wajah Real-time */
+  let faceDetectionInterval = null;
+  let isModelsLoaded = false;
+  let isFacePositionValid = false;
+
   function getRandomQuoteForUser(identifier) {
     let hash = 0;
     const str = String(identifier || "DEFAULT");
@@ -620,12 +635,24 @@
   }
 
   window.onload = function() {
+    loadFaceApiModels();
     const savedUser = localStorage.getItem('corporate_user_session');
     if (savedUser) {
       currentUserData = JSON.parse(savedUser);
       initAttendanceFlow();
     }
   };
+
+  /* Memuat Model Deteksi Wajah Ringan TinyFaceDetector */
+  async function loadFaceApiModels() {
+    try {
+      const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      isModelsLoaded = true;
+    } catch (err) {
+      console.warn("Gagal memuat model deteksi wajah face-api:", err);
+    }
+  }
 
   function handleLogin() {
     const nameInput = document.getElementById('loginUsername').value.trim();
@@ -808,7 +835,7 @@
           }
 
           if (isInRange) {
-            showStatus(`Lokasi Valid (${matchedLocationName}). Silakan scan wajah.`, 'success');
+            showStatus(`Lokasi Valid (${matchedLocationName}). Posisikan wajah di dalam garis oval.`, 'success');
             startCamera('video');
           } else {
             showStatus('Gagal Absen: Lokasi Anda di luar radius kantor/workshop.', 'error');
@@ -822,6 +849,60 @@
         { enableHighAccuracy: true, timeout: 10000 }
       );
     }
+  }
+
+  /* Fungsi Memulai Deteksi Posisi Wajah Secara Real-Time */
+  function startFaceDetection() {
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('faceOverlay');
+
+    if (faceDetectionInterval) clearInterval(faceDetectionInterval);
+
+    faceDetectionInterval = setInterval(async () => {
+      if (!isModelsLoaded || !video || video.paused || video.ended) return;
+
+      try {
+        const detection = await faceapi.detectSingleFace(
+          video, 
+          new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 })
+        );
+
+        if (detection) {
+          const box = detection.box;
+          const videoWidth = video.videoWidth || 640;
+          const videoHeight = video.videoHeight || 480;
+
+          // Pusat posisi wajah hasil deteksi
+          const faceCenterX = box.x + (box.width / 2);
+          const faceCenterY = box.y + (box.height / 2);
+
+          // Posisikan toleransi pada area tengah frame video
+          const targetX = videoWidth / 2;
+          const targetY = videoHeight / 2;
+
+          // Rentang toleransi agar wajah dianggap pas di dalam area oval
+          const toleranceX = videoWidth * 0.18; 
+          const toleranceY = videoHeight * 0.22;
+
+          const isCenterX = Math.abs(faceCenterX - targetX) < toleranceX;
+          const isCenterY = Math.abs(faceCenterY - targetY) < toleranceY;
+          const isGoodSize = box.width >= (videoWidth * 0.22) && box.width <= (videoWidth * 0.65);
+
+          if (isCenterX && isCenterY && isGoodSize) {
+            isFacePositionValid = true;
+            overlay.classList.add('face-valid');
+          } else {
+            isFacePositionValid = false;
+            overlay.classList.remove('face-valid');
+          }
+        } else {
+          isFacePositionValid = false;
+          overlay.classList.remove('face-valid');
+        }
+      } catch (err) {
+        console.warn("Kesalahan deteksi wajah:", err);
+      }
+    }, 200);
   }
 
   async function processAttendance() {
@@ -964,12 +1045,22 @@
       const videoElem = document.getElementById(videoId);
       videoElem.srcObject = activeStream;
       await videoElem.play();
+
+      // Jalankan pemindaian posisi wajah secara kontinu
+      startFaceDetection();
     } catch (err) {
       showStatus('Gagal membuka kamera perangkat.', 'error');
     }
   }
 
   function stopCamera() {
+    if (faceDetectionInterval) {
+      clearInterval(faceDetectionInterval);
+      faceDetectionInterval = null;
+    }
+    const overlay = document.getElementById('faceOverlay');
+    if (overlay) overlay.classList.remove('face-valid');
+
     if (activeStream) {
       activeStream.getTracks().forEach(track => track.stop());
       activeStream = null;
