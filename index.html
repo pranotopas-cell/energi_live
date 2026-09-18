@@ -17,226 +17,361 @@
   
   <style>
     :root {
+      /* Default Theme (IKE) */
+      --soft-blue: #0284c7;
+      --soft-lavender: #38bdf8;
+      --soft-bg-blue: #f0f9ff;
+      --soft-accent-blue: #0369a1;
+      --id-card-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      
+      --soft-text: #1e293b;
+      --soft-muted: #64748b;
+      --soft-card-bg: #ffffff;
+      
       --primary: #0f172a;
-      --primary-accent: #1e293b;
-      --accent-blue: #0284c7;
-      --accent-hover: #0369a1;
       --bg-body: #090d16;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
       --border-color: #cbd5e1;
       --success: #10b981;
       --danger: #ef4444;
       --warning: #f59e0b;
-      --red-text: #dc2626;
     }
-
-    .teks-merah { color: var(--red-text) !important; font-weight: 700; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100vh; width: 100vw; overflow: hidden; }
+    
+    /* Layout Kunci Anti-Scroll */
+    html, body { 
+      height: 100vh; 
+      width: 100vw; 
+      overflow: hidden; 
+      position: fixed;
+    }
+    
     body {
       background-color: var(--bg-body);
-      background-image: radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
-      display: flex; justify-content: center; align-items: center; color: var(--text-main); padding: 8px;
+      background-image: radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(0, 0, 0, 0.8) 0px, transparent 50%);
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      color: var(--soft-text); 
+      padding: 6px;
     }
 
-    /* KOTAK CONTAINER TRANSPARAN */
+    /* CONTAINER FIT SATU LAYAR (Lebar Disesuaikan Untuk Layout Samping) */
     .container {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      width: 100%; max-width: 360px; padding: 10px; border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      position: relative; display: flex; flex-direction: column; justify-content: center; max-height: 98vh; overflow-y: auto;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      width: 100%; 
+      max-width: 380px; 
+      height: 100vh;
+      max-height: 100vh;
+      padding: 10px; 
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between;
+      overflow: hidden;
     }
 
-    .brand-header { text-align: center; margin-bottom: 6px; }
-    .brand-header h2 { color: #ffffff; font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
-    .brand-header p { font-size: 10px; color: var(--red-text); margin-top: 1px; font-weight: 700; }
+    .brand-header { text-align: center; margin-bottom: 4px; }
+    .brand-header h2 { color: #ffffff; font-size: 14px; font-weight: 800; letter-spacing: -0.3px; }
+    .brand-header p { font-size: 9px; color: var(--soft-lavender); margin-top: 1px; font-weight: 700; }
 
-    .form-group { margin-bottom: 8px; }
-    label { display: block; font-size: 9px; font-weight: 700; color: var(--red-text); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group { margin-bottom: 6px; }
+    label { display: block; font-size: 8.5px; font-weight: 700; color: #ffffff; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
     input[type="text"], input[type="tel"] {
-      width: 100%; padding: 8px 10px; background-color: rgba(255, 255, 255, 0.9); border: 1.5px solid var(--border-color); border-radius: 10px; font-size: 11px; color: var(--text-main); transition: all 0.2s ease; -webkit-appearance: none;
+      width: 100%; padding: 6px 8px; background-color: rgba(255, 255, 255, 0.95); border: 1.5px solid var(--border-color); border-radius: 8px; font-size: 10px; color: var(--soft-text); transition: all 0.2s ease; -webkit-appearance: none;
     }
-    input:focus { outline: none; background-color: #fff; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+    input:focus { outline: none; background-color: #fff; border-color: var(--soft-blue); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2); }
 
     .btn {
-      width: 100%; padding: 8px; background-color: var(--accent-blue); color: #fff; border: none; border-radius: 10px;
-      font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.25); transition: all 0.2s ease; text-align: center; text-decoration: none; display: inline-block;
+      width: 100%; padding: 7px; background-color: var(--soft-blue); color: #fff; border: none; border-radius: 8px;
+      font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;
     }
-    .btn:active { transform: scale(0.98); background-color: var(--accent-hover); }
-    .btn:disabled { background-color: #94a3b8; box-shadow: none; cursor: not-allowed; transform: none; }
+    .btn:active { transform: scale(0.98); opacity: 0.9; }
+    .btn:disabled { background-color: #64748b; box-shadow: none; cursor: not-allowed; transform: none; opacity: 0.6; }
 
-    /* ID CARD DENGAN BACKGROUND FOTO FULL TRANSPARAN */
+    /* LAYOUT UTAMA: ID CARD DIAPIT TOMBOL KIRI DAN KANAN */
+    .id-card-layout-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+
+    .side-action-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 65px;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       ID CARD PORTRAIT
+    ========================================================= */
     .id-card-wrapper {
-      width: 340px;
-      height: 214px;
-      margin: 0 auto 10px auto;
-      background: #ffffff;
-      border-radius: 12px;
+      width: 210px;
+      height: 335px;
+      background: var(--soft-card-bg);
+      border-radius: 14px;
       overflow: hidden;
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      flex-shrink: 0;
     }
 
-    /* FOTO FULL BACKGROUND KARTU HARUS TRANSPARAN & DI BELEKANG TEKS */
-    .id-bg-avatar {
+    .id-card-top-bg {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      opacity: 0.22; /* Kontrol transparansi foto agar teks di atasnya sangat jelas */
+      top: 0; left: 0; width: 100%; height: 125px;
+      background: var(--id-card-gradient);
+      clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
       z-index: 1;
-      pointer-events: none;
     }
 
-    /* PASTIKAN SETIAP ELEMEN ELEMEN KARTU BERADA DI ATAS FOTO BACKGROUND */
-    .id-card-header, 
-    .id-card-top-row, 
-    .id-card-middle-row, 
-    .id-card-body {
+    .id-card-top-bg-secondary {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 135px;
+      background: var(--soft-lavender);
+      clip-path: polygon(0 0, 100% 0, 100% 88%, 0 95%);
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    .id-card-top-bar {
       position: relative;
-      z-index: 2;
+      z-index: 10;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 6px 0 6px;
     }
-    
-    .id-card-header { 
-      background: rgba(10, 25, 47, 0.95); 
-      color: #fff; 
-      padding: 6px 6px 4px 6px; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-    }
-    .btn-download-top { position: absolute; top: 4px; left: 6px; background: rgba(255,255,255,0.2); border: none; color: #ffffff; font-size: 8px; font-weight: 700; padding: 2px 8px; border-radius: 8px; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); }
-    .btn-logout-top { position: absolute; top: 4px; right: 6px; background: rgba(255,255,255,0.2); border: none; color: #ffffff; font-size: 8px; font-weight: 700; padding: 2px 8px; border-radius: 8px; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); }
-    
-    .id-company-name { 
-      font-size: 11px; 
-      font-weight: 800; 
-      letter-spacing: 0.2px; 
-      color: #ffffff; 
-      text-transform: uppercase; 
-      text-align: center; 
-      width: 100%; 
-      line-height: 1.1;
-    }
-    .id-company-address { 
-      font-size: 9px; 
-      color: #94a3b8; 
-      font-weight: 500; 
-      margin-top: 1px; 
-      text-align: center; 
-      width: 100%; 
-    }
-    
-    .id-card-top-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 8px 2px 8px; }
 
-    .id-emp-header-text { text-align: left; flex: 1; padding-top: 0px; }
-    .id-emp-name { font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; line-height: 1.1; letter-spacing: 0.2px; }
-    .id-emp-role { font-size: 9px; color: #0284c7; font-weight: 800; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
-    .id-emp-email { font-size: 9px; color: #0f172a; font-weight: 700; margin-top: 4px; word-break: break-all; }
-    .id-emp-email span { color: #0f172a; font-weight: 600; }
+    .btn-download-top, .btn-logout-top {
+      background: rgba(0, 0, 0, 0.25);
+      border: none;
+      color: #ffffff;
+      font-size: 7px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
 
-    /* TEKS KATA BIJAK WARNA MERAH */
-    .id-emp-quote {
+    .id-company-header {
+      position: relative;
+      z-index: 5;
+      margin-top: 2px;
+      padding: 0 8px;
+      color: #ffffff;
+    }
+
+    .id-company-logo {
+      max-height: 16px;
+      max-width: 85px;
+      object-fit: contain;
+      margin-bottom: 2px;
+      filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
+    }
+
+    /* Ukuran Teks Nama PT dan Alamat Diperbesar Sedikit */
+    .id-company-name {
       font-size: 8.5px;
       font-weight: 800;
-      color: var(--red-text);
-      background: rgba(254, 242, 242, 0.85);
-      border-left: 2px solid var(--red-text);
-      padding: 3px 5px;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .id-company-address {
+      font-size: 6.5px;
+      opacity: 0.9;
+      margin-top: 1px;
+    }
+
+    .id-avatar-hex-wrapper {
+      position: relative;
+      z-index: 5;
       margin-top: 4px;
-      border-radius: 0 4px 4px 0;
-      line-height: 1.2;
+      width: 75px;
+      height: 85px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .id-avatar-hex {
+      width: 68px;
+      height: 78px;
+      object-fit: cover;
+      object-position: center top;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      background-color: #f1f5f9;
+    }
+
+    .id-avatar-hex-border {
+      position: absolute;
+      width: 74px;
+      height: 84px;
+      background: #ffffff;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      z-index: -1;
+    }
+
+    .id-card-content {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      padding: 3px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .id-emp-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--soft-text);
+      text-transform: uppercase;
+      letter-spacing: -0.2px;
+      line-height: 1.1;
+    }
+
+    .id-emp-role-badge {
+      background: var(--soft-blue);
+      color: #ffffff;
+      font-size: 7px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: inline-block;
+    }
+
+    .id-details-table {
+      width: 100%;
+      margin-top: 4px;
+      font-size: 6.5px;
+      text-align: left;
+    }
+
+    .id-details-table td { padding: 1px 0; }
+    .id-details-table td.label { font-weight: 800; color: var(--soft-accent-blue); width: 38px; }
+    .id-details-table td.separator { width: 6px; text-align: center; font-weight: 700; color: var(--soft-accent-blue); }
+    .id-details-table td.value { font-weight: 600; color: var(--soft-text); word-break: break-all; }
+
+    .id-emp-quote {
+      font-size: 6px;
       font-style: italic;
-      letter-spacing: 0.1px;
+      color: var(--soft-accent-blue);
+      background: var(--soft-bg-blue);
+      border-left: 2px solid var(--soft-blue);
+      padding: 2px 4px;
+      border-radius: 0 3px 3px 0;
+      margin-top: 4px;
+      width: 100%;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .id-card-middle-row { display: flex; justify-content: space-between; align-items: center; padding: 0 8px 2px 8px; }
-    .id-company-logo { max-width: 60px; max-height: 20px; object-fit: contain; }
-    .id-blood-type { font-size: 9px; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 2px; background: rgba(255, 255, 255, 0.7); padding: 1px 4px; border-radius: 4px; }
-    .id-blood-drop { color: #dc2626; font-size: 9px; }
-
-    .id-card-body { padding: 0 8px 6px 8px; }
-    .id-info-container { display: flex; justify-content: space-between; align-items: flex-end; gap: 4px; }
-    
-    /* DETAILS TABLE TEKS LABEL WARNA MERAH */
-    .id-details-table { flex: 1; font-size: 8px; color: #0f172a; text-align: left; }
-    .id-details-table td { padding: 0.5px 0; }
-    .id-details-table td.label { font-weight: 800; color: var(--red-text); width: 45px; }
-    .id-details-table td.separator { width: 6px; text-align: center; font-weight: 700; color: var(--red-text); }
-    .id-details-table td.value { font-weight: 700; color: #0f172a; }
-
-    .id-right-section { display: flex; align-items: center; gap: 4px; }
-    
-    .id-validity-box {
-      background: rgba(224, 242, 254, 0.85); border-radius: 6px; padding: 2px 5px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    .id-card-footer {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      margin-top: auto;
+      padding-bottom: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .id-validity-title { font-size: 6px; font-weight: 800; color: var(--red-text); text-transform: uppercase; letter-spacing: 0.2px; }
-    .id-validity-value { font-size: 7.5px; font-weight: 800; color: #0f172a; margin-top: 1px; display: flex; align-items: center; gap: 2px; }
-    .id-validity-icon { width: 8px; height: 8px; opacity: 0.7; }
 
-    .id-qrcode-wrapper { width: 30px; height: 30px; background: #ffffff; padding: 1px; border-radius: 3px; display: flex; align-items: center; justify-content: center; }
-    .id-qrcode-wrapper img { width: 100% !important; height: 100% !important; }
+    .id-qrcode-wrapper {
+      background: #ffffff;
+      padding: 2px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
 
-    /* KOTAK SCAN WAJAH DIPERBESAR SEDIKIT */
+    .id-card-bottom-decor {
+      position: absolute;
+      bottom: 0; left: 0; width: 100%; height: 16px;
+      background: var(--id-card-gradient);
+      clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 100%);
+      z-index: 1;
+      opacity: 0.8;
+    }
+
+    /* CAMERA BOX COMPACT */
     .camera-box { 
       position: relative; 
       width: 100%; 
-      height: 165px; 
+      height: 100px; 
       background-color: #000; 
-      border-radius: 12px; 
+      border-radius: 10px; 
       overflow: hidden; 
-      margin-bottom: 8px; 
+      margin-top: 2px;
+      margin-bottom: 4px; 
       border: 1.5px solid var(--border-color); 
+      flex-shrink: 0;
     }
     video, canvas { width: 100%; height: 100%; object-fit: cover; }
     
-    /* OVERLAY LINGKARAN WAJAH DIPERBESAR */
     .face-overlay { 
       position: absolute; 
-      top: 50%; 
-      left: 50%; 
+      top: 50%; left: 50%; 
       transform: translate(-50%, -50%); 
-      width: 105px; 
-      height: 135px; 
+      width: 55px; 
+      height: 75px; 
       border: 2px dashed rgba(255, 255, 255, 0.9); 
       border-radius: 50%; 
       box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); 
       pointer-events: none; 
     }
 
-    .status-badge { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 600; text-align: center; margin-bottom: 8px; display: none; line-height: 1.3; }
+    .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 8.5px; font-weight: 600; text-align: center; margin-bottom: 4px; display: none; line-height: 1.2; }
     .status-badge.error { background-color: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
     .status-badge.success { background-color: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
-    .status-badge.info { background-color: #eff6ff; color: var(--accent-blue); border: 1px solid #bfdbfe; }
+    .status-badge.info { background-color: #eff6ff; color: var(--soft-accent-blue); border: 1px solid #bfdbfe; }
 
-    .result-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 8px; text-align: center; }
-    .result-card img { width: 90px; height: 115px; object-fit: cover; border-radius: 6px; border: 2px solid var(--accent-blue); margin-bottom: 4px; background: #f1f5f9; }
-    .result-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--border-color); font-size: 9.5px; }
+    .result-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 6px; text-align: center; }
+    .result-card img { width: 75px; height: 95px; object-fit: cover; border-radius: 6px; border: 2px solid var(--soft-blue); margin-bottom: 4px; background: #f1f5f9; }
+    .result-row { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px dashed var(--border-color); font-size: 8.5px; }
     .result-row:last-child { border-bottom: none; }
-    .result-row span.label { color: var(--red-text); font-weight: 700; }
+    .result-row span.label { color: var(--soft-accent-blue); font-weight: 700; }
     .result-row span.val { font-weight: 600; text-align: right; }
     .tag-late { color: var(--danger); font-weight: 700; }
     .tag-ontime { color: var(--success); font-weight: 700; }
     .hidden { display: none !important; }
 
-    .action-group { display: flex; flex-direction: column; gap: 6px; }
-    .btn-secondary-group { display: flex; gap: 6px; }
-    .btn-record { background-color: var(--accent-blue); }
-    .btn-log { background-color: var(--primary-accent); flex: 1; }
-    .btn-leave { background-color: var(--warning); flex: 1; }
+    /* STYLE SPECIFIC TOMBOL PER SISI */
+    .btn-side-record { 
+      background-color: var(--soft-blue); 
+      height: 100px;
+      font-size: 11px;
+    }
+    .btn-side-log { 
+      background-color: var(--soft-accent-blue); 
+      height: 47px;
+    }
+    .btn-side-leave { 
+      background-color: var(--warning); 
+      height: 47px;
+    }
   </style>
 </head>
 <body>
@@ -245,7 +380,7 @@
   <div>
     <div class="brand-header">
       <h2>ABSENSI ONLINE</h2>
-      <p id="portalSubText"><span class="teks-merah">INVESTAMA KALIMANTAN ENERGI GROUP</span></p>
+      <p id="portalSubText">INVESTAMA KALIMANTAN ENERGI GROUP</p>
     </div>
 
     <div id="statusMessage" class="status-badge"></div>
@@ -263,66 +398,86 @@
     </div>
 
     <div id="attendanceSection" class="hidden">
-      <!-- ID CARD SEUKURAN KTP DENGAN BACKGROUND FOTO FULL TRANSPARAN -->
-      <div class="id-card-wrapper" id="idCardWrapper">
-        <!-- FOTO BACKGROUND TRANSPARAN LENGKAP -->
-        <img id="cardAvatar" class="id-bg-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Background">
-
-        <div class="id-card-header">
-          <button class="btn-download-top" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
-          <button class="btn-logout-top" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
-          <div class="id-company-name" id="cardCompany">PT. INVESTAMA KALIMANTAN ENERGI</div>
-          <div class="id-company-address" id="cardCompanyAddress">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
+      <!-- LAYOUT BARU: ID CARD DIAPIT TOMBOL KIRI KANAN -->
+      <div class="id-card-layout-wrapper">
+        
+        <!-- SIDEBAR KIRI: TOMBOL RECORD -->
+        <div class="side-action-col">
+          <button id="scanBtn" class="btn btn-side-record" onclick="processAttendance()">Record</button>
         </div>
 
-        <div class="id-card-top-row">
-          <div class="id-emp-header-text">
-            <div class="id-emp-name" id="cardName">YAYUK WIJAYANTI</div>
-            <div class="id-emp-role" id="cardPosition">HEAD MARKETING</div>
-            <div class="id-emp-email">EMAIL : <span id="cardEmail">yayuk@investamakalimantan.com</span></div>
-            <!-- KATA BIJAK TEKS MERAH -->
-            <div class="id-emp-quote" id="cardQuote">"Fokus pada proses, hasil terbaik akan menyusul."</div>
+        <!-- ID CARD PORTRAIT (DI TENGAH) -->
+        <div class="id-card-wrapper" id="idCardWrapper">
+          <div class="id-card-top-bg-secondary"></div>
+          <div class="id-card-top-bg"></div>
+
+          <div class="id-card-top-bar">
+            <button class="btn-download-top" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
+            <button class="btn-logout-top" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
           </div>
-        </div>
 
-        <div class="id-card-middle-row">
-          <img id="cardCompanyLogo" class="id-company-logo" src="" alt="Logo PT" style="display: none;">
-          <div class="id-blood-type">GOL. DARAH: <span id="cardBloodType">A+</span> <span class="id-blood-drop">🩸</span></div>
-        </div>
+          <div class="id-company-header">
+            <img id="cardCompanyLogo" class="id-company-logo" src="" alt="Logo PT" style="display: none;">
+            <div class="id-company-name" id="cardCompany">PT. INVESTAMA KALIMANTAN ENERGI</div>
+            <div class="id-company-address" id="cardCompanyAddress">Jln. Ahmad Wongso RT 18 Pangkalan Bun</div>
+          </div>
 
-        <div class="id-card-body">
-          <div class="id-info-container">
+          <!-- BINGKAI FOTO HEXAGONAL -->
+          <div class="id-avatar-hex-wrapper">
+            <div class="id-avatar-hex-border"></div>
+            <img id="cardAvatar" class="id-avatar-hex" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+          </div>
+
+          <div class="id-card-content">
+            <div class="id-emp-name" id="cardName">YAYUK WIJAYANTI</div>
+            <div class="id-emp-role-badge" id="cardPosition">HEAD MARKETING</div>
+
             <table class="id-details-table">
-              <tr><td class="label">ID</td><td class="separator">:</td><td class="value" id="cardEmpId">IKAEN-001-B50</td></tr>
-              <tr><td class="label">PHONE</td><td class="separator">:</td><td class="value" id="cardPhone">085252761578</td></tr>
+              <tr>
+                <td class="label">ID NO</td>
+                <td class="separator">:</td>
+                <td class="value" id="cardEmpId">IKAEN-001-B50</td>
+              </tr>
+              <tr>
+                <td class="label">EMAIL</td>
+                <td class="separator">:</td>
+                <td class="value" id="cardEmail">yayuk@investamakalimantan.com</td>
+              </tr>
+              <tr>
+                <td class="label">PHONE</td>
+                <td class="separator">:</td>
+                <td class="value" id="cardPhone">085252761578</td>
+              </tr>
+              <tr>
+                <td class="label">BLOOD</td>
+                <td class="separator">:</td>
+                <td class="value" id="cardBloodType">A+ 🩸</td>
+              </tr>
             </table>
-            <div class="id-right-section">
-              <div class="id-validity-box">
-                <div class="id-validity-title">MASA BERLAKU:</div>
-                <div class="id-validity-value">
-                  12/28
-                  <svg class="id-validity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                </div>
-              </div>
+
+            <div class="id-emp-quote" id="cardQuote">"Fokus pada proses, hasil terbaik akan menyusul."</div>
+
+            <div class="id-card-footer">
               <div id="cardQrCode" class="id-qrcode-wrapper"></div>
             </div>
           </div>
+
+          <div class="id-card-bottom-decor"></div>
         </div>
+
+        <!-- SIDEBAR KANAN: TOMBOL LOG & IZIN -->
+        <div class="side-action-col">
+          <a href="record.html" class="btn btn-side-log">Record Log</a>
+          <button class="btn btn-side-leave" onclick="handleLeavePermission()">Izin</button>
+        </div>
+
       </div>
 
-      <!-- KOTAK CAMERA & SCAN WAJAH LEBIH BESAR -->
+      <!-- KOTAK CAMERA SCAN WAJAH -->
       <div class="camera-box">
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas" class="hidden"></canvas>
         <div class="face-overlay"></div>
-      </div>
-
-      <div class="action-group">
-        <button id="scanBtn" class="btn btn-record" onclick="processAttendance()">Record</button>
-        <div class="btn-secondary-group">
-          <a href="record.html" class="btn btn-log">Record Log</a>
-          <button class="btn btn-leave" onclick="handleLeavePermission()">Izin</button>
-        </div>
       </div>
     </div>
 
@@ -397,6 +552,32 @@
     "PT. INDO DHARMA ENERGI": "ide1.png"
   };
 
+  /* PALET WARNA TEMA SESUAI LOGO PT */
+  const COMPANY_THEMES = {
+    "PT. INVESTAMA KALIMANTAN ENERGI": {
+      primary: "#0284c7",
+      accent: "#0369a1",
+      lavender: "#38bdf8",
+      bgLight: "#f0f9ff",
+      gradient: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)"
+    },
+    "PT. INDO DHARMA ENERGI": {
+      primary: "#16a34a",
+      accent: "#15803d",
+      lavender: "#4ade80",
+      bgLight: "#f0fdf4",
+      gradient: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)"
+    },
+    /* Diperbarui: Warna Hijau Tua dan Hijau Tosca untuk Khatulistiwa Sinar Energi */
+    "PT. KHATULISTIWA SINAR ENERGI": {
+      primary: "#065f46", // Hijau Tua (Emerald 800)
+      accent: "#0d9488",  // Hijau Tosca (Teal 600)
+      lavender: "#14b8a6",// Hijau Tosca Cerah (Teal 500)
+      bgLight: "#ccfbf1", // Latar belakang Tosca Sangat Muda (Teal 100)
+      gradient: "linear-gradient(135deg, #065f46 0%, #0d9488 100%)"
+    }
+  };
+
   const START_HOUR = 6;
   const END_HOUR = 23;
   const LATE_HOUR = 9;
@@ -423,6 +604,16 @@
     }
     const index = Math.abs(hash) % MOTIVATIONAL_QUOTES.length;
     return MOTIVATIONAL_QUOTES[index];
+  }
+
+  function applyCompanyTheme(companyName) {
+    const theme = COMPANY_THEMES[companyName] || COMPANY_THEMES["PT. INVESTAMA KALIMANTAN ENERGI"];
+    const root = document.documentElement;
+    root.style.setProperty('--soft-blue', theme.primary);
+    root.style.setProperty('--soft-accent-blue', theme.accent);
+    root.style.setProperty('--soft-lavender', theme.lavender);
+    root.style.setProperty('--soft-bg-blue', theme.bgLight);
+    root.style.setProperty('--id-card-gradient', theme.gradient);
   }
 
   window.onload = function() {
@@ -505,14 +696,14 @@
       id: empData.empId, name: empData.name, phone: empData.phone, company: empData.pt || empData.company
     });
     new QRCode(qrContainer, {
-      text: qrData, width: 28, height: 28, colorDark : "#0f172a", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L
+      text: qrData, width: 30, height: 30, colorDark : "#1e293b", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L
     });
   }
 
   function downloadIDCard() {
     const cardElem = document.getElementById('idCardWrapper');
     showStatus('Membuat gambar ID Card...', 'info');
-    html2canvas(cardElem, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" }).then(canvas => {
+    html2canvas(cardElem, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: null }).then(canvas => {
       const link = document.createElement('a');
       link.download = `ID_CARD_${currentUserData ? currentUserData.name.replace(/\s+/g, '_') : 'KARYAWAN'}.png`;
       link.href = canvas.toDataURL('image/png');
@@ -528,12 +719,17 @@
     document.getElementById('attendanceSection').classList.remove('hidden');
 
     const companyName = currentUserData.pt || currentUserData.company || "PT. INVESTAMA KALIMANTAN ENERGI";
+    
+    /* Aplikasikan Warna Tema Dinamis Sesuai PT */
+    applyCompanyTheme(companyName);
+
     const companyAddress = COMPANY_ADDRESSES[companyName] || "Pangkalan Bun";
 
     const cleanName = currentUserData.name.toLowerCase().replace(/\s+/g, '.');
     const domain = companyName.includes("INVESTAMA") ? "investamakalimantan.com" : (companyName.includes("INDO DHARMA") ? "indodharma.com" : "kse-energy.com");
     const generatedEmail = `${cleanName}@${domain}`;
 
+    document.getElementById('portalSubText').textContent = `${companyName} GROUP`;
     document.getElementById('cardCompany').textContent = companyName;
     document.getElementById('cardCompanyAddress').textContent = companyAddress;
     document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
@@ -549,7 +745,7 @@
     const logoElem = document.getElementById('cardCompanyLogo');
     if (COMPANY_LOGOS[companyName]) {
       logoElem.src = COMPANY_LOGOS[companyName];
-      logoElem.style.display = 'block';
+      logoElem.style.display = 'inline-block';
     } else {
       logoElem.style.display = 'none';
     }
