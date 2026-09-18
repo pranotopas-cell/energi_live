@@ -15,7 +15,7 @@
   <!-- Engine AI Hapus Background -->
   <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.js"></script>
   
-  <!-- Library Deteksi Wajah Face-API.js -->
+  <!-- Library Face Recognition -->
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
   
   <style>
@@ -41,7 +41,6 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
     
-    /* Layout Kunci Anti-Scroll */
     html, body { 
       height: 100vh; 
       width: 100vw; 
@@ -59,7 +58,6 @@
       padding: 6px;
     }
 
-    /* CONTAINER FIT SATU LAYAR (Lebar Disesuaikan Untuk Layout Samping) */
     .container {
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(16px);
@@ -96,7 +94,6 @@
     .btn:active { transform: scale(0.98); opacity: 0.9; }
     .btn:disabled { background-color: #64748b; box-shadow: none; cursor: not-allowed; transform: none; opacity: 0.6; }
 
-    /* LAYOUT UTAMA: ID CARD DIAPIT TOMBOL KIRI DAN KANAN */
     .id-card-layout-wrapper {
       display: flex;
       align-items: center;
@@ -114,9 +111,6 @@
       flex-shrink: 0;
     }
 
-    /* =========================================================
-       ID CARD PORTRAIT
-    ========================================================= */
     .id-card-wrapper {
       width: 210px;
       height: 335px;
@@ -187,7 +181,6 @@
       filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
     }
 
-    /* Ukuran Teks Nama PT dan Alamat Diperbesar Sedikit */
     .id-company-name {
       font-size: 11px;
       font-weight: 800;
@@ -303,13 +296,13 @@
       align-items: center;
     }
 
-   .id-qrcode-wrapper {
-    background: #ffffff;
-    padding: 3px; /* Tambah padding sedikit jika perlu */
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    display: inline-block; /* Memastikan pembungkus mengikuti ukuran QR */
-  }
+    .id-qrcode-wrapper {
+      background: #ffffff;
+      padding: 3px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      display: inline-block;
+    }
 
     .id-card-bottom-decor {
       position: absolute;
@@ -320,7 +313,6 @@
       opacity: 0.8;
     }
 
-    /* CAMERA BOX COMPACT */
     .camera-box { 
       position: relative; 
       width: 210px;
@@ -340,8 +332,8 @@
       position: absolute; 
       top: 50%; left: 50%; 
       transform: translate(-50%, -50%); 
-      width: 80px;  /* Sesuaikan lebar oval jika perlu */
-      height: 100px; /* Sesuaikan tinggi oval jika perlu */
+      width: 80px;
+      height: 100px;
       border: 2px dashed rgba(255, 255, 255, 0.9); 
       border-radius: 50%; 
       box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); 
@@ -349,7 +341,6 @@
       transition: border-color 0.3s ease, border-style 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Status Garis Hijau Ketika Wajah Pas */
     .face-overlay.face-valid {
       border: 3px solid #10b981 !important;
       box-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 0 9999px rgba(15, 23, 42, 0.65) !important;
@@ -370,7 +361,6 @@
     .tag-ontime { color: var(--success); font-weight: 700; }
     .hidden { display: none !important; }
 
-    /* STYLE SPECIFIC TOMBOL PER SISI */
     .btn-side-record { 
       background-color: var(--soft-blue); 
       height: 100px;
@@ -391,10 +381,9 @@
 <div class="container">
   <div>
     <div class="brand-header">
-  <h2>ABSENSI ONLINE</h2>
-  <!-- Gunakan style visibility: hidden atau display: none jika hanya ingin menyembunyikan -->
-  <p id="portalSubText" style="display: none;"></p>
-</div>
+      <h2>ABSENSI ONLINE</h2>
+      <p id="portalSubText" style="display: none;"></p>
+    </div>
 
     <div id="statusMessage" class="status-badge"></div>
 
@@ -411,15 +400,11 @@
     </div>
 
     <div id="attendanceSection" class="hidden">
-      <!-- LAYOUT BARU: ID CARD DIAPIT TOMBOL KIRI KANAN -->
       <div class="id-card-layout-wrapper">
-        
-        <!-- SIDEBAR KIRI: TOMBOL RECORD -->
         <div class="side-action-col">
           <button id="scanBtn" class="btn btn-side-record" onclick="processAttendance()">Record</button>
         </div>
 
-        <!-- ID CARD PORTRAIT (DI TENGAH) -->
         <div class="id-card-wrapper" id="idCardWrapper">
           <div class="id-card-top-bg-secondary"></div>
           <div class="id-card-top-bg"></div>
@@ -435,7 +420,6 @@
             <div class="id-company-address" id="cardCompanyAddress">Jln. Ahmad Wongso Rt. 18 Pangkalan Bun</div>
           </div>
 
-          <!-- BINGKAI FOTO HEXAGONAL -->
           <div class="id-avatar-hex-wrapper">
             <div class="id-avatar-hex-border"></div>
             <img id="cardAvatar" class="id-avatar-hex" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
@@ -478,15 +462,12 @@
           <div class="id-card-bottom-decor"></div>
         </div>
 
-        <!-- SIDEBAR KANAN: TOMBOL LOG & IZIN -->
         <div class="side-action-col">
           <a href="record.html" class="btn btn-side-log">Record Log</a>
           <button class="btn btn-side-leave" onclick="handleLeavePermission()">Izin</button>
         </div>
-
       </div>
 
-      <!-- KOTAK CAMERA SCAN WAJAH -->
       <div class="camera-box">
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas" class="hidden"></canvas>
@@ -565,7 +546,6 @@
     "INDO DHARMA ENERGI": "ide1.png"
   };
 
-  /* PALET WARNA TEMA SESUAI LOGO PT */
   const COMPANY_THEMES = {
     "INVESTAMA KALIMANTAN ENERGI": {
       primary: "#0284c7",
@@ -581,12 +561,11 @@
       bgLight: "#f0fdf4",
       gradient: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)"
     },
-    /* Diperbarui: Warna Hijau Tua dan Hijau Tosca untuk Khatulistiwa Sinar Energi */
     "KHATULISTIWA SINAR ENERGI": {
-      primary: "#065f46", // Hijau Tua (Emerald 800)
-      accent: "#0d9488",  // Hijau Tosca (Teal 600)
-      lavender: "#14b8a6",// Hijau Tosca Cerah (Teal 500)
-      bgLight: "#ccfbf1", // Latar belakang Tosca Sangat Muda (Teal 100)
+      primary: "#065f46",
+      accent: "#0d9488",
+      lavender: "#14b8a6",
+      bgLight: "#ccfbf1",
       gradient: "linear-gradient(135deg, #065f46 0%, #0d9488 100%)"
     }
   };
@@ -609,7 +588,6 @@
   let matchedLocationName = "";
   let activeStream = null;
 
-  /* Variabel Tambahan Deteksi Wajah Real-time */
   let faceDetectionInterval = null;
   let isModelsLoaded = false;
   let isFacePositionValid = false;
@@ -643,14 +621,18 @@
     }
   };
 
-  /* Memuat Model Deteksi Wajah Ringan TinyFaceDetector */
+  /* Memuat Lengkap Model Pembacaan Ciri Wajah (Landmark & Descriptor) */
   async function loadFaceApiModels() {
     try {
       const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
-      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+      ]);
       isModelsLoaded = true;
     } catch (err) {
-      console.warn("Gagal memuat model deteksi wajah face-api:", err);
+      console.warn("Gagal memuat model deteksi/pencocokan wajah:", err);
     }
   }
 
@@ -675,6 +657,27 @@
     currentUserData = foundEmployee;
     localStorage.setItem('corporate_user_session', JSON.stringify(currentUserData));
     initAttendanceFlow();
+  }
+
+  /* Mengambil Data Memori Wajah Pengguna dari Database Supabase */
+  async function fetchUserFaceDescriptorFromSupabase(phone) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('attendances')
+        .select('face_descriptor')
+        .eq('phone', phone)
+        .not('face_descriptor', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+      if (data && data.length > 0 && data[0].face_descriptor) {
+        return new Float32Array(JSON.parse(data[0].face_descriptor));
+      }
+    } catch (err) {
+      console.warn("Gagal membaca memori wajah pengguna:", err.message);
+    }
+    return null;
   }
 
   async function fetchLatestPhotoFromSupabase(phone) {
@@ -720,20 +723,20 @@
   }
 
   function generateEmployeeQRCode(empData) {
-  const qrContainer = document.getElementById('cardQrCode');
-  qrContainer.innerHTML = ''; 
-  const qrData = JSON.stringify({
-    id: empData.empId, name: empData.name, phone: empData.phone, company: empData.pt || empData.company
-  });
-  new QRCode(qrContainer, {
-    text: qrData, 
-    width: 50,  /* <--- Ubah angka ini (contoh: 75) */
-    height: 50, /* <--- Ubah angka ini (contoh: 75) */
-    colorDark : "#1e293b", 
-    colorLight : "#ffffff", 
-    correctLevel : QRCode.CorrectLevel.L
-  });
-}
+    const qrContainer = document.getElementById('cardQrCode');
+    qrContainer.innerHTML = ''; 
+    const qrData = JSON.stringify({
+      id: empData.empId, name: empData.name, phone: empData.phone, company: empData.pt || empData.company
+    });
+    new QRCode(qrContainer, {
+      text: qrData, 
+      width: 50,
+      height: 50,
+      colorDark : "#1e293b", 
+      colorLight : "#ffffff", 
+      correctLevel : QRCode.CorrectLevel.L
+    });
+  }
 
   function downloadIDCard() {
     const cardElem = document.getElementById('idCardWrapper');
@@ -754,12 +757,9 @@
     document.getElementById('attendanceSection').classList.remove('hidden');
 
     const companyName = currentUserData.pt || currentUserData.company || "INVESTAMA KALIMANTAN ENERGI";
-    
-    /* Aplikasikan Warna Tema Dinamis Sesuai PT */
     applyCompanyTheme(companyName);
 
     const companyAddress = COMPANY_ADDRESSES[companyName] || "Pangkalan Bun";
-
     const cleanName = currentUserData.name.toLowerCase().replace(/\s+/g, '.');
     const domain = companyName.includes("INVESTAMA") ? "investamakalimantan.com" : (companyName.includes("INDO DHARMA") ? "indodharma.com" : "kse-energy.com");
     const generatedEmail = `${cleanName}@${domain}`;
@@ -851,7 +851,6 @@
     }
   }
 
-  /* Fungsi Memulai Deteksi Posisi Wajah Secara Real-Time */
   function startFaceDetection() {
     const video = document.getElementById('video');
     const overlay = document.getElementById('faceOverlay');
@@ -872,15 +871,12 @@
           const videoWidth = video.videoWidth || 640;
           const videoHeight = video.videoHeight || 480;
 
-          // Pusat posisi wajah hasil deteksi
           const faceCenterX = box.x + (box.width / 2);
           const faceCenterY = box.y + (box.height / 2);
 
-          // Posisikan toleransi pada area tengah frame video
           const targetX = videoWidth / 2;
           const targetY = videoHeight / 2;
 
-          // Rentang toleransi agar wajah dianggap pas di dalam area oval
           const toleranceX = videoWidth * 0.18; 
           const toleranceY = videoHeight * 0.22;
 
@@ -908,97 +904,140 @@
   async function processAttendance() {
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
-    showStatus('Memotong background foto via AI...', 'info');
 
     const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
 
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    /* 1. VERIFIKASI WAJAH / PENCECOKAN MEMORI NAMA (FACE RECOGNITION) */
+    showStatus('Memverifikasi identitas wajah...', 'info');
 
-    stopCamera();
+    try {
+      const liveDetection = await faceapi.detectSingleFace(
+        video, 
+        new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 })
+      ).withFaceLandmarks().withFaceDescriptor();
 
-    canvas.toBlob(async (originalBlob) => {
-      let finalBlob = originalBlob;
-
-      try {
-        if (window.imglyBackgroundRemoval) {
-          finalBlob = await window.imglyBackgroundRemoval.removeBackground(originalBlob, {
-            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal-data@1.4.5/dist/"
-          });
-        }
-      } catch (err) {
-        console.warn("Gagal memotong background, menggunakan foto awal:", err);
-      }
-
-      const cutoutPhotoUrl = URL.createObjectURL(finalBlob);
-      document.getElementById('cardAvatar').src = cutoutPhotoUrl;
-
-      const now = new Date();
-      const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
-      const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
-      const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
-      const companyName = currentUserData.pt || currentUserData.company;
-
-      try {
-        const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
-
-        const { error: storageError } = await supabaseClient
-          .storage
-          .from('attendance_photos')
-          .upload(fileName, finalBlob, { contentType: 'image/png' });
-
-        if (storageError) throw storageError;
-
-        const { data: publicUrlData } = supabaseClient
-          .storage
-          .from('attendance_photos')
-          .getPublicUrl(fileName);
-
-        localStorage.setItem(`last_avatar_${currentUserData.phone}`, publicUrlData.publicUrl);
-
-        const { error: dbError } = await supabaseClient
-          .from('attendances')
-          .insert([{
-            company_name: companyName,
-            user_name: currentUserData.name,
-            position: currentUserData.position,
-            phone: currentUserData.phone,
-            location_name: matchedLocationName,
-            check_in_time: timeString,
-            status: statusText,
-            photo_url: publicUrlData.publicUrl
-          }]);
-
-        if (dbError) throw dbError;
-
-        const todayDate = now.toISOString().split('T')[0];
-        localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
-
-        document.getElementById('attendanceSection').classList.add('hidden');
-        document.getElementById('resultSection').classList.remove('hidden');
-
-        document.getElementById('capturedImage').src = publicUrlData.publicUrl;
-        document.getElementById('resCompany').textContent = companyName;
-        document.getElementById('resName').textContent = currentUserData.name;
-        document.getElementById('resPosition').textContent = currentUserData.position;
-        document.getElementById('resLocation').textContent = matchedLocationName;
-        document.getElementById('resTime').textContent = timeString;
-
-        const statusElem = document.getElementById('resStatus');
-        statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:30)" : "TEPAT WAKTU";
-        statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
-
-        showStatus('Absensi berhasil terverifikasi!', 'success');
-
-      } catch (err) {
-        console.error(err);
-        showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
+      if (!liveDetection) {
+        showStatus('Gagal Absen: Tidak ada wajah yang terdeteksi / Foto Kosong.', 'error');
         scanBtn.disabled = false;
+        return;
       }
-    }, 'image/png');
+
+      const currentDescriptor = liveDetection.descriptor;
+      const savedDescriptor = await fetchUserFaceDescriptorFromSupabase(currentUserData.phone);
+
+      if (savedDescriptor) {
+        // Hitung jarak Euclidean antara wajah live dan memori wajah tersimpan
+        const distance = faceapi.euclideanDistance(currentDescriptor, savedDescriptor);
+        const MAX_MATCH_DISTANCE = 0.52; // Nilai ambang kecocokan
+
+        if (distance > MAX_MATCH_DISTANCE) {
+          showStatus(`Akses Ditolak: Wajah tidak cocok dengan akun atas nama ${currentUserData.name}!`, 'error');
+          scanBtn.disabled = false;
+          return;
+        }
+      } else {
+        showStatus(`Memori awal wajah untuk nama ${currentUserData.name} berhasil disimpan.`, 'info');
+      }
+
+      /* 2. PROSES FOTO & HAPUS BACKGROUND DENGAN AI */
+      showStatus('Memotong background foto via AI...', 'info');
+
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      stopCamera();
+
+      canvas.toBlob(async (originalBlob) => {
+        let finalBlob = originalBlob;
+
+        try {
+          if (window.imglyBackgroundRemoval) {
+            finalBlob = await window.imglyBackgroundRemoval.removeBackground(originalBlob, {
+              publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal-data@1.4.5/dist/"
+            });
+          }
+        } catch (err) {
+          console.warn("Gagal memotong background, menggunakan foto awal:", err);
+        }
+
+        const cutoutPhotoUrl = URL.createObjectURL(finalBlob);
+        document.getElementById('cardAvatar').src = cutoutPhotoUrl;
+
+        const now = new Date();
+        const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+        const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
+        const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
+        const companyName = currentUserData.pt || currentUserData.company;
+
+        try {
+          const fileName = `attend_${currentUserData.phone}_${Date.now()}.png`;
+
+          const { error: storageError } = await supabaseClient
+            .storage
+            .from('attendance_photos')
+            .upload(fileName, finalBlob, { contentType: 'image/png' });
+
+          if (storageError) throw storageError;
+
+          const { data: publicUrlData } = supabaseClient
+            .storage
+            .from('attendance_photos')
+            .getPublicUrl(fileName);
+
+          localStorage.setItem(`last_avatar_${currentUserData.phone}`, publicUrlData.publicUrl);
+
+          // Simpan data absensi beserta Face Descriptor (Memori Wajah)
+          const { error: dbError } = await supabaseClient
+            .from('attendances')
+            .insert([{
+              company_name: companyName,
+              user_name: currentUserData.name,
+              position: currentUserData.position,
+              phone: currentUserData.phone,
+              location_name: matchedLocationName,
+              check_in_time: timeString,
+              status: statusText,
+              photo_url: publicUrlData.publicUrl,
+              face_descriptor: JSON.stringify(Array.from(currentDescriptor))
+            }]);
+
+          if (dbError) throw dbError;
+
+          const todayDate = now.toISOString().split('T')[0];
+          localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
+
+          document.getElementById('attendanceSection').classList.add('hidden');
+          document.getElementById('resultSection').classList.remove('hidden');
+
+          document.getElementById('capturedImage').src = publicUrlData.publicUrl;
+          document.getElementById('resCompany').textContent = companyName;
+          document.getElementById('resName').textContent = currentUserData.name;
+          document.getElementById('resPosition').textContent = currentUserData.position;
+          document.getElementById('resLocation').textContent = matchedLocationName;
+          document.getElementById('resTime').textContent = timeString;
+
+          const statusElem = document.getElementById('resStatus');
+          statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:30)" : "TEPAT WAKTU";
+          statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
+
+          showStatus('Absensi berhasil terverifikasi!', 'success');
+
+        } catch (err) {
+          console.error(err);
+          showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
+          scanBtn.disabled = false;
+        }
+      }, 'image/png');
+
+    } catch (err) {
+      console.error(err);
+      showStatus('Gagal memproses verifikasi wajah.', 'error');
+      scanBtn.disabled = false;
+    }
   }
 
   async function handleLeavePermission() {
@@ -1046,7 +1085,6 @@
       videoElem.srcObject = activeStream;
       await videoElem.play();
 
-      // Jalankan pemindaian posisi wajah secara kontinu
       startFaceDetection();
     } catch (err) {
       showStatus('Gagal membuka kamera perangkat.', 'error');
