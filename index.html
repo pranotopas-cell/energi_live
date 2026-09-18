@@ -339,11 +339,23 @@
       box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65); 
       pointer-events: none; 
       transition: border-color 0.3s ease, border-style 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .face-overlay.face-valid {
       border: 3px solid #10b981 !important;
       box-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 0 9999px rgba(15, 23, 42, 0.65) !important;
+    }
+
+    /* Elemen Angka Hitung Mundur di Tengah Oval Kamera */
+    .countdown-text {
+      font-size: 32px;
+      font-weight: 800;
+      color: #10b981;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      display: none;
     }
 
     .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 8.5px; font-weight: 600; text-align: center; margin-bottom: 4px; display: none; line-height: 1.2; }
@@ -471,7 +483,9 @@
       <div class="camera-box">
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas" class="hidden"></canvas>
-        <div id="faceOverlay" class="face-overlay"></div>
+        <div id="faceOverlay" class="face-overlay">
+          <span id="countdownText" class="countdown-text"></span>
+        </div>
       </div>
     </div>
 
@@ -590,7 +604,12 @@
 
   let faceDetectionInterval = null;
   let isModelsLoaded = false;
-  let isFacePositionValid = false;
+
+  /* Variabel Pengontrol Auto-Record Countdown */
+  let countdownTimer = null;
+  let countdownVal = 3;
+  let isCountingDown = false;
+  let isProcessing = false;
 
   function getRandomQuoteForUser(identifier) {
     let hash = 0;
@@ -621,7 +640,6 @@
     }
   };
 
-  /* Memuat Lengkap Model Pembacaan Ciri Wajah (Landmark & Descriptor) */
   async function loadFaceApiModels() {
     try {
       const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
@@ -659,7 +677,6 @@
     initAttendanceFlow();
   }
 
-  /* Mengambil Data Memori Wajah Pengguna dari Database Supabase */
   async function fetchUserFaceDescriptorFromSupabase(phone) {
     try {
       const { data, error } = await supabaseClient
@@ -851,6 +868,7 @@
     }
   }
 
+  /* Logika Deteksi Wajah + Auto-Record Countdown 3..2..1 */
   function startFaceDetection() {
     const video = document.getElementById('video');
     const overlay = document.getElementById('faceOverlay');
@@ -858,7 +876,7 @@
     if (faceDetectionInterval) clearInterval(faceDetectionInterval);
 
     faceDetectionInterval = setInterval(async () => {
-      if (!isModelsLoaded || !video || video.paused || video.ended) return;
+      if (!isModelsLoaded || !video || video.paused || video.ended || isProcessing) return;
 
       try {
         const detection = await faceapi.detectSingleFace(
@@ -885,15 +903,15 @@
           const isGoodSize = box.width >= (videoWidth * 0.22) && box.width <= (videoWidth * 0.65);
 
           if (isCenterX && isCenterY && isGoodSize) {
-            isFacePositionValid = true;
             overlay.classList.add('face-valid');
+            startCountdown(); // Mulai hitung mundur otomatis
           } else {
-            isFacePositionValid = false;
             overlay.classList.remove('face-valid');
+            cancelCountdown(); // Batalkan jika posisi terlepas
           }
         } else {
-          isFacePositionValid = false;
           overlay.classList.remove('face-valid');
+          cancelCountdown(); // Batalkan jika wajah hilang
         }
       } catch (err) {
         console.warn("Kesalahan deteksi wajah:", err);
@@ -901,13 +919,50 @@
     }, 200);
   }
 
+  function startCountdown() {
+    if (isCountingDown || isProcessing) return;
+    isCountingDown = true;
+    countdownVal = 3;
+
+    const countText = document.getElementById('countdownText');
+    countText.style.display = 'block';
+    countText.textContent = countdownVal;
+    showStatus(`Tahan posisi! Pengambilan gambar dalam ${countdownVal}...`, 'info');
+
+    countdownTimer = setInterval(() => {
+      countdownVal--;
+      if (countdownVal > 0) {
+        countText.textContent = countdownVal;
+        showStatus(`Tahan posisi! Pengambilan gambar dalam ${countdownVal}...`, 'info');
+      } else {
+        cancelCountdown();
+        processAttendance(); // Eksekusi Record Otomatis!
+      }
+    }, 1000);
+  }
+
+  function cancelCountdown() {
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+    isCountingDown = false;
+    const countText = document.getElementById('countdownText');
+    if (countText) countText.style.display = 'none';
+  }
+
   async function processAttendance() {
+    if (isProcessing) return;
+    isProcessing = true;
+
+    cancelCountdown();
+
     const scanBtn = document.getElementById('scanBtn');
     scanBtn.disabled = true;
 
     const video = document.getElementById('video');
 
-    /* 1. VERIFIKASI WAJAH / PENCECOKAN MEMORI NAMA (FACE RECOGNITION) */
+    /* 1. VERIFIKASI WAJAH / PENCOCOKAN MEMORI NAMA */
     showStatus('Memverifikasi identitas wajah...', 'info');
 
     try {
@@ -919,6 +974,7 @@
       if (!liveDetection) {
         showStatus('Gagal Absen: Tidak ada wajah yang terdeteksi / Foto Kosong.', 'error');
         scanBtn.disabled = false;
+        isProcessing = false;
         return;
       }
 
@@ -926,20 +982,20 @@
       const savedDescriptor = await fetchUserFaceDescriptorFromSupabase(currentUserData.phone);
 
       if (savedDescriptor) {
-        // Hitung jarak Euclidean antara wajah live dan memori wajah tersimpan
         const distance = faceapi.euclideanDistance(currentDescriptor, savedDescriptor);
-        const MAX_MATCH_DISTANCE = 0.52; // Nilai ambang kecocokan
+        const MAX_MATCH_DISTANCE = 0.52;
 
         if (distance > MAX_MATCH_DISTANCE) {
           showStatus(`Akses Ditolak: Wajah tidak cocok dengan akun atas nama ${currentUserData.name}!`, 'error');
           scanBtn.disabled = false;
+          isProcessing = false;
           return;
         }
       } else {
         showStatus(`Memori awal wajah untuk nama ${currentUserData.name} berhasil disimpan.`, 'info');
       }
 
-      /* 2. PROSES FOTO & HAPUS BACKGROUND DENGAN AI */
+      /* 2. PROSES FOTO & HAPUS BACKGROUND VIA AI */
       showStatus('Memotong background foto via AI...', 'info');
 
       const canvas = document.getElementById('canvas');
@@ -990,7 +1046,6 @@
 
           localStorage.setItem(`last_avatar_${currentUserData.phone}`, publicUrlData.publicUrl);
 
-          // Simpan data absensi beserta Face Descriptor (Memori Wajah)
           const { error: dbError } = await supabaseClient
             .from('attendances')
             .insert([{
@@ -1030,6 +1085,7 @@
           console.error(err);
           showStatus(`Gagal menyimpan absensi: ${err.message}`, 'error');
           scanBtn.disabled = false;
+          isProcessing = false;
         }
       }, 'image/png');
 
@@ -1037,6 +1093,7 @@
       console.error(err);
       showStatus('Gagal memproses verifikasi wajah.', 'error');
       scanBtn.disabled = false;
+      isProcessing = false;
     }
   }
 
@@ -1092,6 +1149,7 @@
   }
 
   function stopCamera() {
+    cancelCountdown();
     if (faceDetectionInterval) {
       clearInterval(faceDetectionInterval);
       faceDetectionInterval = null;
