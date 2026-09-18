@@ -300,12 +300,13 @@
       align-items: center;
     }
 
-    .id-qrcode-wrapper {
-      background: #ffffff;
-      padding: 2px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-    }
+   .id-qrcode-wrapper {
+    background: #ffffff;
+    padding: 3px; /* Tambah padding sedikit jika perlu */
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    display: inline-block; /* Memastikan pembungkus mengikuti ukuran QR */
+  }
 
     .id-card-bottom-decor {
       position: absolute;
@@ -690,15 +691,20 @@
   }
 
   function generateEmployeeQRCode(empData) {
-    const qrContainer = document.getElementById('cardQrCode');
-    qrContainer.innerHTML = ''; 
-    const qrData = JSON.stringify({
-      id: empData.empId, name: empData.name, phone: empData.phone, company: empData.pt || empData.company
-    });
-    new QRCode(qrContainer, {
-      text: qrData, width: 30, height: 30, colorDark : "#1e293b", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L
-    });
-  }
+  const qrContainer = document.getElementById('cardQrCode');
+  qrContainer.innerHTML = ''; 
+  const qrData = JSON.stringify({
+    id: empData.empId, name: empData.name, phone: empData.phone, company: empData.pt || empData.company
+  });
+  new QRCode(qrContainer, {
+    text: qrData, 
+    width: 75,  /* <--- Ubah angka ini (contoh: 75) */
+    height: 75, /* <--- Ubah angka ini (contoh: 75) */
+    colorDark : "#1e293b", 
+    colorLight : "#ffffff", 
+    correctLevel : QRCode.CorrectLevel.L
+  });
+}
 
   function downloadIDCard() {
     const cardElem = document.getElementById('idCardWrapper');
