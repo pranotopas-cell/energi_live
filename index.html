@@ -504,22 +504,22 @@
   const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
   const ALLOWED_EMPLOYEES = [
-    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "01/02/2022", blood: "A+" },
-    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "15/05/2022", blood: "O+" },
-    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "10/08/2021", blood: "B+" },
-    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "01/11/2021", blood: "O+" },
-    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082395172027", position: "DRIVER", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "12/01/2023", blood: "AB+" },
-    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", pt: "PT. INVESTAMA KALIMANTAN ENERGI", joinDate: "05/03/2023", blood: "A+" },
-    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", pt: "PT. INDO DHARMA ENERGI", joinDate: "20/06/2022", blood: "O+" },
-    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", pt: "PT. INDO DHARMA ENERGI", joinDate: "01/01/2022", blood: "B+" },
-    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", pt: "PT. INDO DHARMA ENERGI", joinDate: "14/02/2023", blood: "A+" },
-    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI", joinDate: "10/09/2022", blood: "O+" },
-    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", pt: "PT. INDO DHARMA ENERGI", joinDate: "01/04/2023", blood: "B+" },
-    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "15/07/2021", blood: "O+" },
-    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "01/08/2022", blood: "A+" },
-    { empId: "KSE-003-B50", name: "KOMARUDDIN", phone: "082254033320", position: "OPERASIONAL", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "11/12/2022", blood: "B+" },
-    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "05/01/2023", blood: "O+" },
-    { empId: "KSE-005-B50", name: "MISNAN", phone: "082", position: "DRIVER", pt: "PT. KHATULISTIWA SINAR ENERGI", joinDate: "01/02/2023", blood: "A+" } 
+    { empId: "IKAEN-001-B50", name: "YAYUK WIJAYANTI", phone: "085252761578", position: "HEAD MARKETING", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "01/02/2022", blood: "A+" },
+    { empId: "IKAEN-002-B50", name: "ELA YULIANA", phone: "08115273322", position: "MARKETING", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "15/05/2022", blood: "O+" },
+    { empId: "IKAEN-003-B50", name: "AGUS WANTO", phone: "081228008887", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "10/08/2021", blood: "B+" },
+    { empId: "IKAEN-004-B50", name: "NUR KHOLIS", phone: "082151512123", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "01/11/2021", blood: "O+" },
+    { empId: "IKAEN-005-B50", name: "MUHAMMAD MISNAN", phone: "082395172027", position: "DRIVER", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "12/01/2023", blood: "AB+" },
+    { empId: "IKAEN-006-B50", name: "MAHPUL", phone: "089523413899", position: "ASST.OPERASIONAL", pt: "INVESTAMA KALIMANTAN ENERGI", joinDate: "05/03/2023", blood: "A+" },
+    { empId: "IDE-001-B50", name: "NURHAMIDA", phone: "085225862649", position: "OPERASIONAL", pt: "INDO DHARMA ENERGI", joinDate: "20/06/2022", blood: "O+" },
+    { empId: "IDE-002-B50", name: "ANDI KUSHENDRAWAN", phone: "082252359023", position: "ADM AND TAX", pt: "INDO DHARMA ENERGI", joinDate: "01/01/2022", blood: "B+" },
+    { empId: "IDE-003-B50", name: "MISRO", phone: "085246198180", position: "ADMINISTRASI", pt: "INDO DHARMA ENERGI", joinDate: "14/02/2023", blood: "A+" },
+    { empId: "IDE-004-B50", name: "ALFIN", phone: "082253835106", position: "DRIVER", pt: "INDO DHARMA ENERGI", joinDate: "10/09/2022", blood: "O+" },
+    { empId: "IDE-005-B50", name: "SUPRIYADI", phone: "082330138377", position: "DRIVER", pt: "INDO DHARMA ENERGI", joinDate: "01/04/2023", blood: "B+" },
+    { empId: "KSE-001-B50", name: "SUPRANOTO", phone: "08114558778", position: "MARKETING", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "15/07/2021", blood: "O+" },
+    { empId: "KSE-002-B50", name: "ZULFA NORMALIKA", phone: "082151841945", position: "ADMINISTRASI", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "01/08/2022", blood: "A+" },
+    { empId: "KSE-003-B50", name: "KOMARUDDIN", phone: "082254033320", position: "OPERASIONAL", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "11/12/2022", blood: "B+" },
+    { empId: "KSE-004-B50", name: "AGUS MULYANTO", phone: "081255852929", position: "DRIVER", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "05/01/2023", blood: "O+" },
+    { empId: "KSE-005-B50", name: "MISNAN", phone: "082", position: "DRIVER", pt: "KHATULISTIWA SINAR ENERGI", joinDate: "01/02/2023", blood: "A+" } 
   ];
 
   const MOTIVATIONAL_QUOTES = [
@@ -543,7 +543,7 @@
   const COMPANY_ADDRESSES = {
     "PT. INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Pangkalan Bun",
     "PT. INDO DHARMA ENERGI": "Jln. Natai Arahan Pangkalan Bun",
-    "PT. KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafii Pangkalan Bun"
+    "PT. KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafi'i Pangkalan Bun"
   };
 
   const COMPANY_LOGOS = {
@@ -578,7 +578,7 @@
     }
   };
 
-  const START_HOUR = 6;
+  const START_HOUR = 4;
   const END_HOUR = 23;
   const LATE_HOUR = 9;
   const LATE_MINUTE = 30;
