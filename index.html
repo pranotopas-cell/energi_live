@@ -303,7 +303,7 @@
     .id-qrcode-wrapper {
       background: #ffffff;
       padding: 2px;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1px solid var(--border-color);
     }
 
@@ -541,27 +541,27 @@
   ];
 
   const COMPANY_ADDRESSES = {
-    "PT. INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Pangkalan Bun",
-    "PT. INDO DHARMA ENERGI": "Jln. Natai Arahan Pangkalan Bun",
-    "PT. KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafi'i Pangkalan Bun"
+    "INVESTAMA KALIMANTAN ENERGI": "Jln. Ahmad Wongso RT 18 Pangkalan Bun",
+    "INDO DHARMA ENERGI": "Jln. Natai Arahan Pangkalan Bun",
+    "KHATULISTIWA SINAR ENERGI": "Jln. HM. Rafi'i Pangkalan Bun"
   };
 
   const COMPANY_LOGOS = {
-    "PT. KHATULISTIWA SINAR ENERGI": "header1.png",
-    "PT. INVESTAMA KALIMANTAN ENERGI": "ikaen.png",
-    "PT. INDO DHARMA ENERGI": "ide1.png"
+    "KHATULISTIWA SINAR ENERGI": "header1.png",
+    "INVESTAMA KALIMANTAN ENERGI": "ikaen.png",
+    "INDO DHARMA ENERGI": "ide1.png"
   };
 
   /* PALET WARNA TEMA SESUAI LOGO PT */
   const COMPANY_THEMES = {
-    "PT. INVESTAMA KALIMANTAN ENERGI": {
+    "INVESTAMA KALIMANTAN ENERGI": {
       primary: "#0284c7",
       accent: "#0369a1",
       lavender: "#38bdf8",
       bgLight: "#f0f9ff",
       gradient: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)"
     },
-    "PT. INDO DHARMA ENERGI": {
+    "INDO DHARMA ENERGI": {
       primary: "#16a34a",
       accent: "#15803d",
       lavender: "#4ade80",
@@ -569,7 +569,7 @@
       gradient: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)"
     },
     /* Diperbarui: Warna Hijau Tua dan Hijau Tosca untuk Khatulistiwa Sinar Energi */
-    "PT. KHATULISTIWA SINAR ENERGI": {
+    "KHATULISTIWA SINAR ENERGI": {
       primary: "#065f46", // Hijau Tua (Emerald 800)
       accent: "#0d9488",  // Hijau Tosca (Teal 600)
       lavender: "#14b8a6",// Hijau Tosca Cerah (Teal 500)
@@ -607,7 +607,7 @@
   }
 
   function applyCompanyTheme(companyName) {
-    const theme = COMPANY_THEMES[companyName] || COMPANY_THEMES["PT. INVESTAMA KALIMANTAN ENERGI"];
+    const theme = COMPANY_THEMES[companyName] || COMPANY_THEMES["INVESTAMA KALIMANTAN ENERGI"];
     const root = document.documentElement;
     root.style.setProperty('--soft-blue', theme.primary);
     root.style.setProperty('--soft-accent-blue', theme.accent);
@@ -718,7 +718,7 @@
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('attendanceSection').classList.remove('hidden');
 
-    const companyName = currentUserData.pt || currentUserData.company || "PT. INVESTAMA KALIMANTAN ENERGI";
+    const companyName = currentUserData.pt || currentUserData.company || "INVESTAMA KALIMANTAN ENERGI";
     
     /* Aplikasikan Warna Tema Dinamis Sesuai PT */
     applyCompanyTheme(companyName);
@@ -729,7 +729,7 @@
     const domain = companyName.includes("INVESTAMA") ? "investamakalimantan.com" : (companyName.includes("INDO DHARMA") ? "indodharma.com" : "kse-energy.com");
     const generatedEmail = `${cleanName}@${domain}`;
 
-    document.getElementById('portalSubText').textContent = `${companyName} GROUP`;
+    document.getElementById('portalSubText').textContent = `${companyName}`;
     document.getElementById('cardCompany').textContent = companyName;
     document.getElementById('cardCompanyAddress').textContent = companyAddress;
     document.getElementById('cardName').textContent = currentUserData.name || "KARYAWAN";
@@ -766,7 +766,7 @@
     const currentHour = now.getHours();
 
     if (currentHour < START_HOUR || currentHour >= END_HOUR) {
-      showStatus(`Absensi ditutup. Jam operasional 06.00 - 23.00 WIB.`, 'error');
+      showStatus(`Absensi ditutup. Jam operasional 04.00 - 23.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
