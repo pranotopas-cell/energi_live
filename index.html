@@ -378,15 +378,26 @@
 
     /* BELAKANG ID CARD (SOP & PERATURAN) */
     .back-title-header {
-      font-size: 8px;
-      font-weight: 800;
-      color:#dc2626;
-      text-transform: uppercase;
       border-bottom: 1.5px solid var(--soft-blue);
       padding-bottom: 3px;
       margin-bottom: 6px;
       text-align: center;
+    }
+
+    .back-title-main {
+      font-size: 7px;
+      font-weight: 800;
+      color: var(--soft-accent-blue);
+      text-transform: uppercase;
       letter-spacing: 0.3px;
+    }
+
+    .back-title-sub {
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--soft-muted);
+      text-transform: uppercase;
+      margin-top: 1px;
     }
 
     .back-content-container {
@@ -403,7 +414,7 @@
       text-transform: uppercase;
       background: var(--soft-bg-blue);
       padding: 2px 4px;
-      border-left: 2,5px solid var(--soft-blue);
+      border-left: 2.5px solid var(--soft-blue);
       border-radius: 0 4px 4px 0;
       letter-spacing: 0.2px;
     }
@@ -599,7 +610,7 @@
                   <tr>
                     <td class="label">EMAIL</td>
                     <td class="separator">:</td>
-                    <td class="value" id="cardEmail">yayuk.dieselindo@gmai.com</td>
+                    <td class="value" id="cardEmail">yayuk.wijayanti@investamakalimantan.com</td>
                   </tr>
                   <tr>
                     <td class="label">PHONE</td>
@@ -609,7 +620,7 @@
                   <tr>
                     <td class="label">BLOOD</td>
                     <td class="separator">:</td>
-                    <td class="value" id="cardBloodType">O 🩸</td>
+                    <td class="value" id="cardBloodType">A+ 🩸</td>
                   </tr>
                 </table>
 
@@ -618,7 +629,7 @@
                 <div class="id-card-footer">
                   <div id="cardQrCode" class="id-qrcode-wrapper"></div>
                   <div class="id-join-date-box">
-                    Tanggal Masuk:<br><span id="cardJoinDate">01/02/2022</span>
+                    JOIN DATE:<br><span id="cardJoinDate">01/02/2022</span>
                   </div>
                 </div>
               </div>
@@ -630,8 +641,9 @@
             <div class="id-card-back-wrapper" id="idCardBackWrapper">
               <div class="id-card-hole"></div>
               
-              <div class="back-title-header" id="backCompanyTitle">
-              
+              <div class="back-title-header">
+                <div class="back-title-main">PERATURAN & SOP PERUSAHAAN</div>
+                <div class="back-title-sub" id="backCompanyTitle">INVESTAMA KALIMANTAN ENERGI</div>
               </div>
 
               <div class="back-content-container">
@@ -786,8 +798,8 @@
     }
   };
 
-  const START_HOUR = 5;
-  const END_HOUR = 17;
+  const START_HOUR = 4;
+  const END_HOUR = 23;
   const LATE_HOUR = 9;
   const LATE_MINUTE = 30;
 
@@ -998,7 +1010,7 @@
     document.getElementById('cardEmail').textContent = userEmail;
     document.getElementById('cardBloodType').textContent = (currentUserData.blood || "A+") + " 🩸";
     document.getElementById('cardJoinDate').textContent = currentUserData.joinDate || "-";
-    document.getElementById('backCompanyTitle').textContent = `PERATURAN & SOP - ${companyName}`;
+    document.getElementById('backCompanyTitle').textContent = companyName;
 
     const quote = getRandomQuoteForUser(currentUserData.empId || currentUserData.phone);
     document.getElementById('cardQuote').textContent = quote;
@@ -1027,7 +1039,7 @@
     const currentHour = now.getHours();
 
     if (currentHour < START_HOUR || currentHour >= END_HOUR) {
-      showStatus(`Absensi ditutup. Jam operasional 04.00 - 17.00 WIB.`, 'error');
+      showStatus(`Absensi ditutup. Jam operasional 04.00 - 23.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
