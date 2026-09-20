@@ -618,7 +618,7 @@
                 <div class="id-card-footer">
                   <div id="cardQrCode" class="id-qrcode-wrapper"></div>
                   <div class="id-join-date-box">
-                    JOIN DATE:<br><span id="cardJoinDate">01/02/2022</span>
+                    Tanggal Masuk:<br><span id="cardJoinDate">01/02/2022</span>
                   </div>
                 </div>
               </div>
@@ -631,7 +631,7 @@
               <div class="id-card-hole"></div>
               
               <div class="back-title-header" id="backCompanyTitle">
-              S O P
+              
               </div>
 
               <div class="back-content-container">
@@ -786,8 +786,8 @@
     }
   };
 
-  const START_HOUR = 4;
-  const END_HOUR = 23;
+  const START_HOUR = 5;
+  const END_HOUR = 17;
   const LATE_HOUR = 9;
   const LATE_MINUTE = 30;
 
@@ -1027,7 +1027,7 @@
     const currentHour = now.getHours();
 
     if (currentHour < START_HOUR || currentHour >= END_HOUR) {
-      showStatus(`Absensi ditutup. Jam operasional 04.00 - 23.00 WIB.`, 'error');
+      showStatus(`Absensi ditutup. Jam operasional 04.00 - 17.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
