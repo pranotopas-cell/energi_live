@@ -1039,7 +1039,7 @@
     const currentHour = now.getHours();
 
     if (currentHour < START_HOUR || currentHour >= END_HOUR) {
-      showStatus(`Absensi ditutup. Jam operasional 04.00 - 23.00 WIB.`, 'error');
+      showStatus(`Absensi ditutup. Jam operasional 08.00 - 16.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
