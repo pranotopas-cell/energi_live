@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -16,7 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.js"></script>
   
   <!-- Library Face Recognition -->
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
   
   <style>
     :root {
@@ -111,20 +112,52 @@
       flex-shrink: 0;
     }
 
-    .id-card-wrapper {
+    /* FLIP CARD STYLES */
+    .id-card-flip-container {
+      perspective: 1000px;
       width: 210px;
       height: 335px;
+      flex-shrink: 0;
+    }
+
+    .id-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s ease-in-out;
+      transform-style: preserve-3d;
+    }
+
+    .id-card-flip-container.flipped .id-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .id-card-wrapper, .id-card-back-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
       background: var(--soft-card-bg);
       border-radius: 14px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.6);
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
-      flex-shrink: 0;
+    }
+
+    .id-card-back-wrapper {
+      transform: rotateY(180deg);
+      padding: 20px 10px 8px 10px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     /* Lubang Gantungan ID Card */
@@ -187,6 +220,7 @@
       margin-top: 2px;
       padding: 0 8px;
       color: #ffffff;
+      text-align: center;
     }
 
     .id-company-logo {
@@ -281,12 +315,10 @@
     }
 
     .id-details-table td { padding: 1px 0; }
-    /* Label dan Isi Tabel Dibuat Bold (Font Weight 800) */
     .id-details-table td.label { font-weight: 800; color: var(--soft-accent-blue); width: 38px; }
     .id-details-table td.separator { width: 6px; text-align: center; font-weight: 800; color: var(--soft-accent-blue); }
     .id-details-table td.value { font-weight: 800; color: var(--soft-text); word-break: break-all; }
 
-    /* Teks Semangat Kerja diganti warnanya menjadi hitam */
     .id-emp-quote {
       font-size: 7px;
       font-style: italic;
@@ -326,7 +358,6 @@
       display: inline-block;
     }
 
-    /* Style teks Join Date di pojok kanan bawah, teks berwarna merah */
     .id-join-date-box {
       font-size: 7.5px;
       font-weight: 800;
@@ -343,6 +374,75 @@
       clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 100%);
       z-index: 1;
       opacity: 0.8;
+    }
+
+    /* BELAKANG ID CARD (SOP & PERATURAN) */
+    .back-title-header {
+      font-size: 8px;
+      font-weight: 800;
+      color: var(--soft-accent-blue);
+      text-transform: uppercase;
+      border-bottom: 1.5px solid var(--soft-blue);
+      padding-bottom: 3px;
+      margin-bottom: 6px;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    .back-content-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .back-section-title {
+      font-size: 7px;
+      font-weight: 800;
+      color: var(--soft-accent-blue);
+      text-transform: uppercase;
+      background: var(--soft-bg-blue);
+      padding: 2px 4px;
+      border-left: 2,5px solid var(--soft-blue);
+      border-radius: 0 4px 4px 0;
+      letter-spacing: 0.2px;
+    }
+
+    .back-rules-list {
+      font-size: 6.5px;
+      color: var(--soft-text);
+      padding-left: 12px;
+      line-height: 1.35;
+    }
+
+    .back-rules-list li {
+      margin-bottom: 1.5px;
+      font-weight: 600;
+    }
+
+    .back-card-footer-wrapper {
+      margin-top: auto;
+      padding-top: 4px;
+      border-top: 1px dashed var(--border-color);
+      text-align: center;
+      width: 100%;
+    }
+
+    .back-card-footer {
+      font-size: 6px;
+      color: var(--soft-muted);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .back-slogan {
+      font-size: 7.5px;
+      font-weight: 800;
+      color: var(--soft-accent-blue);
+      text-transform: uppercase;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+      font-style: italic;
     }
 
     .camera-box { 
@@ -381,7 +481,6 @@
       box-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 0 9999px rgba(15, 23, 42, 0.65) !important;
     }
 
-    /* Elemen Angka Hitung Mundur di Tengah Oval Kamera */
     .countdown-text {
       font-size: 32px;
       font-weight: 800;
@@ -407,16 +506,26 @@
 
     .btn-side-record { 
       background-color: var(--soft-blue); 
-      height: 100px;
+      height: 70px;
       font-size: 11px;
+    }
+    .btn-side-flip { 
+      background-color: #6366f1; 
+      height: 70px;
+      font-size: 9px;
+      line-height: 1.2;
     }
     .btn-side-log { 
       background-color: var(--soft-accent-blue); 
-      height: 47px;
+      height: 70px;
+      font-size: 9px;
+      line-height: 1.2;
     }
     .btn-side-leave { 
       background-color: var(--warning); 
-      height: 47px;
+      height: 70px;
+      font-size: 9px;
+      line-height: 1.2;
     }
   </style>
 </head>
@@ -447,69 +556,124 @@
       <div class="id-card-layout-wrapper">
         <div class="side-action-col">
           <button id="scanBtn" class="btn btn-side-record" onclick="processAttendance()">Record</button>
+          <button id="flipBtn" class="btn btn-side-flip" onclick="toggleCardFlip()">Balik<br>Kartu</button>
         </div>
 
-        <div class="id-card-wrapper" id="idCardWrapper">
-          <!-- Lubang Tali Gantungan ID Card -->
-          <div class="id-card-hole"></div>
+        <!-- CONTAINER FLIP ID CARD -->
+        <div class="id-card-flip-container" id="idCardFlipContainer">
+          <div class="id-card-inner">
+            
+            <!-- DEPAN ID CARD -->
+            <div class="id-card-wrapper" id="idCardWrapper">
+              <div class="id-card-hole"></div>
 
-          <div class="id-card-top-bg-secondary"></div>
-          <div class="id-card-top-bg"></div>
+              <div class="id-card-top-bg-secondary"></div>
+              <div class="id-card-top-bg"></div>
 
-          <div class="id-card-top-bar">
-            <button class="btn-download-top" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
-            <button class="btn-logout-top" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
-          </div>
+              <div class="id-card-top-bar">
+                <button class="btn-download-top" data-html2canvas-ignore="true" onclick="downloadIDCard()">Download</button>
+                <button class="btn-logout-top" data-html2canvas-ignore="true" onclick="logout()">Keluar</button>
+              </div>
 
-          <div class="id-company-header">
-            <img id="cardCompanyLogo" class="id-company-logo" src="" alt="Logo PT" style="display: none;">
-            <div class="id-company-name" id="cardCompany">INVESTAMA KALIMANTAN ENERGI</div>
-            <div class="id-company-address" id="cardCompanyAddress">Jln. Ahmad Wongso Rt. 18 Pangkalan Bun</div>
-          </div>
+              <div class="id-company-header">
+                <img id="cardCompanyLogo" class="id-company-logo" src="" alt="Logo PT" style="display: none;">
+                <div class="id-company-name" id="cardCompany">INVESTAMA KALIMANTAN ENERGI</div>
+                <div class="id-company-address" id="cardCompanyAddress">Jln. Ahmad Wongso Rt. 18 Pangkalan Bun</div>
+              </div>
 
-          <div class="id-avatar-hex-wrapper">
-            <div class="id-avatar-hex-border"></div>
-            <img id="cardAvatar" class="id-avatar-hex" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
-          </div>
+              <div class="id-avatar-hex-wrapper">
+                <div class="id-avatar-hex-border"></div>
+                <img id="cardAvatar" class="id-avatar-hex" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Foto Profile">
+              </div>
 
-          <div class="id-card-content">
-            <div class="id-emp-name" id="cardName">YAYUK WIJAYANTI</div>
-            <div class="id-emp-role-badge" id="cardPosition">HEAD MARKETING</div>
+              <div class="id-card-content">
+                <div class="id-emp-name" id="cardName">YAYUK WIJAYANTI</div>
+                <div class="id-emp-role-badge" id="cardPosition">HEAD MARKETING</div>
 
-            <table class="id-details-table">
-              <tr>
-                <td class="label">ID NO</td>
-                <td class="separator">:</td>
-                <td class="value" id="cardEmpId">IKAEN-001-B50</td>
-              </tr>
-              <tr>
-                <td class="label">EMAIL</td>
-                <td class="separator">:</td>
-                <td class="value" id="cardEmail">yayuk.wijayanti@investamakalimantan.com</td>
-              </tr>
-              <tr>
-                <td class="label">PHONE</td>
-                <td class="separator">:</td>
-                <td class="value" id="cardPhone">085252761578</td>
-              </tr>
-              <tr>
-                <td class="label">BLOOD</td>
-                <td class="separator">:</td>
-                <td class="value" id="cardBloodType">A+ 🩸</td>
-              </tr>
-            </table>
+                <table class="id-details-table">
+                  <tr>
+                    <td class="label">ID NO</td>
+                    <td class="separator">:</td>
+                    <td class="value" id="cardEmpId">IKAEN-001-B50</td>
+                  </tr>
+                  <tr>
+                    <td class="label">EMAIL</td>
+                    <td class="separator">:</td>
+                    <td class="value" id="cardEmail">yayuk.dieselindo@gmai.com</td>
+                  </tr>
+                  <tr>
+                    <td class="label">PHONE</td>
+                    <td class="separator">:</td>
+                    <td class="value" id="cardPhone">085252761578</td>
+                  </tr>
+                  <tr>
+                    <td class="label">BLOOD</td>
+                    <td class="separator">:</td>
+                    <td class="value" id="cardBloodType">O 🩸</td>
+                  </tr>
+                </table>
 
-            <div class="id-emp-quote" id="cardQuote">"Fokus pada proses, hasil terbaik akan menyusul."</div>
+                <div class="id-emp-quote" id="cardQuote">"Fokus pada proses, hasil terbaik akan menyusul."</div>
 
-            <div class="id-card-footer">
-              <div id="cardQrCode" class="id-qrcode-wrapper"></div>
-              <div class="id-join-date-box">
-                JOIN DATE:<br><span id="cardJoinDate">01/02/2022</span>
+                <div class="id-card-footer">
+                  <div id="cardQrCode" class="id-qrcode-wrapper"></div>
+                  <div class="id-join-date-box">
+                    JOIN DATE:<br><span id="cardJoinDate">01/02/2022</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="id-card-bottom-decor"></div>
+            </div>
+
+            <!-- BELAKANG ID CARD (SOP & PERATURAN) -->
+            <div class="id-card-back-wrapper" id="idCardBackWrapper">
+              <div class="id-card-hole"></div>
+              
+              <div class="back-title-header" id="backCompanyTitle">
+              SOP PERUSAHAAN
+              </div>
+
+              <div class="back-content-container">
+                <div>
+                  <div class="back-section-title">SOP ABSENSI & KERJA</div>
+                  <ol class="back-rules-list">
+                    <li>Jam kerja operasional: 08.00 - 17.00 WIB.</li>
+                    <li>Wajib record presensi dengan deteksi wajah di lokasi kantor/workshop.</li>
+                    <li>Batas toleransi keterlambatan adalah jam 09.30 WIB.</li>
+                  </ol>
+                </div>
+
+                <div>
+                  <div class="back-section-title">TATA TERTIB PERUSAHAAN</div>
+                  <ul class="back-rules-list" style="list-style-type: disc;">
+                    <li>Wajib mengenakan seragam & ID Card resmi saat bertugas.</li>
+                    <li>Menjaga kerahasiaan data dan dokumen internal perusahaan.</li>
+                    <li>Menjaga integritas, profesionalisme, serta etika kerja.</li>
+                    <li>Mengutamakan K3 (Keselamatan & Kesehatan Kerja).</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <div class="back-section-title">KETENTUAN KARTU</div>
+                  <ul class="back-rules-list" style="list-style-type: circle;">
+                    <li>Kartu ini adalah milik sah perusahaan.</li>
+                    <li>Jika menemukan kartu ini, harap kembalikan ke bagian HRD / Operasional.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="back-card-footer-wrapper">
+                <div class="back-card-footer">
+                  Property of Company & bull; Strictly Confidential
+                </div>
+                <div class="back-slogan">
+                  Sinergi Mengalirkan Energi
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="id-card-bottom-decor"></div>
+          </div>
         </div>
 
         <div class="side-action-col">
@@ -643,11 +807,15 @@
   let faceDetectionInterval = null;
   let isModelsLoaded = false;
 
-  /* Variabel Pengontrol Auto-Record Countdown */
   let countdownTimer = null;
   let countdownVal = 3;
   let isCountingDown = false;
   let isProcessing = false;
+
+  function toggleCardFlip() {
+    const container = document.getElementById('idCardFlipContainer');
+    container.classList.toggle('flipped');
+  }
 
   function getRandomQuoteForUser(identifier) {
     let hash = 0;
@@ -680,15 +848,18 @@
 
   async function loadFaceApiModels() {
     try {
-      const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+      showStatus('Memuat model AI deteksi wajah...', 'info');
+      const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
       await Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
         faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
         faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
       ]);
       isModelsLoaded = true;
+      console.log("Model face-api berhasil dimuat.");
     } catch (err) {
-      console.warn("Gagal memuat model deteksi/pencocokan wajah:", err);
+      console.error("Gagal memuat model deteksi/pencocokan wajah:", err);
+      showStatus('Gagal memuat sistem deteksi wajah. Periksa koneksi internet.', 'error');
     }
   }
 
@@ -757,37 +928,23 @@
 
   async function checkTodayAttendanceFromSupabase(phone) {
     try {
-      // Format tanggal lokal (YYYY-MM-DD)
-      const now = new Date();
-      const localYear = now.getFullYear();
-      const localMonth = String(now.getMonth() + 1).padStart(2, '0');
-      const localDay = String(now.getDate()).padStart(2, '0');
-      const todayLocalDate = `${localYear}-${localMonth}-${localDay}`;
-
+      const todayDate = new Date().toISOString().split('T')[0];
       const { data, error } = await supabaseClient
         .from('attendances')
         .select('created_at, check_in_time')
         .eq('phone', phone)
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .gte('created_at', `${todayDate}T00:00:00.000Z`)
+        .lte('created_at', `${todayDate}T23:59:59.999Z`);
 
       if (error) throw error;
-
       if (data && data.length > 0) {
-        const lastRecordDate = new Date(data[0].created_at);
-        const recYear = lastRecordDate.getFullYear();
-        const recMonth = String(lastRecordDate.getMonth() + 1).padStart(2, '0');
-        const recDay = String(lastRecordDate.getDate()).padStart(2, '0');
-        const lastDateStr = `${recYear}-${recMonth}-${recDay}`;
-
-        if (lastDateStr === todayLocalDate) {
-          return { attended: true, time: data[0].check_in_time || '' };
-        }
+        return { attended: true, time: data[0].check_in_time || '' };
       }
       return { attended: false, time: '' };
     } catch (err) {
-      console.warn("Gagal mengecek status absensi:", err);
-      return { attended: false, time: '' };
+      const lastAbsenceDate = localStorage.getItem(`absent_date_${phone}`);
+      const isAttended = lastAbsenceDate === new Date().toISOString().split('T')[0];
+      return { attended: isAttended, time: '' };
     }
   }
 
@@ -841,6 +998,7 @@
     document.getElementById('cardEmail').textContent = userEmail;
     document.getElementById('cardBloodType').textContent = (currentUserData.blood || "A+") + " 🩸";
     document.getElementById('cardJoinDate').textContent = currentUserData.joinDate || "-";
+    document.getElementById('backCompanyTitle').textContent = `PERATURAN & SOP - ${companyName}`;
 
     const quote = getRandomQuoteForUser(currentUserData.empId || currentUserData.phone);
     document.getElementById('cardQuote').textContent = quote;
@@ -919,7 +1077,6 @@
     }
   }
 
-  /* Logika Deteksi Wajah + Auto-Record Countdown 3..2..1 */
   function startFaceDetection() {
     const video = document.getElementById('video');
     const overlay = document.getElementById('faceOverlay');
@@ -955,14 +1112,14 @@
 
           if (isCenterX && isCenterY && isGoodSize) {
             overlay.classList.add('face-valid');
-            startCountdown(); // Mulai hitung mundur otomatis
+            startCountdown();
           } else {
             overlay.classList.remove('face-valid');
-            cancelCountdown(); // Batalkan jika posisi terlepas
+            cancelCountdown();
           }
         } else {
           overlay.classList.remove('face-valid');
-          cancelCountdown(); // Batalkan jika wajah hilang
+          cancelCountdown();
         }
       } catch (err) {
         console.warn("Kesalahan deteksi wajah:", err);
@@ -987,7 +1144,7 @@
         showStatus(`Tahan posisi! Pengambilan gambar dalam ${countdownVal}...`, 'info');
       } else {
         cancelCountdown();
-        processAttendance(); // Eksekusi Record Otomatis!
+        processAttendance();
       }
     }, 1000);
   }
@@ -1013,7 +1170,6 @@
 
     const video = document.getElementById('video');
 
-    /* 1. VERIFIKASI WAJAH / PENCOCOKAN MEMORI NAMA */
     showStatus('Memverifikasi identitas wajah...', 'info');
 
     try {
@@ -1046,7 +1202,6 @@
         showStatus(`Memori awal wajah untuk nama ${currentUserData.name} berhasil disimpan.`, 'info');
       }
 
-      /* 2. PROSES FOTO & HAPUS BACKGROUND VIA AI */
       showStatus('Memotong background foto via AI...', 'info');
 
       const canvas = document.getElementById('canvas');
@@ -1062,10 +1217,8 @@
         let finalBlob = originalBlob;
 
         try {
-          if (window.imglyBackgroundRemoval) {
-            finalBlob = await window.imglyBackgroundRemoval.removeBackground(originalBlob, {
-              publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal-data@1.4.5/dist/"
-            });
+          if (window.imglyBackgroundRemoval && typeof window.imglyBackgroundRemoval.removeBackground === 'function') {
+            finalBlob = await window.imglyBackgroundRemoval.removeBackground(originalBlob);
           }
         } catch (err) {
           console.warn("Gagal memotong background, menggunakan foto awal:", err);
