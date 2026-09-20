@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Absensi</title>
+  <title>Dashboard Absensi & Performa</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS CDN -->
@@ -24,7 +24,7 @@
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </div>
         <h2 class="text-base font-bold text-slate-800">Akses Terkunci</h2>
-        <p class="text-[11px] text-slate-500"> Kata Sandi untuk melihat data absensi</p>
+        <p class="text-[11px] text-slate-500">Kata Sandi untuk melihat data absensi</p>
       </div>
 
       <form id="auth-form" onsubmit="unlockDashboard(event)" class="space-y-3">
@@ -42,7 +42,7 @@
 
   <!-- Dashboard Main Content (Hidden Until Unlocked) -->
   <div id="dashboard-content" class="hidden">
-    <!-- Top Header Navigation (Compact) -->
+    <!-- Top Header Navigation -->
     <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
       <div class="max-w-7xl mx-auto px-4 h-12 flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -50,7 +50,7 @@
             HR
           </div>
           <div>
-            <h1 class="text-xs font-semibold leading-none text-slate-100">Record Kehadiran</h1>
+            <h1 class="text-xs font-semibold leading-none text-slate-100">Record & Performa Kehadiran</h1>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -69,7 +69,7 @@
       </div>
     </header>
 
-    <!-- Main Container (Compact Padding & Elements) -->
+    <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 py-4 space-y-3">
 
       <!-- Control Bar & Filters -->
@@ -93,41 +93,101 @@
             </select>
           </div>
 
-          <!-- Date Picker (Hidden by Default) -->
+          <!-- Date Picker -->
           <div id="date-picker-wrapper" class="hidden flex items-center gap-1.5">
             <label for="filter-date" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tanggal:</label>
             <input type="date" id="filter-date" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-1 font-medium">
+          </div>
+
+          <!-- Dropdown Filter Karyawan -->
+          <div class="flex items-center gap-1.5 border-l border-slate-200 pl-3">
+            <label for="filter-user" class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Karyawan:</label>
+            <select id="filter-user" class="bg-indigo-50/50 border border-indigo-200 text-indigo-900 text-xs rounded p-1.5 font-semibold focus:ring-1 focus:ring-indigo-500">
+              <option value="ALL">-- Semua Karyawan --</option>
+            </select>
           </div>
         </div>
 
         <!-- Live Counter Badge -->
         <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded">
           <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span class="text-[11px] text-slate-500 font-medium">Total:</span>
+          <span class="text-[11px] text-slate-500 font-medium">Record Tampil:</span>
           <span id="record-count" class="font-bold text-slate-900 text-xs">0</span>
         </div>
 
       </div>
 
-      <!-- Data Table Container (Compact Design) -->
+      <!-- Resume Performa Karyawan (Cards Summary) -->
+      <div id="resume-container" class="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+          <div class="text-[10px] font-bold text-slate-400 uppercase">Hari Kerja Efektif</div>
+          <div id="stat-workdays" class="text-base font-extrabold text-slate-800 mt-0.5">0 Hari</div>
+          <div class="text-[9px] text-slate-400 mt-0.5">(Tdk termasuk Libur & Weekend)</div>
+        </div>
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
+          <div class="text-[10px] font-bold text-emerald-600 uppercase">Hadir Tepat Waktu</div>
+          <div id="stat-ontime" class="text-base font-extrabold text-emerald-700 mt-0.5">0</div>
+          <div class="text-[9px] text-emerald-600/80 mt-0.5">Presensi Normal</div>
+        </div>
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-rose-500">
+          <div class="text-[10px] font-bold text-rose-600 uppercase">Terlambat</div>
+          <div id="stat-late" class="text-base font-extrabold text-rose-700 mt-0.5">0</div>
+          <div class="text-[9px] text-rose-600/80 mt-0.5">Melebihi Batas Waktu</div>
+        </div>
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
+          <div class="text-[10px] font-bold text-amber-600 uppercase">Izin / Sakit</div>
+          <div id="stat-permission" class="text-base font-extrabold text-amber-700 mt-0.5">0</div>
+          <div class="text-[9px] text-amber-600/80 mt-0.5">Dengan Keterangan</div>
+        </div>
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-indigo-500 col-span-2 md:col-span-1">
+          <div class="text-[10px] font-bold text-indigo-600 uppercase">Rate Performa</div>
+          <div id="stat-rate" class="text-base font-extrabold text-indigo-700 mt-0.5">0%</div>
+          <div class="text-[9px] text-indigo-600/80 mt-0.5">Kehadiran Netto</div>
+        </div>
+      </div>
+
+      <!-- Panel Evaluasi & Penilaian Karyawan -->
+      <div id="grade-container" class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div id="grade-badge" class="w-12 h-12 rounded-full bg-slate-100 border-2 border-slate-300 flex items-center justify-center font-black text-xl text-slate-600 shadow-inner">
+            -
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-slate-800 text-xs">Evaluasi Kedisiplinan Karyawan</h3>
+              <span id="grade-label" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 uppercase">Belum Dihitung</span>
+            </div>
+            <p id="grade-desc" class="text-[11px] text-slate-500 mt-0.5">Pilih karyawan tertentu pada dropdown di atas untuk melihat rapor penilaian individu secara mendetail.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 border-t md:border-t-0 md:border-l border-slate-200 pt-2 md:pt-0 md:pl-4 w-full md:w-auto justify-between md:justify-end">
+          <div class="text-right">
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Rasio Ketepatan Waktu</div>
+            <div id="stat-punctuality" class="text-sm font-extrabold text-slate-700">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Table Container -->
       <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-[11px] text-slate-600">
             <thead class="bg-slate-800 border-b border-slate-700 uppercase text-[10px] font-bold text-slate-200 tracking-wider">
               <tr>
                 <th scope="col" class="px-3 py-2">Tanggal</th>
-                <th scope="col" class="px-3 py-2"> Nama & Jabatan</th>
+                <th scope="col" class="px-3 py-2">Nama & Jabatan</th>
                 <th scope="col" class="px-3 py-2">Perusahaan</th>
                 <th scope="col" class="px-3 py-2">Kontak</th>
                 <th scope="col" class="px-3 py-2">Lokasi Absen</th>
                 <th scope="col" class="px-3 py-2">Jam Absen</th>
                 <th scope="col" class="px-3 py-2">Status</th>
+                <th scope="col" class="px-3 py-2 text-center">Grade Hari Ini</th>
                 <th scope="col" class="px-3 py-2 text-center">Foto</th>
               </tr>
             </thead>
             <tbody id="table-body">
               <tr>
-                <td colspan="8" class="px-4 py-8 text-center text-slate-400">
+                <td colspan="9" class="px-4 py-8 text-center text-slate-400">
                   Memuat data dari Supabase...
                 </td>
               </tr>
@@ -153,7 +213,6 @@
   </div>
 
   <script>
-    // Set Password Dashboard di sini (Default: 123456)
     const DASHBOARD_PASSWORD = "admin";
 
     // Supabase Configuration
@@ -161,9 +220,10 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuYW10aWNrb3RleXZ5ZGF5eW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTU2MzksImV4cCI6MjA5MzQ3MTYzOX0.VAeN0JVnz4WNPzY5NTGmtGeHD-Da_qkCvy84ZDYZNHo";
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-    let currentData = [];
+    let rawFetchedData = [];
+    let currentFilteredData = [];
+    let nationalHolidays = [];
 
-    // Check Authentication state
     document.addEventListener("DOMContentLoaded", () => {
       if (sessionStorage.getItem("dashboard_unlocked") === "true") {
         showDashboard();
@@ -191,12 +251,27 @@
       document.getElementById("auth-password").value = "";
     }
 
-    function showDashboard() {
+    async function showDashboard() {
       document.getElementById("auth-modal").classList.add("hidden");
       document.getElementById("dashboard-content").classList.remove("hidden");
       setupMonthDropdown();
       setupEventListeners();
+      await fetchHolidays();
       fetchAttendances();
+    }
+
+    // Mengambil data libur nasional dari API
+    async function fetchHolidays() {
+      try {
+        const year = new Date().getFullYear();
+        const res = await fetch(`https://dayoff-api.vercel.app/api?year=${year}`);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          nationalHolidays = data.filter(item => item.is_holiday).map(item => item.holiday_date);
+        }
+      } catch (err) {
+        console.warn("Gagal memuat tanggal merah, hanya mengabaikan Sabtu/Minggu:", err);
+      }
     }
 
     function setupMonthDropdown() {
@@ -237,12 +312,13 @@
 
       document.getElementById("filter-month").addEventListener("change", fetchAttendances);
       document.getElementById("filter-date").addEventListener("change", fetchAttendances);
+      document.getElementById("filter-user").addEventListener("change", applyUserFilter);
       document.getElementById("btn-export").addEventListener("click", exportToCSV);
     }
 
     async function fetchAttendances() {
       const tbody = document.getElementById("table-body");
-      tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
 
       const mode = document.getElementById("filter-mode").value;
       let query = supabaseClient.from("attendances").select("*").order("created_at", { ascending: false });
@@ -266,12 +342,173 @@
 
       if (error) {
         console.error("Supabase Error:", error);
-        tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
         return;
       }
 
-      currentData = data || [];
-      renderTable(currentData);
+      rawFetchedData = data || [];
+      populateUserDropdown(rawFetchedData);
+      applyUserFilter();
+    }
+
+    // Mengisi pilihan Dropdown Karyawan
+    function populateUserDropdown(data) {
+      const userSelect = document.getElementById("filter-user");
+      const currentSelected = userSelect.value;
+      
+      const users = [...new Set(data.map(item => item.user_name).filter(Boolean))].sort();
+
+      userSelect.innerHTML = `<option value="ALL">-- Semua Karyawan (${users.length}) --</option>`;
+      users.forEach(user => {
+        const opt = document.createElement("option");
+        opt.value = user;
+        opt.textContent = user;
+        userSelect.appendChild(opt);
+      });
+
+      if (users.includes(currentSelected)) {
+        userSelect.value = currentSelected;
+      } else {
+        userSelect.value = "ALL";
+      }
+    }
+
+    // Filter Lokal Berdasarkan Karyawan
+    function applyUserFilter() {
+      const selectedUser = document.getElementById("filter-user").value;
+      
+      if (selectedUser === "ALL") {
+        currentFilteredData = rawFetchedData;
+      } else {
+        currentFilteredData = rawFetchedData.filter(item => item.user_name === selectedUser);
+      }
+
+      renderTable(currentFilteredData);
+      calculatePerformanceResume(currentFilteredData);
+    }
+
+    // Menghitung Hari Kerja Efektif (Abaikan Sabtu, Minggu, Tanggal Merah)
+    function getEffectiveWorkdays() {
+      const mode = document.getElementById("filter-mode").value;
+      let datesToCheck = [];
+
+      if (mode === "month") {
+        const monthVal = document.getElementById("filter-month").value;
+        const [year, month] = monthVal.split("-").map(Number);
+        const totalDays = new Date(year, month, 0).getDate();
+
+        for (let d = 1; d <= totalDays; d++) {
+          const dateObj = new Date(year, month - 1, d);
+          datesToCheck.push(dateObj);
+        }
+      } else {
+        const dateVal = document.getElementById("filter-date").value;
+        if (dateVal) {
+          datesToCheck.push(new Date(dateVal));
+        }
+      }
+
+      let effectiveDays = 0;
+      datesToCheck.forEach(d => {
+        const dayOfWeek = d.getDay(); // 0 = Minggu, 6 = Sabtu
+        const formattedStr = d.toISOString().split('T')[0];
+        
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+        const isNationalHoliday = nationalHolidays.includes(formattedStr);
+
+        if (!isWeekend && !isNationalHoliday) {
+          effectiveDays++;
+        }
+      });
+
+      return effectiveDays;
+    }
+
+    // Menghitung & Menampilkan Resume Performa Serta Penilaian Karyawan
+    function calculatePerformanceResume(data) {
+      const effectiveWorkdays = getEffectiveWorkdays();
+      let onTimeCount = 0;
+      let lateCount = 0;
+      let permissionCount = 0;
+
+      data.forEach(item => {
+        const st = (item.status || "HADIR").toUpperCase();
+        if (st.includes("TERLAMBAT") || st.includes("LATE")) {
+          lateCount++;
+        } else if (st.includes("IZIN") || st.includes("SAKIT")) {
+          permissionCount++;
+        } else {
+          onTimeCount++;
+        }
+      });
+
+      const totalPresensi = onTimeCount + lateCount;
+      const rate = effectiveWorkdays > 0 ? Math.round((totalPresensi / effectiveWorkdays) * 100) : 0;
+      const punctualityRate = totalPresensi > 0 ? Math.round((onTimeCount / totalPresensi) * 100) : 0;
+
+      document.getElementById("stat-workdays").textContent = `${effectiveWorkdays} Hari`;
+      document.getElementById("stat-ontime").textContent = onTimeCount;
+      document.getElementById("stat-late").textContent = lateCount;
+      document.getElementById("stat-permission").textContent = permissionCount;
+      document.getElementById("stat-rate").textContent = `${Math.min(rate, 100)}%`;
+      document.getElementById("stat-punctuality").textContent = `${punctualityRate}%`;
+
+      // Logika Penilaian Karyawan (Grading System)
+      evaluateEmployeeGrade(effectiveWorkdays, totalPresensi, onTimeCount, lateCount, rate);
+    }
+
+    function evaluateEmployeeGrade(effectiveWorkdays, totalPresensi, onTime, late, rate) {
+      const selectedUser = document.getElementById("filter-user").value;
+      const badgeEl = document.getElementById("grade-badge");
+      const labelEl = document.getElementById("grade-label");
+      const descEl = document.getElementById("grade-desc");
+
+      if (selectedUser === "ALL") {
+        badgeEl.textContent = "ALL";
+        badgeEl.className = "w-12 h-12 rounded-full bg-slate-100 border-2 border-slate-300 flex items-center justify-center font-bold text-xs text-slate-600 shadow-inner";
+        labelEl.textContent = "Overview Tim";
+        labelEl.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 uppercase";
+        descEl.textContent = "Pilih satu nama karyawan khusus pada filter untuk melihat nilai rapor individu beserta catatan kinerjanya.";
+        return;
+      }
+
+      let grade = "D";
+      let label = "Perlu Perhatian";
+      let badgeStyle = "bg-rose-100 border-rose-500 text-rose-700";
+      let labelStyle = "bg-rose-100 text-rose-700";
+      let desc = "";
+
+      if (rate >= 90 && late === 0) {
+        grade = "A";
+        label = "Sangat Baik / Istimewa";
+        badgeStyle = "bg-emerald-100 border-emerald-500 text-emerald-700";
+        labelStyle = "bg-emerald-100 text-emerald-700";
+        desc = `Kinerja presensi sangat memuaskan! Tingkat kehadiran mencapai ${rate}% tanpa pernah terlambat sekalipun bulan ini.`;
+      } else if (rate >= 80 && late <= 2) {
+        grade = "B";
+        label = "Baik";
+        badgeStyle = "bg-blue-100 border-blue-500 text-blue-700";
+        labelStyle = "bg-blue-100 text-blue-700";
+        desc = `Disiplin cukup konsisten. Kehadiran ${rate}% dengan keterlambatan minimal (${late} kali). Teruskan performa baik ini.`;
+      } else if (rate >= 70 && late <= 4) {
+        grade = "C";
+        label = "Cukup";
+        badgeStyle = "bg-amber-100 border-amber-500 text-amber-700";
+        labelStyle = "bg-amber-100 text-amber-700";
+        desc = `Memenuhi standar minimum. Terdapat keterlambatan sebanyak ${late} kali. Perlu peningkatan disiplin jam masuk kerja.`;
+      } else {
+        grade = "D";
+        label = "Kurang / Perlu Evaluasi";
+        badgeStyle = "bg-rose-100 border-rose-500 text-rose-700";
+        labelStyle = "bg-rose-100 text-rose-700";
+        desc = `Performa presensi rendah! Kehadiran (${rate}%) atau keterlambatan (${late} kali) tidak memenuhi batas wajar. Diperlukan konseling HR.`;
+      }
+
+      badgeEl.textContent = grade;
+      badgeEl.className = `w-12 h-12 rounded-full border-2 flex items-center justify-center font-black text-xl shadow-inner ${badgeStyle}`;
+      labelEl.textContent = label;
+      labelEl.className = `px-2 py-0.5 rounded text-[10px] font-bold uppercase ${labelStyle}`;
+      descEl.textContent = desc;
     }
 
     function renderTable(data) {
@@ -279,7 +516,7 @@
       document.getElementById("record-count").textContent = data.length;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
         return;
       }
 
@@ -287,31 +524,31 @@
       let isAltBg = false;
 
       tbody.innerHTML = data.map((item) => {
-        // Ekstrak Format Tanggal (YYYY-MM-DD)
         const dateObj = item.created_at ? new Date(item.created_at) : null;
         const formattedDate = dateObj ? dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
         const rawDateStr = dateObj ? dateObj.toISOString().split('T')[0] : '';
 
-        // Deteksi Pergantian Tanggal untuk Memberikan Pembatas Warna
         let borderClass = "border-t border-slate-200";
         if (rawDateStr !== currentDateGroup) {
           currentDateGroup = rawDateStr;
-          isAltBg = !isAltBg; // Ganti warna latar kelompok tanggal
-          borderClass = "border-t-2 border-indigo-500/50"; // Pembatas tebal antar tanggal
+          isAltBg = !isAltBg;
+          borderClass = "border-t-2 border-indigo-500/50";
         }
 
         const bgClass = isAltBg ? "bg-indigo-50/20" : "bg-white";
 
-        // Status Badge Styling
         const statusText = (item.status || "HADIR").toUpperCase();
         let statusBadgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        let dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px]">100 pts</span>';
+
         if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
           statusBadgeClass = "bg-rose-50 text-rose-700 border-rose-200";
+          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">-15 pts (Late)</span>';
         } else if (statusText.includes("IZIN") || statusText.includes("SAKIT")) {
           statusBadgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[9px]">Izin</span>';
         }
 
-        // Photo Link
         const photoHtml = item.photo_url 
           ? `<button onclick="openModal('${item.photo_url}')" class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded border border-indigo-200 transition">
               <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -335,6 +572,7 @@
                 ${statusText}
               </span>
             </td>
+            <td class="px-3 py-2 text-center whitespace-nowrap">${dailyGradeBadge}</td>
             <td class="px-3 py-2 text-center whitespace-nowrap">${photoHtml}</td>
           </tr>
         `;
@@ -352,13 +590,13 @@
     }
 
     function exportToCSV() {
-      if (!currentData || currentData.length === 0) {
+      if (!currentFilteredData || currentFilteredData.length === 0) {
         alert("Tidak ada data untuk di-export.");
         return;
       }
 
       const headers = ["Nama Pegawai", "Jabatan", "Perusahaan", "No Telepon", "Lokasi", "Waktu Absen", "Tanggal Created", "Status", "URL Foto"];
-      const rows = currentData.map(item => [
+      const rows = currentFilteredData.map(item => [
         `"${item.user_name || ''}"`,
         `"${item.position || ''}"`,
         `"${item.company_name || ''}"`,
