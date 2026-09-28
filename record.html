@@ -117,12 +117,12 @@
 
       </div>
 
-      <!-- Resume Performa Karyawan (Cards Summary) -->
-      <div id="resume-container" class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <!-- Resume Performa & Keuangan Karyawan (Cards Summary) -->
+      <div id="resume-container" class="grid grid-cols-2 md:grid-cols-6 gap-3">
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
           <div class="text-[10px] font-bold text-slate-400 uppercase">Hari Kerja Efektif</div>
           <div id="stat-workdays" class="text-base font-extrabold text-slate-800 mt-0.5">0 Hari</div>
-          <div class="text-[9px] text-slate-400 mt-0.5">(Tdk termasuk Libur & Weekend)</div>
+          <div class="text-[9px] text-slate-400 mt-0.5">(Senin-Sabtu, tdk tmasuk Minggu & Tgl Merah)</div>
         </div>
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
           <div class="text-[10px] font-bold text-emerald-600 uppercase">Hadir Tepat Waktu</div>
@@ -132,17 +132,22 @@
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-rose-500">
           <div class="text-[10px] font-bold text-rose-600 uppercase">Terlambat</div>
           <div id="stat-late" class="text-base font-extrabold text-rose-700 mt-0.5">0</div>
-          <div class="text-[9px] text-rose-600/80 mt-0.5">Melebihi Batas Waktu</div>
+          <div class="text-[9px] text-rose-600/80 mt-0.5">Potong 20% Uang Hadir</div>
         </div>
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
           <div class="text-[10px] font-bold text-amber-600 uppercase">Izin / Sakit</div>
           <div id="stat-permission" class="text-base font-extrabold text-amber-700 mt-0.5">0</div>
-          <div class="text-[9px] text-amber-600/80 mt-0.5">Dengan Keterangan</div>
+          <div class="text-[9px] text-amber-600/80 mt-0.5">Potong Rp 50.000</div>
         </div>
-        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-indigo-500 col-span-2 md:col-span-1">
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
           <div class="text-[10px] font-bold text-indigo-600 uppercase">Rate Performa</div>
           <div id="stat-rate" class="text-base font-extrabold text-indigo-700 mt-0.5">0%</div>
           <div class="text-[9px] text-indigo-600/80 mt-0.5">Kehadiran Netto</div>
+        </div>
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-teal-500 col-span-2 md:col-span-1">
+          <div class="text-[10px] font-bold text-teal-600 uppercase">Total Uang Hadir</div>
+          <div id="stat-allowance" class="text-base font-extrabold text-teal-700 mt-0.5">Rp 0</div>
+          <div class="text-[9px] text-teal-600/80 mt-0.5">70rb (Senin-Sabtu) / 100rb (Minggu/Merah)</div>
         </div>
       </div>
 
@@ -181,13 +186,14 @@
                 <th scope="col" class="px-3 py-2">Lokasi Absen</th>
                 <th scope="col" class="px-3 py-2">Jam Absen</th>
                 <th scope="col" class="px-3 py-2">Status</th>
+                <th scope="col" class="px-3 py-2 text-right">Uang Hadir</th>
                 <th scope="col" class="px-3 py-2 text-center">Grade Hari Ini</th>
                 <th scope="col" class="px-3 py-2 text-center">Foto</th>
               </tr>
             </thead>
             <tbody id="table-body">
               <tr>
-                <td colspan="9" class="px-4 py-8 text-center text-slate-400">
+                <td colspan="10" class="px-4 py-8 text-center text-slate-400">
                   Memuat data dari Supabase...
                 </td>
               </tr>
@@ -270,7 +276,7 @@
           nationalHolidays = data.filter(item => item.is_holiday).map(item => item.holiday_date);
         }
       } catch (err) {
-        console.warn("Gagal memuat tanggal merah, hanya mengabaikan Sabtu/Minggu:", err);
+        console.warn("Gagal memuat tanggal merah, hanya mengabaikan Hari Minggu:", err);
       }
     }
 
@@ -318,7 +324,7 @@
 
     async function fetchAttendances() {
       const tbody = document.getElementById("table-body");
-      tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
 
       const mode = document.getElementById("filter-mode").value;
       let query = supabaseClient.from("attendances").select("*").order("created_at", { ascending: false });
@@ -342,7 +348,7 @@
 
       if (error) {
         console.error("Supabase Error:", error);
-        tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
         return;
       }
 
@@ -387,7 +393,7 @@
       calculatePerformanceResume(currentFilteredData);
     }
 
-    // Menghitung Hari Kerja Efektif (Abaikan Sabtu, Minggu, Tanggal Merah)
+    // Menghitung Hari Kerja Efektif (Senin - Sabtu; Hanya Minggu dan Tanggal Merah yang libur)
     function getEffectiveWorkdays() {
       const mode = document.getElementById("filter-mode").value;
       let datesToCheck = [];
@@ -410,18 +416,60 @@
 
       let effectiveDays = 0;
       datesToCheck.forEach(d => {
-        const dayOfWeek = d.getDay(); // 0 = Minggu, 6 = Sabtu
+        const dayOfWeek = d.getDay(); // 0 = Minggu
         const formattedStr = d.toISOString().split('T')[0];
         
-        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+        const isSunday = (dayOfWeek === 0);
         const isNationalHoliday = nationalHolidays.includes(formattedStr);
 
-        if (!isWeekend && !isNationalHoliday) {
+        // Hanya Minggu dan Tanggal Merah yang libur
+        if (!isSunday && !isNationalHoliday) {
           effectiveDays++;
         }
       });
 
       return effectiveDays;
+    }
+
+    // Menentukan nominal Uang Hadir per Record
+    // Base: Rp 70.000 (Senin-Sabtu biasa) / Rp 100.000 (Minggu/Tanggal Merah)
+    // Potongan Izin: Potong Rp 50.000
+    // Potongan Terlambat: Potong 20%
+    function calculateDailyAllowance(item) {
+      const statusText = (item.status || "HADIR").toUpperCase();
+
+      // Kasus Alpha: tidak dapat uang hadir
+      if (statusText.includes("ALPHA")) {
+        return 0;
+      }
+
+      const dateObj = item.created_at ? new Date(item.created_at) : null;
+      let baseAllowance = 70000;
+
+      if (dateObj) {
+        const dayOfWeek = dateObj.getDay(); // 0 = Minggu
+        const formattedDate = dateObj.toISOString().split('T')[0];
+
+        const isSunday = (dayOfWeek === 0);
+        const isRedDate = nationalHolidays.includes(formattedDate);
+
+        // Minggu atau tanggal merah mendapat base Rp 100.000
+        if (isSunday || isRedDate) {
+          baseAllowance = 100000;
+        }
+      }
+
+      // Potongan Izin / Sakit : Potong Rp 50.000
+      if (statusText.includes("IZIN") || statusText.includes("SAKIT")) {
+        return Math.max(0, baseAllowance - 50000);
+      }
+
+      // Potongan Terlambat : Potong 20% (sisa 80%)
+      if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
+        return Math.round(baseAllowance * 0.8);
+      }
+
+      return baseAllowance;
     }
 
     // Menghitung & Menampilkan Resume Performa Serta Penilaian Karyawan
@@ -430,6 +478,7 @@
       let onTimeCount = 0;
       let lateCount = 0;
       let permissionCount = 0;
+      let totalAllowance = 0;
 
       data.forEach(item => {
         const st = (item.status || "HADIR").toUpperCase();
@@ -440,6 +489,8 @@
         } else {
           onTimeCount++;
         }
+
+        totalAllowance += calculateDailyAllowance(item);
       });
 
       const totalPresensi = onTimeCount + lateCount;
@@ -452,6 +503,7 @@
       document.getElementById("stat-permission").textContent = permissionCount;
       document.getElementById("stat-rate").textContent = `${Math.min(rate, 100)}%`;
       document.getElementById("stat-punctuality").textContent = `${punctualityRate}%`;
+      document.getElementById("stat-allowance").textContent = `Rp ${totalAllowance.toLocaleString('id-ID')}`;
 
       // Logika Penilaian Karyawan (Grading System)
       evaluateEmployeeGrade(effectiveWorkdays, totalPresensi, onTimeCount, lateCount, rate);
@@ -516,7 +568,7 @@
       document.getElementById("record-count").textContent = data.length;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
         return;
       }
 
@@ -543,10 +595,24 @@
 
         if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
           statusBadgeClass = "bg-rose-50 text-rose-700 border-rose-200";
-          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">-15 pts (Late)</span>';
+          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">-20% (Late)</span>';
         } else if (statusText.includes("IZIN") || statusText.includes("SAKIT")) {
           statusBadgeClass = "bg-amber-50 text-amber-700 border-amber-200";
-          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[9px]">Izin</span>';
+          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[9px]">-50rb (Izin)</span>';
+        }
+
+        // Hitung Uang Hadir
+        const allowance = calculateDailyAllowance(item);
+        const allowanceText = allowance > 0 ? `Rp ${allowance.toLocaleString('id-ID')}` : 'Rp 0';
+        
+        let allowanceBadge = `<span class="font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">${allowanceText}</span>`;
+        
+        if (dateObj) {
+          const isSunday = (dateObj.getDay() === 0);
+          const isRedDate = nationalHolidays.includes(rawDateStr);
+          if (isSunday || isRedDate) {
+            allowanceBadge = `<span class="font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">${allowanceText} (Merah/Minggu)</span>`;
+          }
         }
 
         const photoHtml = item.photo_url 
@@ -572,6 +638,7 @@
                 ${statusText}
               </span>
             </td>
+            <td class="px-3 py-2 text-right whitespace-nowrap font-mono">${allowanceBadge}</td>
             <td class="px-3 py-2 text-center whitespace-nowrap">${dailyGradeBadge}</td>
             <td class="px-3 py-2 text-center whitespace-nowrap">${photoHtml}</td>
           </tr>
@@ -595,7 +662,7 @@
         return;
       }
 
-      const headers = ["Nama Pegawai", "Jabatan", "Perusahaan", "No Telepon", "Lokasi", "Waktu Absen", "Tanggal Created", "Status", "URL Foto"];
+      const headers = ["Nama Pegawai", "Jabatan", "Perusahaan", "No Telepon", "Lokasi", "Waktu Absen", "Tanggal Created", "Status", "Uang Hadir (Rp)", "URL Foto"];
       const rows = currentFilteredData.map(item => [
         `"${item.user_name || ''}"`,
         `"${item.position || ''}"`,
@@ -605,6 +672,7 @@
         `"${item.check_in_time || ''}"`,
         `"${item.created_at || ''}"`,
         `"${item.status || ''}"`,
+        `"${calculateDailyAllowance(item)}"`,
         `"${item.photo_url || ''}"`
       ]);
 
