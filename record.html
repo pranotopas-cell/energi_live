@@ -132,12 +132,12 @@
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-rose-500">
           <div class="text-[10px] font-bold text-rose-600 uppercase">Terlambat</div>
           <div id="stat-late" class="text-base font-extrabold text-rose-700 mt-0.5">0</div>
-          <div class="text-[9px] text-rose-600/80 mt-0.5">Potong 20% Uang Hadir</div>
+          <div class="text-[9px] text-rose-600/80 mt-0.5">Approve: Normal | Non-Approve: Potong 20%</div>
         </div>
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
-          <div class="text-[10px] font-bold text-amber-600 uppercase">Izin / Sakit</div>
+          <div class="text-[10px] font-bold text-amber-600 uppercase">Izin / Sakit / Dinas</div>
           <div id="stat-permission" class="text-base font-extrabold text-amber-700 mt-0.5">0</div>
-          <div class="text-[9px] text-amber-600/80 mt-0.5">Potong Rp 50.000</div>
+          <div class="text-[9px] text-amber-600/80 mt-0.5">Approve: Normal | Non-Approve: Dipotong</div>
         </div>
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
           <div class="text-[10px] font-bold text-indigo-600 uppercase">Rate Performa</div>
@@ -179,21 +179,22 @@
           <table class="w-full text-left text-[11px] text-slate-600">
             <thead class="bg-slate-800 border-b border-slate-700 uppercase text-[10px] font-bold text-slate-200 tracking-wider">
               <tr>
-                <th scope="col" class="px-3 py-2">Tanggal</th>
-                <th scope="col" class="px-3 py-2">Nama & Jabatan</th>
-                <th scope="col" class="px-3 py-2">Perusahaan</th>
-                <th scope="col" class="px-3 py-2">Kontak</th>
-                <th scope="col" class="px-3 py-2">Lokasi Absen</th>
-                <th scope="col" class="px-3 py-2">Jam Absen</th>
-                <th scope="col" class="px-3 py-2">Status</th>
-                <th scope="col" class="px-3 py-2 text-right">Uang Hadir</th>
-                <th scope="col" class="px-3 py-2 text-center">Grade Hari Ini</th>
-                <th scope="col" class="px-3 py-2 text-center">Foto</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Tanggal</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Nama & Jabatan</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Perusahaan</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Kontak</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Lokasi Absen</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Jam Absen</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap">Status (Klik Alasan)</th>
+                <th scope="col" class="px-3 py-2 whitespace-nowrap text-center">Approval</th>
+                <th scope="col" class="px-3 py-2 text-right whitespace-nowrap">Uang Hadir</th>
+                <th scope="col" class="px-3 py-2 text-center whitespace-nowrap">Grade Hari Ini</th>
+                <th scope="col" class="px-3 py-2 text-center whitespace-nowrap">Foto</th>
               </tr>
             </thead>
             <tbody id="table-body">
               <tr>
-                <td colspan="10" class="px-4 py-8 text-center text-slate-400">
+                <td colspan="11" class="px-4 py-8 text-center text-slate-400">
                   Memuat data dari Supabase...
                 </td>
               </tr>
@@ -214,6 +215,44 @@
       </div>
       <div class="overflow-hidden rounded bg-slate-100 flex items-center justify-center min-h-[200px]">
         <img id="modal-img" src="" alt="Bukti Absensi" class="max-h-[60vh] w-auto object-contain">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detail Alasan Izin / Terlambat -->
+  <div id="reason-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4 relative border border-slate-200">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span id="reason-modal-badge" class="px-2 py-0.5 rounded text-[10px] font-bold border">STATUS</span>
+          <h3 class="text-xs font-bold text-slate-800">Detail Alasan Presensi</h3>
+        </div>
+        <button onclick="closeReasonModal()" class="text-slate-400 hover:text-slate-600 text-base font-bold">&times;</button>
+      </div>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Karyawan</label>
+          <p id="reason-modal-user" class="text-xs font-semibold text-slate-800">-</p>
+        </div>
+        
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Keterangan / Alasan</label>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-xs mt-1 leading-relaxed whitespace-pre-wrap min-h-[60px]" id="reason-modal-text">
+            Tidak ada alasan/keterangan tertulis.
+          </div>
+        </div>
+
+        <div id="reason-modal-status-info" class="p-2.5 rounded-lg bg-indigo-50 border border-indigo-100 text-[11px] text-indigo-900 flex items-start gap-2">
+          <svg class="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span id="reason-modal-note">Status approval mempengaruhi nominal Uang Hadir.</span>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeReasonModal()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium px-4 py-1.5 rounded-lg text-xs transition">
+          Tutup
+        </button>
       </div>
     </div>
   </div>
@@ -324,7 +363,7 @@
 
     async function fetchAttendances() {
       const tbody = document.getElementById("table-body");
-      tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-slate-400">Memuat data dari Supabase...</td></tr>`;
 
       const mode = document.getElementById("filter-mode").value;
       let query = supabaseClient.from("attendances").select("*").order("created_at", { ascending: false });
@@ -348,7 +387,7 @@
 
       if (error) {
         console.error("Supabase Error:", error);
-        tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-rose-500 font-medium">Gagal memuat data: ${error.message}</td></tr>`;
         return;
       }
 
@@ -432,13 +471,15 @@
     }
 
     // Menentukan nominal Uang Hadir per Record
-    // Base: Rp 70.000 (Senin-Sabtu biasa) / Rp 100.000 (Minggu/Tanggal Merah)
-    // Potongan Izin: Potong Rp 50.000
-    // Potongan Terlambat: Potong 20%
+    // UPDATE ATURAN BARU:
+    // 1. Izin / Sakit / Dinas Luar yang DI-APPROVE -> Dapat Uang Hadir Normal.
+    // 2. Terlambat yang DI-APPROVE -> Dapat Uang Hadir Normal (tidak dipotong 20%).
+    // 3. Izin / Terlambat yang TIDAK DI-APPROVE -> Tetap Kepotong.
     function calculateDailyAllowance(item) {
       const statusText = (item.status || "HADIR").toUpperCase();
+      const isApproved = item.is_approved === true || item.approval_status === "APPROVED";
 
-      // Kasus Alpha: tidak dapat uang hadir
+      // Kasus Alpha -> Tetap Rp 0
       if (statusText.includes("ALPHA")) {
         return 0;
       }
@@ -459,13 +500,23 @@
         }
       }
 
-      // Potongan Izin / Sakit : Potong Rp 50.000
-      if (statusText.includes("IZIN") || statusText.includes("SAKIT")) {
-        return Math.max(0, baseAllowance - 50000);
+      const isPermissionOrOutstation = statusText.includes("IZIN") || statusText.includes("SAKIT") || statusText.includes("DINAS");
+      const isLate = statusText.includes("TERLAMBAT") || statusText.includes("LATE");
+
+      // 1. Apabila di-APPROVE oleh Atasan/HR
+      if (isApproved) {
+        // Izin / Sakit / Terlambat yang di-approve -> Dapat Uang Hadir Normal Full
+        return baseAllowance;
       }
 
-      // Potongan Terlambat : Potong 20% (sisa 80%)
-      if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
+      // 2. Apabila TIDAK di-approve (Pending/Rejected)
+      if (isPermissionOrOutstation) {
+        // Izin tidak di-approve -> Kepotong Habis (Rp 0)
+        return 0;
+      }
+
+      if (isLate) {
+        // Terlambat tidak di-approve -> Kepotong 20% (Sisa 80%)
         return Math.round(baseAllowance * 0.8);
       }
 
@@ -484,7 +535,7 @@
         const st = (item.status || "HADIR").toUpperCase();
         if (st.includes("TERLAMBAT") || st.includes("LATE")) {
           lateCount++;
-        } else if (st.includes("IZIN") || st.includes("SAKIT")) {
+        } else if (st.includes("IZIN") || st.includes("SAKIT") || st.includes("DINAS")) {
           permissionCount++;
         } else {
           onTimeCount++;
@@ -563,12 +614,60 @@
       descEl.textContent = desc;
     }
 
+    // Fungsi Toggle Approval Status Lokal untuk Simulasi / Update
+    function toggleApproval(id, status) {
+      const item = rawFetchedData.find(d => d.id === id);
+      if (item) {
+        item.is_approved = (status === 'APPROVED');
+        item.approval_status = status;
+        applyUserFilter();
+      }
+    }
+
+    // Fungsi Membuka Modal Detail Alasan Izin/Terlambat
+    function showReasonModal(id) {
+      const item = rawFetchedData.find(d => d.id === id);
+      if (!item) return;
+
+      const statusText = (item.status || "HADIR").toUpperCase();
+      const isApproved = item.is_approved === true || item.approval_status === "APPROVED";
+      const reasonText = item.reason || item.keterangan || item.notes || item.description || "Tidak ada alasan tertulis yang diinputkan.";
+
+      const badgeEl = document.getElementById("reason-modal-badge");
+      const userEl = document.getElementById("reason-modal-user");
+      const textEl = document.getElementById("reason-modal-text");
+      const noteEl = document.getElementById("reason-modal-note");
+
+      userEl.textContent = `${item.user_name || '-'} (${item.position || '-'})`;
+      textEl.textContent = reasonText;
+
+      if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
+        badgeEl.textContent = "TERLAMBAT";
+        badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-300";
+        noteEl.textContent = isApproved 
+          ? "Status: APPROVED. Keterlambatan dimaklumi, Uang Hadir cair normal (Utuh)." 
+          : "Status: BELUM/TIDAK APPROVED. Keterlambatan dipotong 20% dari Uang Hadir.";
+      } else {
+        badgeEl.textContent = statusText;
+        badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300";
+        noteEl.textContent = isApproved 
+          ? "Status: APPROVED. Pengajuan Izin/Dinas disetujui, Uang Hadir cair normal." 
+          : "Status: BELUM/TIDAK APPROVED. Pengajuan belum disetujui, Uang Hadir dipotong (Rp 0).";
+      }
+
+      document.getElementById("reason-modal").classList.remove("hidden");
+    }
+
+    function closeReasonModal() {
+      document.getElementById("reason-modal").classList.add("hidden");
+    }
+
     function renderTable(data) {
       const tbody = document.getElementById("table-body");
       document.getElementById("record-count").textContent = data.length;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-slate-400">Tidak ada record absensi ditemukan.</td></tr>`;
         return;
       }
 
@@ -590,28 +689,83 @@
         const bgClass = isAltBg ? "bg-indigo-50/20" : "bg-white";
 
         const statusText = (item.status || "HADIR").toUpperCase();
+        const isPermissionOrOutstation = statusText.includes("IZIN") || statusText.includes("SAKIT") || statusText.includes("DINAS");
+        const isLate = statusText.includes("TERLAMBAT") || statusText.includes("LATE");
+        const isApproved = item.is_approved === true || item.approval_status === "APPROVED";
+
+        // Desain Badge Status yang Diringkas & Dapat Diklik untuk Alasan
         let statusBadgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        let shortStatusText = statusText;
+        let isClickableReason = false;
+
+        if (isLate) {
+          statusBadgeClass = "bg-rose-50 text-rose-700 border-rose-200 cursor-pointer hover:bg-rose-100 hover:scale-105 transition-transform shadow-xs";
+          shortStatusText = "TERLAMBAT 💬";
+          isClickableReason = true;
+        } else if (statusText.includes("IZIN")) {
+          statusBadgeClass = "bg-amber-50 text-amber-700 border-amber-200 cursor-pointer hover:bg-amber-100 hover:scale-105 transition-transform shadow-xs";
+          shortStatusText = "IZIN 💬";
+          isClickableReason = true;
+        } else if (statusText.includes("SAKIT")) {
+          statusBadgeClass = "bg-amber-50 text-amber-700 border-amber-200 cursor-pointer hover:bg-amber-100 hover:scale-105 transition-transform shadow-xs";
+          shortStatusText = "SAKIT 💬";
+          isClickableReason = true;
+        } else if (statusText.includes("DINAS")) {
+          statusBadgeClass = "bg-indigo-50 text-indigo-700 border-indigo-200 cursor-pointer hover:bg-indigo-100 hover:scale-105 transition-transform shadow-xs";
+          shortStatusText = "DINAS LUAR 💬";
+          isClickableReason = true;
+        }
+
+        const clickAction = isClickableReason ? `onclick="showReasonModal(${item.id})"` : '';
+
+        // Tampilan Kolom Approval & Grade Status
+        let approvalColumn = `<span class="text-slate-400 text-[10px] font-medium">-</span>`;
         let dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px]">100 pts</span>';
 
-        if (statusText.includes("TERLAMBAT") || statusText.includes("LATE")) {
-          statusBadgeClass = "bg-rose-50 text-rose-700 border-rose-200";
-          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">-20% (Late)</span>';
-        } else if (statusText.includes("IZIN") || statusText.includes("SAKIT")) {
-          statusBadgeClass = "bg-amber-50 text-amber-700 border-amber-200";
-          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[9px]">-50rb (Izin)</span>';
+        if (isPermissionOrOutstation || isLate) {
+          if (isApproved) {
+            approvalColumn = `
+              <div class="flex items-center justify-center gap-1">
+                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-[9px] rounded-full inline-flex items-center gap-0.5">
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                  Approved
+                </span>
+                <button onclick="toggleApproval(${item.id}, 'REJECTED')" class="text-[9px] text-slate-400 hover:text-rose-600 underline ml-1" title="Batalkan Approval">Ubah</button>
+              </div>`;
+            
+            dailyGradeBadge = isLate 
+              ? '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px]">Normal (Approved)</span>'
+              : '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px]">Normal (Approved)</span>';
+          } else {
+            approvalColumn = `
+              <div class="flex items-center justify-center gap-1">
+                <button onclick="toggleApproval(${item.id}, 'APPROVED')" class="px-1.5 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[9px] rounded transition shadow-xs">
+                  Approve
+                </button>
+                <button onclick="toggleApproval(${item.id}, 'REJECTED')" class="px-1.5 py-0.5 bg-slate-200 hover:bg-rose-100 text-slate-700 hover:text-rose-700 font-bold text-[9px] rounded transition">
+                  Tolak
+                </button>
+              </div>`;
+            
+            dailyGradeBadge = isLate 
+              ? '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">-20% (Late)</span>'
+              : '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">Gaji Potong (Unapproved)</span>';
+          }
         }
 
         // Hitung Uang Hadir
         const allowance = calculateDailyAllowance(item);
         const allowanceText = allowance > 0 ? `Rp ${allowance.toLocaleString('id-ID')}` : 'Rp 0';
         
-        let allowanceBadge = `<span class="font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">${allowanceText}</span>`;
+        let allowanceBadge = allowance > 0 
+          ? `<span class="font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">${allowanceText}</span>`
+          : `<span class="font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">${allowanceText}</span>`;
         
-        if (dateObj) {
+        if (dateObj && allowance > 0) {
           const isSunday = (dateObj.getDay() === 0);
           const isRedDate = nationalHolidays.includes(rawDateStr);
           if (isSunday || isRedDate) {
-            allowanceBadge = `<span class="font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">${allowanceText} (Merah/Minggu)</span>`;
+            allowanceBadge = `<span class="font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">${allowanceText} (Merah)</span>`;
           }
         }
 
@@ -625,19 +779,27 @@
         return `
           <tr class="${bgClass} ${borderClass} hover:bg-slate-100/80 transition">
             <td class="px-3 py-2 font-semibold text-slate-700 whitespace-nowrap">${formattedDate}</td>
-            <td class="px-3 py-2">
-              <div class="font-bold text-slate-900">${item.user_name || '-'}</div>
-              <div class="text-[10px] text-slate-500 font-normal">${item.position || '-'}</div>
+            <td class="px-3 py-2 max-w-[140px] truncate">
+              <div class="font-bold text-slate-900 truncate" title="${item.user_name || '-'}">${item.user_name || '-'}</div>
+              <div class="text-[10px] text-slate-500 font-normal truncate" title="${item.position || '-'}">${item.position || '-'}</div>
             </td>
-            <td class="px-3 py-2 text-slate-700 font-medium">${item.company_name || '-'}</td>
-            <td class="px-3 py-2 font-mono text-[10px] text-slate-600">${item.phone || '-'}</td>
-            <td class="px-3 py-2 text-slate-600">${item.location_name || '-'}</td>
+            <td class="px-3 py-2 text-slate-700 font-medium max-w-[120px] truncate" title="${item.company_name || '-'}">${item.company_name || '-'}</td>
+            <td class="px-3 py-2 font-mono text-[10px] text-slate-600 whitespace-nowrap">${item.phone || '-'}</td>
+            <td class="px-3 py-2 text-slate-600 max-w-[130px] truncate" title="${item.location_name || '-'}">${item.location_name || '-'}</td>
             <td class="px-3 py-2 whitespace-nowrap font-medium text-slate-800">${item.check_in_time || '-'}</td>
+            
+            <!-- Kolom Status (Klik untuk lihat Alasan) -->
             <td class="px-3 py-2 whitespace-nowrap">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border ${statusBadgeClass}">
-                ${statusText}
+              <span ${clickAction} class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${statusBadgeClass} max-w-[120px] truncate" title="${isClickableReason ? 'Klik untuk melihat alasan' : statusText}">
+                ${shortStatusText}
               </span>
             </td>
+
+            <!-- Kolom Approval -->
+            <td class="px-3 py-2 text-center whitespace-nowrap">
+              ${approvalColumn}
+            </td>
+
             <td class="px-3 py-2 text-right whitespace-nowrap font-mono">${allowanceBadge}</td>
             <td class="px-3 py-2 text-center whitespace-nowrap">${dailyGradeBadge}</td>
             <td class="px-3 py-2 text-center whitespace-nowrap">${photoHtml}</td>
@@ -662,7 +824,7 @@
         return;
       }
 
-      const headers = ["Nama Pegawai", "Jabatan", "Perusahaan", "No Telepon", "Lokasi", "Waktu Absen", "Tanggal Created", "Status", "Uang Hadir (Rp)", "URL Foto"];
+      const headers = ["Nama Pegawai", "Jabatan", "Perusahaan", "No Telepon", "Lokasi", "Waktu Absen", "Tanggal Created", "Status", "Alasan", "Approval", "Uang Hadir (Rp)", "URL Foto"];
       const rows = currentFilteredData.map(item => [
         `"${item.user_name || ''}"`,
         `"${item.position || ''}"`,
@@ -672,6 +834,8 @@
         `"${item.check_in_time || ''}"`,
         `"${item.created_at || ''}"`,
         `"${item.status || ''}"`,
+        `"${(item.reason || item.keterangan || '').replace(/"/g, '""')}"`,
+        `"${item.is_approved ? 'APPROVED' : 'PENDING/REJECTED'}"`,
         `"${calculateDailyAllowance(item)}"`,
         `"${item.photo_url || ''}"`
       ]);
