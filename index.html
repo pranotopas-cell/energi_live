@@ -358,13 +358,15 @@
       display: inline-block;
     }
 
+    /* Penyesuaian Ukuran & Kerapian Teks Join Date */
     .id-join-date-box {
-      font-size: 7.5px;
+      font-size: 6.5px;
       font-weight: 800;
       color: #dc2626;
       text-align: right;
-      line-height: 1.2;
+      line-height: 1.1;
       margin-bottom: 2px;
+      letter-spacing: -0.2px;
     }
 
     .id-card-bottom-decor {
@@ -532,11 +534,17 @@
       font-size: 9px;
       line-height: 1.2;
     }
+    .btn-side-duty { 
+      background-color: #0284c7; 
+      height: 32px;
+      font-size: 8.5px;
+      line-height: 1.1;
+    }
     .btn-side-leave { 
       background-color: var(--warning); 
-      height: 70px;
-      font-size: 9px;
-      line-height: 1.2;
+      height: 32px;
+      font-size: 8.5px;
+      line-height: 1.1;
     }
   </style>
 </head>
@@ -677,7 +685,7 @@
 
               <div class="back-card-footer-wrapper">
                 <div class="back-card-footer">
-                  Property of Company & bull; Strictly Confidential
+                  Property of Company &bull; Strictly Confidential
                 </div>
                 <div class="back-slogan">
                   Sinergi Mengalirkan Energi
@@ -690,6 +698,7 @@
 
         <div class="side-action-col">
           <a href="record.html" class="btn btn-side-log">Record Log</a>
+          <button class="btn btn-side-duty" onclick="handleDutyPermission()">Dinas Luar</button>
           <button class="btn btn-side-leave" onclick="handleLeavePermission()">Izin</button>
         </div>
       </div>
@@ -820,7 +829,7 @@
   let isModelsLoaded = false;
 
   let countdownTimer = null;
-  let countdownVal = 3;
+  let countdownVal = 1;
   let isCountingDown = false;
   let isProcessing = false;
 
@@ -1139,26 +1148,26 @@
     }, 200);
   }
 
+  /* Dipercepat: Pengambilan foto otomatis dipercepat menjadi 1 detik (interval 500ms) */
   function startCountdown() {
     if (isCountingDown || isProcessing) return;
     isCountingDown = true;
-    countdownVal = 3;
+    countdownVal = 1;
 
     const countText = document.getElementById('countdownText');
     countText.style.display = 'block';
     countText.textContent = countdownVal;
-    showStatus(`Tahan posisi! Pengambilan gambar dalam ${countdownVal}...`, 'info');
+    showStatus(`Posisi pas! Mengambil foto...`, 'info');
 
     countdownTimer = setInterval(() => {
       countdownVal--;
       if (countdownVal > 0) {
         countText.textContent = countdownVal;
-        showStatus(`Tahan posisi! Pengambilan gambar dalam ${countdownVal}...`, 'info');
       } else {
         cancelCountdown();
         processAttendance();
       }
-    }, 1000);
+    }, 500);
   }
 
   function cancelCountdown() {
@@ -1310,6 +1319,42 @@
       showStatus('Gagal memproses verifikasi wajah.', 'error');
       scanBtn.disabled = false;
       isProcessing = false;
+    }
+  }
+
+  async function handleDutyPermission() {
+    const destination = prompt("Masukkan tujuan / keperluan Dinas Luar (Contoh: Kunjungan Klien / Meeting Luar):");
+    if (!destination) return;
+
+    showStatus('Mengirim permohonan dinas luar...', 'info');
+    const now = new Date();
+    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+    const companyName = currentUserData.pt || currentUserData.company;
+
+    try {
+      const { error: dbError } = await supabaseClient
+        .from('attendances')
+        .insert([{
+          company_name: companyName,
+          user_name: currentUserData.name,
+          position: currentUserData.position,
+          phone: currentUserData.phone,
+          location_name: "Luar Kantor",
+          check_in_time: timeString,
+          status: `DINAS LUAR: ${destination.toUpperCase()}`,
+          photo_url: null
+        }]);
+
+      if (dbError) throw dbError;
+
+      const todayDate = now.toISOString().split('T')[0];
+      localStorage.setItem(`absent_date_${currentUserData.phone}`, todayDate);
+
+      showStatus('Permohonan Dinas Luar berhasil tercatat!', 'success');
+      setTimeout(() => location.reload(), 2000);
+
+    } catch (err) {
+      showStatus(`Gagal mengirim dinas luar: ${err.message}`, 'error');
     }
   }
 
