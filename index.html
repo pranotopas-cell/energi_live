@@ -358,7 +358,6 @@
       display: inline-block;
     }
 
-    /* Penyesuaian Ukuran & Kerapian Teks Join Date */
     .id-join-date-box {
       font-size: 6.5px;
       font-weight: 800;
@@ -1148,7 +1147,6 @@
     }, 200);
   }
 
-  /* Dipercepat: Pengambilan foto otomatis dipercepat menjadi 1 detik (interval 500ms) */
   function startCountdown() {
     if (isCountingDown || isProcessing) return;
     isCountingDown = true;
@@ -1190,6 +1188,21 @@
     scanBtn.disabled = true;
 
     const video = document.getElementById('video');
+
+    const now = new Date();
+    const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
+
+    let lateReason = "";
+    if (isLate) {
+      lateReason = prompt("Anda melakukan absensi lewat dari jam 09:30 WIB (TERLAMBAT).\nMasukkan alasan keterlambatan Anda:");
+      if (!lateReason || !lateReason.trim()) {
+        showStatus('Absensi dibatalkan: Alasan keterlambatan wajib diisi.', 'error');
+        scanBtn.disabled = false;
+        isProcessing = false;
+        return;
+      }
+      lateReason = lateReason.trim();
+    }
 
     showStatus('Memverifikasi identitas wajah...', 'info');
 
@@ -1248,10 +1261,8 @@
         const cutoutPhotoUrl = URL.createObjectURL(finalBlob);
         document.getElementById('cardAvatar').src = cutoutPhotoUrl;
 
-        const now = new Date();
         const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
-        const isLate = (now.getHours() > LATE_HOUR || (now.getHours() === LATE_HOUR && now.getMinutes() > LATE_MINUTE));
-        const statusText = isLate ? "TERLAMBAT" : "TEPAT WAKTU";
+        const statusText = isLate ? `TERLAMBAT: ${lateReason.toUpperCase()}` : "TEPAT WAKTU";
         const companyName = currentUserData.pt || currentUserData.company;
 
         try {
@@ -1301,7 +1312,7 @@
           document.getElementById('resTime').textContent = timeString;
 
           const statusElem = document.getElementById('resStatus');
-          statusElem.textContent = isLate ? "TERLAMBAT (Lewat 09:30)" : "TEPAT WAKTU";
+          statusElem.textContent = isLate ? `TERLAMBAT (${lateReason})` : "TEPAT WAKTU";
           statusElem.className = isLate ? "val tag-late" : "val tag-ontime";
 
           showStatus('Absensi berhasil terverifikasi!', 'success');
