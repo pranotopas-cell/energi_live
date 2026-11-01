@@ -122,7 +122,7 @@
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
           <div class="text-[10px] font-bold text-slate-400 uppercase">Hari Kerja Efektif</div>
           <div id="stat-workdays" class="text-base font-extrabold text-slate-800 mt-0.5">0 Hari</div>
-          <div class="text-[9px] text-slate-400 mt-0.5">(Senin-Sabtu, tdk tmasuk Minggu & Tgl Merah)</div>
+          <div class="text-[9px] text-slate-400 mt-0.5">(Tgl 1 s/d Akhir Bulan, tdk tmasuk Minggu & Tgl Merah)</div>
         </div>
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
           <div class="text-[10px] font-bold text-emerald-600 uppercase">Hadir Tepat Waktu</div>
@@ -147,7 +147,7 @@
         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-teal-500 col-span-2 md:col-span-1">
           <div class="text-[10px] font-bold text-teal-600 uppercase">Total / Potongan</div>
           <div id="stat-allowance" class="text-base font-extrabold text-teal-700 mt-0.5">Rp 0</div>
-          <div class="text-[9px] text-teal-600/80 mt-0.5">Training +25rb / Telat-Alpha -50rb</div>
+          <div class="text-[9px] text-teal-600/80 mt-0.5">Lembur Libur +50rb / Telat-Alpha -50rb</div>
         </div>
       </div>
 
@@ -419,7 +419,7 @@
       }
     }
 
-    // Filter Lokal Berdasarkan Karyawan & Generate Alpha Otomatis Jika Mode Bulan & Pilih Karyawan
+    // Filter Lokal Berdasarkan Karyawan & Generate Alpha Otomatis (Hanya untuk Hari Kerja Efektif Tgl 1 s/d Akhir Bulan)
     function applyUserFilter() {
       const selectedUser = document.getElementById("filter-user").value;
       const mode = document.getElementById("filter-mode").value;
@@ -431,13 +431,13 @@
         filtered = rawFetchedData.filter(item => item.user_name === selectedUser);
       }
 
-      // Jika mode per bulan dan spesifik memilih satu karyawan, generate tanggal-tanggal yang tidak masuk (Alpha)
+      // Jika mode per bulan dan spesifik memilih satu karyawan, generate tanggal Alpha untuk hari efektif dari tgl 1 s/d akhir bulan
       if (mode === "month" && selectedUser !== "ALL") {
         const monthVal = document.getElementById("filter-month").value;
         const [year, month] = monthVal.split("-").map(Number);
-        const totalDays = new Date(year, month, 0).getDate();
+        const totalDays = new Date(year, month, 0).getDate(); // Menyesuaikan 28, 29, 30, atau 31 hari
 
-        // Cari tanggal mana saja yang sudah ada record-nya oleh karyawan ini
+        // Set tanggal yang sudah dihadiri
         const attendedDates = new Set();
         filtered.forEach(item => {
           if (item.created_at) {
@@ -446,12 +446,10 @@
           }
         });
 
-        // Ambil data sampel dari karyawan tersebut untuk metadata (posisi, perusahaan, phone)
         const sampleItem = filtered.length > 0 ? filtered[0] : { user_name: selectedUser, position: '-', company_name: '-', phone: '-' };
-
-        // Buat array lengkap termasuk tanggal Alpha
         let combinedData = [...filtered];
 
+        // Loop dari tanggal 1 hingga akhir bulan
         for (let d = 1; d <= totalDays; d++) {
           const dateObj = new Date(year, month - 1, d);
           const dayOfWeek = dateObj.getDay(); // 0 = Minggu
@@ -460,7 +458,7 @@
           const isSunday = (dayOfWeek === 0);
           const isRedDate = nationalHolidays.includes(formattedStr);
 
-          // Jika hari kerja efektif (bukan minggu dan bukan tanggal merah) dan belum ada presensi
+          // Hari Minggu & Tanggal Merah TIDAK dihitung sebagai hari kerja efektif (tidak digenerate Alpha)
           if (!isSunday && !isRedDate && !attendedDates.has(formattedStr)) {
             combinedData.push({
               id: `alpha-${selectedUser}-${formattedStr}`,
@@ -490,7 +488,7 @@
       calculatePerformanceResume(currentFilteredData);
     }
 
-    // Menghitung Hari Kerja Efektif (Senin - Sabtu; Hanya Minggu dan Tanggal Merah yang libur)
+    // Menghitung Hari Kerja Efektif (Tgl 1 s/d Akhir Bulan; Mengabaikan Minggu & Tanggal Merah)
     function getEffectiveWorkdays() {
       const mode = document.getElementById("filter-mode").value;
       let datesToCheck = [];
@@ -498,7 +496,7 @@
       if (mode === "month") {
         const monthVal = document.getElementById("filter-month").value;
         const [year, month] = monthVal.split("-").map(Number);
-        const totalDays = new Date(year, month, 0).getDate();
+        const totalDays = new Date(year, month, 0).getDate(); // Menyesuaikan 28, 29, 30, atau 31 hari
 
         for (let d = 1; d <= totalDays; d++) {
           const dateObj = new Date(year, month - 1, d);
@@ -519,6 +517,7 @@
         const isSunday = (dayOfWeek === 0);
         const isNationalHoliday = nationalHolidays.includes(formattedStr);
 
+        // Hari Minggu dan Tanggal Merah TIDAK dihitung dalam hari kerja efektif
         if (!isSunday && !isNationalHoliday) {
           effectiveDays++;
         }
@@ -533,7 +532,7 @@
       return cleanName.includes("WAHYUDI") || cleanPhone === "085392181645";
     }
 
-    // LOGIKA POTONGAN / NOMINAL GAJI
+    // LOGIKA POTONGAN / NOMINAL GAJI & LEMBUR
     function calculateDailyAllowance(item) {
       const name = item.user_name || "";
       const phone = item.phone || "";
@@ -541,9 +540,28 @@
       const isApproved = item.is_approved === true || item.approval_status === "APPROVED";
       const isTraining = isTrainingEmployee(name, phone);
 
+      const dateObj = item.created_at ? new Date(item.created_at) : null;
+      let isHoliday = false;
+
+      if (dateObj) {
+        const dayOfWeek = dateObj.getDay(); // 0 = Minggu
+        const formattedDate = dateObj.toISOString().split('T')[0];
+        const isSunday = (dayOfWeek === 0);
+        const isRedDate = nationalHolidays.includes(formattedDate);
+
+        if (isSunday || isRedDate) {
+          isHoliday = true;
+        }
+      }
+
       const isLate = statusText.includes("TERLAMBAT") || statusText.includes("LATE");
       const isPermission = statusText.includes("IZIN") || statusText.includes("SAKIT") || statusText.includes("DINAS");
       const isAlpha = statusText.includes("ALPHA") || item.isAlphaGenerated || !item.check_in_time || item.check_in_time === '-';
+
+      // JIKA ABSEN DI HARI MINGGU / TANGGAL MERAH (LEMBUR HARI LIBUR = +50.000)
+      if (isHoliday && !isAlpha) {
+        return 50000;
+      }
 
       if (isTraining) {
         if (isLate || isAlpha || (isPermission && !isApproved)) {
@@ -551,7 +569,7 @@
         } else if (isPermission && isApproved) {
           return 0; 
         } else {
-          return 25000;
+          return 25000; // Bonus training
         }
       } else {
         if (isLate) {
@@ -722,6 +740,14 @@
         const formattedDate = dateObj ? dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
         const rawDateStr = dateObj ? dateObj.toISOString().split('T')[0] : '';
 
+        let isHoliday = false;
+        if (dateObj) {
+          const dayOfWeek = dateObj.getDay();
+          if (dayOfWeek === 0 || nationalHolidays.includes(rawDateStr)) {
+            isHoliday = true;
+          }
+        }
+
         let borderClass = "border-t border-slate-200";
         if (rawDateStr !== currentDateGroup) {
           currentDateGroup = rawDateStr;
@@ -745,7 +771,10 @@
         let shortStatusText = statusText;
         let isClickableReason = false;
 
-        if (isAlpha) {
+        if (isHoliday && !isAlpha) {
+          statusBadgeClass = "bg-purple-50 text-purple-700 border-purple-200 font-bold";
+          shortStatusText = "LEMBUR (HARI LIBUR)";
+        } else if (isAlpha) {
           statusBadgeClass = "bg-rose-100 text-rose-800 border-rose-300 cursor-pointer hover:bg-rose-200 font-bold";
           shortStatusText = "ALPHA (TIDAK ABSEN)";
           isClickableReason = true;
@@ -763,7 +792,9 @@
         let approvalColumn = `<span class="text-slate-400 text-[10px] font-medium">-</span>`;
         let dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px]">100 pts</span>';
 
-        if (isAlpha) {
+        if (isHoliday && !isAlpha) {
+          dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[9px]">Lembur +50rb</span>';
+        } else if (isAlpha) {
           approvalColumn = `<span class="text-rose-500 font-bold text-[10px]">Non-Absen</span>`;
           dailyGradeBadge = '<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[9px]">Potong 50rb</span>';
         } else if (isLate || statusText.includes("IZIN")) {
