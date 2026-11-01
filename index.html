@@ -828,7 +828,7 @@
   let isModelsLoaded = false;
 
   let countdownTimer = null;
-  let countdownVal = 1;
+  let countdownVal = 3;
   let isCountingDown = false;
   let isProcessing = false;
 
@@ -1103,6 +1103,7 @@
 
     if (faceDetectionInterval) clearInterval(faceDetectionInterval);
 
+    // Dioptimalkan dengan interval 300ms dan inputSize 224 agar sangat ringan dan cepat tanpa ngelag
     faceDetectionInterval = setInterval(async () => {
       if (!isModelsLoaded || !video || video.paused || video.ended || isProcessing) return;
 
@@ -1123,12 +1124,12 @@
           const targetX = videoWidth / 2;
           const targetY = videoHeight / 2;
 
-          const toleranceX = videoWidth * 0.18; 
-          const toleranceY = videoHeight * 0.22;
+          const toleranceX = videoWidth * 0.22; 
+          const toleranceY = videoHeight * 0.25;
 
           const isCenterX = Math.abs(faceCenterX - targetX) < toleranceX;
           const isCenterY = Math.abs(faceCenterY - targetY) < toleranceY;
-          const isGoodSize = box.width >= (videoWidth * 0.22) && box.width <= (videoWidth * 0.65);
+          const isGoodSize = box.width >= (videoWidth * 0.18) && box.width <= (videoWidth * 0.70);
 
           if (isCenterX && isCenterY && isGoodSize) {
             overlay.classList.add('face-valid');
@@ -1144,36 +1145,42 @@
       } catch (err) {
         console.warn("Kesalahan deteksi wajah:", err);
       }
-    }, 200);
+    }, 300);
   }
 
   function startCountdown() {
     if (isCountingDown || isProcessing) return;
     isCountingDown = true;
-    countdownVal = 1;
+    countdownVal = 3; // Mulai dari 3 detik
 
     const countText = document.getElementById('countdownText');
     countText.style.display = 'block';
     countText.textContent = countdownVal;
-    showStatus(`Posisi pas! Mengambil foto...`, 'info');
+    showStatus(`Posisi pas! Tahan sebentar...`, 'info');
+
+    if (countdownTimer) clearInterval(countdownTimer);
 
     countdownTimer = setInterval(() => {
       countdownVal--;
       if (countdownVal > 0) {
         countText.textContent = countdownVal;
       } else {
-        cancelCountdown();
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+        countText.style.display = 'none';
         processAttendance();
       }
-    }, 500);
+    }, 1000);
   }
 
   function cancelCountdown() {
+    if (!isCountingDown || isProcessing) return;
     if (countdownTimer) {
       clearInterval(countdownTimer);
       countdownTimer = null;
     }
     isCountingDown = false;
+    countdownVal = 3;
     const countText = document.getElementById('countdownText');
     if (countText) countText.style.display = 'none';
   }
@@ -1224,7 +1231,7 @@
 
       if (savedDescriptor) {
         const distance = faceapi.euclideanDistance(currentDescriptor, savedDescriptor);
-        const MAX_MATCH_DISTANCE = 0.52;
+        const MAX_MATCH_DISTANCE = 0.55; // Sedikit dilonggarkan agar lebih mudah mendeteksi kecocokan wajah
 
         if (distance > MAX_MATCH_DISTANCE) {
           showStatus(`Akses Ditolak: Wajah tidak cocok dengan akun atas nama ${currentUserData.name}!`, 'error');
