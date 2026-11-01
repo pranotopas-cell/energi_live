@@ -392,7 +392,7 @@
         return;
       }
 
-      // STRICT FILTER: Memastikan data yang masuk benar-benar sesuai dengan bulan yang dipilih (mencegah kebocoran tanggal akhir bulan sebelumnya akibat selisih timezone)
+      // PERKETAT FILTER BULAN: Hanya menyaring record yang benar-benar berasal dari bulan pilihan
       let fetched = data || [];
       if (mode === "month") {
         const monthVal = document.getElementById("filter-month").value; // "YYYY-MM"
@@ -429,7 +429,7 @@
       }
     }
 
-    // Filter Lokal Berdasarkan Karyawan & Generate Alpha Otomatis (Hanya untuk Hari Kerja Efektif Tgl 1 s/d Akhir Bulan)
+    // Filter Lokal Berdasarkan Karyawan & Generate Alpha Otomatis (Tgl 1 s/d Akhir Bulan secara presisi)
     function applyUserFilter() {
       const selectedUser = document.getElementById("filter-user").value;
       const mode = document.getElementById("filter-mode").value;
@@ -445,9 +445,9 @@
       if (mode === "month" && selectedUser !== "ALL") {
         const monthVal = document.getElementById("filter-month").value;
         const [year, month] = monthVal.split("-").map(Number);
-        const totalDays = new Date(year, month, 0).getDate(); // Menyesuaikan 28, 29, 30, atau 31 hari
+        const totalDays = new Date(year, month, 0).getDate(); // Total hari bulan (28, 29, 30, atau 31)
 
-        // Set tanggal yang sudah dihadiri
+        // Set tanggal yang sudah ada presensinya
         const attendedDates = new Set();
         filtered.forEach(item => {
           if (item.created_at) {
@@ -459,11 +459,15 @@
         const sampleItem = filtered.length > 0 ? filtered[0] : { user_name: selectedUser, position: '-', company_name: '-', phone: '-' };
         let combinedData = [...filtered];
 
-        // Loop dari tanggal 1 hingga akhir bulan
+        // Format Bulan 2-digit untuk pembuatan tanggal lokal yang tepat tanpa shifting UTC
+        const strMonth = String(month).padStart(2, '0');
+
+        // Loop presisi dari tanggal 1 hingga akhir bulan
         for (let d = 1; d <= totalDays; d++) {
+          const strDay = String(d).padStart(2, '0');
+          const formattedStr = `${year}-${strMonth}-${strDay}`;
           const dateObj = new Date(year, month - 1, d);
           const dayOfWeek = dateObj.getDay(); // 0 = Minggu
-          const formattedStr = dateObj.toISOString().split('T')[0];
 
           const isSunday = (dayOfWeek === 0);
           const isRedDate = nationalHolidays.includes(formattedStr);
@@ -506,7 +510,7 @@
       if (mode === "month") {
         const monthVal = document.getElementById("filter-month").value;
         const [year, month] = monthVal.split("-").map(Number);
-        const totalDays = new Date(year, month, 0).getDate(); // Menyesuaikan 28, 29, 30, atau 31 hari
+        const totalDays = new Date(year, month, 0).getDate();
 
         for (let d = 1; d <= totalDays; d++) {
           const dateObj = new Date(year, month - 1, d);
@@ -527,7 +531,6 @@
         const isSunday = (dayOfWeek === 0);
         const isNationalHoliday = nationalHolidays.includes(formattedStr);
 
-        // Hari Minggu dan Tanggal Merah TIDAK dihitung dalam hari kerja efektif
         if (!isSunday && !isNationalHoliday) {
           effectiveDays++;
         }
@@ -607,7 +610,7 @@
         const isAlpha = st.includes("ALPHA") || item.isAlphaGenerated || !item.check_in_time || item.check_in_time === '-';
 
         if (isAlpha) {
-          lateCount++; // Alpha dihitung dalam rekap pemotongan
+          lateCount++;
         } else if (st.includes("TERLAMBAT") || st.includes("LATE")) {
           lateCount++;
         } else if (st.includes("IZIN") || st.includes("SAKIT") || st.includes("DINAS")) {
@@ -662,7 +665,7 @@
         label = "Sangat Baik ";
         badgeStyle = "bg-emerald-100 border-emerald-500 text-emerald-700";
         labelStyle = "bg-emerald-100 text-emerald-700";
-        desc = `Tercapai Tingkat kehadiran  ${rate}% Jaga disiplin dan Performa`;
+        desc = `Tercapai Tingkat kehadiran ${rate}% Jaga disiplin dan Performa`;
       } else if (rate >= 80 && late <= 2) {
         grade = "B";
         label = "Baik";
