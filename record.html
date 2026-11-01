@@ -370,7 +370,7 @@
       let query = supabaseClient.from("attendances").select("*").order("created_at", { ascending: false });
 
       if (mode === "month") {
-        const monthVal = document.getElementById("filter-month").value;
+        const monthVal = document.getElementById("filter-month").value; // Format: "YYYY-MM"
         const [year, month] = monthVal.split("-");
         const startDate = `${year}-${month}-01T00:00:00.000Z`;
         const lastDay = new Date(year, month, 0).getDate();
@@ -392,7 +392,17 @@
         return;
       }
 
-      rawFetchedData = data || [];
+      // STRICT FILTER: Memastikan data yang masuk benar-benar sesuai dengan bulan yang dipilih (mencegah kebocoran tanggal akhir bulan sebelumnya akibat selisih timezone)
+      let fetched = data || [];
+      if (mode === "month") {
+        const monthVal = document.getElementById("filter-month").value; // "YYYY-MM"
+        fetched = fetched.filter(item => {
+          if (!item.created_at) return false;
+          return item.created_at.startsWith(monthVal);
+        });
+      }
+
+      rawFetchedData = fetched;
       populateUserDropdown(rawFetchedData);
       applyUserFilter();
     }
