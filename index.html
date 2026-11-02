@@ -912,7 +912,6 @@
         .from('attendances')
         .select('face_descriptor')
         .eq('phone', phone)
-        .not('face_descriptor', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1);
 
@@ -1103,7 +1102,6 @@
 
     if (faceDetectionInterval) clearInterval(faceDetectionInterval);
 
-    // Dioptimalkan dengan interval 300ms dan inputSize 224 agar sangat ringan dan cepat tanpa ngelag
     faceDetectionInterval = setInterval(async () => {
       if (!isModelsLoaded || !video || video.paused || video.ended || isProcessing) return;
 
@@ -1151,7 +1149,7 @@
   function startCountdown() {
     if (isCountingDown || isProcessing) return;
     isCountingDown = true;
-    countdownVal = 3; // Mulai dari 3 detik
+    countdownVal = 3;
 
     const countText = document.getElementById('countdownText');
     countText.style.display = 'block';
@@ -1229,9 +1227,10 @@
       const currentDescriptor = liveDetection.descriptor;
       const savedDescriptor = await fetchUserFaceDescriptorFromSupabase(currentUserData.phone);
 
+      // KOREKSI UTAMA: Jika belum ada data wajah (savedDescriptor null), daftarkan pertama kali.
       if (savedDescriptor) {
         const distance = faceapi.euclideanDistance(currentDescriptor, savedDescriptor);
-        const MAX_MATCH_DISTANCE = 0.55; // Sedikit dilonggarkan agar lebih mudah mendeteksi kecocokan wajah
+        const MAX_MATCH_DISTANCE = 0.60; // Ditingkatkan sedikit agar lebih fleksibel
 
         if (distance > MAX_MATCH_DISTANCE) {
           showStatus(`Akses Ditolak: Wajah tidak cocok dengan akun atas nama ${currentUserData.name}!`, 'error');
