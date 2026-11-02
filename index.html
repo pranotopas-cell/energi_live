@@ -245,33 +245,40 @@
       margin-top: 1px;
     }
 
+    /* BINGKAI FOTO ESTETIK & GARIS DISAMARKAN */
     .id-avatar-hex-wrapper {
       position: relative;
       z-index: 5;
-      margin-top: 4px;
-      width: 75px;
-      height: 85px;
+      margin-top: 6px;
+      width: 76px;
+      height: 76px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .id-avatar-hex {
-      width: 68px;
-      height: 78px;
+      width: 70px;
+      height: 70px;
       object-fit: cover;
       object-position: center top;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      border-radius: 50%;
       background-color: #f1f5f9;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 2;
     }
 
     .id-avatar-hex-border {
       position: absolute;
-      width: 74px;
-      height: 84px;
-      background: #ffffff;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      z-index: -1;
+      width: 76px;
+      height: 76px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.3));
+      border-radius: 50%;
+      z-index: 1;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), inset 0 0 8px rgba(255, 255, 255, 0.6);
     }
 
     .id-card-content {
@@ -506,8 +513,18 @@
     .status-badge.success { background-color: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
     .status-badge.info { background-color: #eff6ff; color: var(--soft-accent-blue); border: 1px solid #bfdbfe; }
 
+    /* HASIL ABSEN (BINGKAI FOTO HASIL DISAMARKAN) */
     .result-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 6px; text-align: center; }
-    .result-card img { width: 75px; height: 95px; object-fit: cover; border-radius: 6px; border: 2px solid var(--soft-blue); margin-bottom: 4px; background: #f1f5f9; }
+    .result-card img { 
+      width: 75px; 
+      height: 75px; 
+      object-fit: cover; 
+      border-radius: 50%; 
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 0 0 3px rgba(255,255,255,0.8); 
+      margin-bottom: 4px; 
+      background: #f1f5f9; 
+    }
     .result-row { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px dashed var(--border-color); font-size: 8.5px; }
     .result-row:last-child { border-bottom: none; }
     .result-row span.label { color: var(--soft-accent-blue); font-weight: 700; }
@@ -657,7 +674,7 @@
                 <div>
                   <div class="back-section-title">SOP ABSENSI & KERJA</div>
                   <ol class="back-rules-list">
-                    <li>Jam kerja operasional: 08.00 - 17.00 WIB.</li>
+                    <li>Jam kerja operasional: 00.01 - 17.00 WIB.</li>
                     <li>Wajib record presensi dengan deteksi wajah di lokasi kantor/workshop.</li>
                     <li>Batas toleransi keterlambatan adalah jam 09.30 WIB.</li>
                   </ol>
@@ -806,8 +823,10 @@
     }
   };
 
-  const START_HOUR = 00;
-  const END_HOUR = 01;
+  /* PENGATURAN JAM MULAI BISA ABSEN (00.01 WIB) */
+  const START_HOUR = 0;
+  const START_MINUTE = 1;
+  const END_HOUR = 17;
   const LATE_HOUR = 9;
   const LATE_MINUTE = 30;
 
@@ -912,6 +931,7 @@
         .from('attendances')
         .select('face_descriptor')
         .eq('phone', phone)
+        .not('face_descriptor', 'is', null)
         .order('created_at', { ascending: false })
         .limit(1);
 
@@ -1044,9 +1064,14 @@
 
     const now = new Date();
     const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
 
-    if (currentHour < START_HOUR || currentHour >= END_HOUR) {
-      showStatus(`Absensi ditutup. Jam operasional 01.00 - 16.00 WIB.`, 'error');
+    // Validasi Akses Jam (Mulai 00:01 WIB sampai 17:00 WIB)
+    const isBeforeStart = (currentHour === 0 && currentMinute < START_MINUTE);
+    const isAfterEnd = (currentHour >= END_HOUR);
+
+    if (isBeforeStart || isAfterEnd) {
+      showStatus(`Absensi ditutup. Jam operasional 00.01 - 13.00 WIB.`, 'error');
       document.getElementById('scanBtn').disabled = true;
       return;
     }
@@ -1227,10 +1252,9 @@
       const currentDescriptor = liveDetection.descriptor;
       const savedDescriptor = await fetchUserFaceDescriptorFromSupabase(currentUserData.phone);
 
-      // KOREKSI UTAMA: Jika belum ada data wajah (savedDescriptor null), daftarkan pertama kali.
       if (savedDescriptor) {
         const distance = faceapi.euclideanDistance(currentDescriptor, savedDescriptor);
-        const MAX_MATCH_DISTANCE = 0.60; // Ditingkatkan sedikit agar lebih fleksibel
+        const MAX_MATCH_DISTANCE = 0.60;
 
         if (distance > MAX_MATCH_DISTANCE) {
           showStatus(`Akses Ditolak: Wajah tidak cocok dengan akun atas nama ${currentUserData.name}!`, 'error');
